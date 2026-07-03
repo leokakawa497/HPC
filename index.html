@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v12"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v13"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1108,6 +1108,7 @@ function finalizarSessao(){
   const s=sessaoAtiva;
   sessaoAtiva=null;
   salvar();
+  marcarSessaoPendente(s.id);
   verificarBadges();
   renderTreinos();renderHoje();
   if(!s.prs.length)celebrar('💪','Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
@@ -1543,7 +1544,7 @@ function initSupabase(){
   window.hpcSupabase=supabaseClient;
   supabaseClient.auth.onAuthStateChange((_event,session)=>{
     authUser=session&&session.user?session.user:null;
-    garantirProfile().finally(()=>{renderAuth();if(authUser){carregarHabitIdMap().then(processarPendencias);}});
+    garantirProfile().finally(()=>{renderAuth();if(authUser){Promise.all([carregarHabitIdMap(),carregarProgramaIdMap()]).then(processarPendencias);}});
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
@@ -1686,23 +1687,26 @@ async function confirmarMigracao(){
     setStatus('✓ Migração completa! '+habitosPayload.length+' hábitos, '+logsPayload.length+' dias de sono, '+entriesPayload.length+' entradas, '+programasPayload.length+' programas, '+sessoesPayload.length+' sessões. localStorage preservado.');
     try{localStorage.setItem('hpc_last_sync',JSON.stringify({at:new Date().toISOString(),userId:uid}));}catch(_){}
     renderSyncBadge();
-    carregarHabitIdMap();
+    Promise.all([carregarHabitIdMap(),carregarProgramaIdMap()]);
     toast('Migração completa ✓');
   }
 }
 
 /* ================= AUTO-SYNC (sono + hábitos, incremental) =================
-   Escopo desta etapa: apenas daily_logs e daily_habit_entries.
+   Escopo: daily_logs, daily_habit_entries, workout_sessions, workout_sets.
    - localStorage é sempre a fonte primária; sync nunca apaga nada local.
    - Payload omite campos vazios: o upsert só atualiza colunas enviadas,
      então valor remoto preenchido nunca é sobrescrito por vazio local.
-   - Datas alteradas entram na fila hpc_sync_pending; ao voltar online
-     (evento 'online' ou novo login) as pendências são reprocessadas. */
+   - Datas alteradas entram em hpc_sync_pending; sessões pendentes em
+     hpc_sync_pending_sessions. Ambas são drenadas ao voltar online. */
 let _habitIdMap={};
+let _programaIdMap={};
 let _syncEmAndamento=false;
 
 function pendentes(){try{return JSON.parse(localStorage.getItem('hpc_sync_pending'))||[];}catch(_){return[];}}
 function setPendentes(l){try{localStorage.setItem('hpc_sync_pending',JSON.stringify([...new Set(l)]));}catch(_){}}
+function pendentesSessoes(){try{return JSON.parse(localStorage.getItem('hpc_sync_pending_sessions'))||[];}catch(_){return[];}}
+function setPendentesSessoes(l){try{localStorage.setItem('hpc_sync_pending_sessions',JSON.stringify([...new Set(l)]));}catch(_){}}
 
 function setSyncState(estado){
   const dot=document.getElementById('syncDot');if(!dot)return;
@@ -1718,6 +1722,45 @@ async function carregarHabitIdMap(){
   if(!authUser||!supabaseClient)return;
   const{data}=await supabaseClient.from('habits').select('id,local_id').eq('user_id',authUser.id);
   if(data)_habitIdMap=Object.fromEntries(data.map(h=>[h.local_id,h.id]));
+}
+
+async function carregarProgramaIdMap(){
+  if(!authUser||!supabaseClient)return;
+  const{data}=await supabaseClient.from('workout_programs').select('id,local_id').eq('user_id',authUser.id);
+  if(data)_programaIdMap=Object.fromEntries(data.map(p=>[p.local_id,p.id]));
+}
+
+async function syncWorkoutSession(localId){
+  const s=db.sessoes.find(x=>x.id===localId);
+  if(!s)return true;
+  const uid=authUser.id;
+  if(!Object.keys(_programaIdMap).length)await carregarProgramaIdMap();
+  const payload={user_id:uid,local_id:s.id,name:s.nome,session_date:s.data,
+    started_at:new Date(s.inicio).toISOString(),prs:s.prs||[],source:'manual'};
+  if(s.fim)payload.ended_at=new Date(s.fim).toISOString();
+  if(s.fim&&s.inicio)payload.duration_ms=s.fim-s.inicio;
+  const progId=_programaIdMap[s.treinoId];
+  if(progId)payload.program_id=progId;
+  const{data:sessData,error:sessErr}=await supabaseClient
+    .from('workout_sessions').upsert(payload,{onConflict:'user_id,local_id'})
+    .select('id').single();
+  if(sessErr){console.warn('[sync] sessão:',sessErr.message);return false;}
+  // sets: inserir apenas se ainda não existem para esta sessão
+  const{data:existSets}=await supabaseClient
+    .from('workout_sets').select('id').eq('session_id',sessData.id).limit(1);
+  if(existSets&&existSets.length)return true;
+  const sets=[];
+  (s.exercicios||[]).forEach(ex=>(ex.sets||[]).forEach((set,si)=>{
+    const row={user_id:uid,session_id:sessData.id,exercise_name:ex.nome,set_index:si,done:!!set.feito,is_pr:!!set.pr};
+    if(set.peso)row.weight=set.peso;
+    if(set.reps)row.reps=set.reps;
+    sets.push(row);
+  }));
+  if(sets.length){
+    const{error:setsErr}=await supabaseClient.from('workout_sets').insert(sets);
+    if(setsErr){console.warn('[sync] sets:',setsErr.message);return false;}
+  }
+  return true;
 }
 
 async function syncDailyLog(iso){
@@ -1753,18 +1796,30 @@ function marcarPendente(iso){
   processarPendencias();
 }
 
+function marcarSessaoPendente(localId){
+  if(!authUser||!supabaseClient)return;
+  setPendentesSessoes([...pendentesSessoes(),localId]);
+  processarPendencias();
+}
+
 async function processarPendencias(){
   if(_syncEmAndamento||!authUser||!supabaseClient)return;
-  const fila=pendentes();
-  if(!fila.length)return;
+  const filaDias=pendentes();
+  const filaSessoes=pendentesSessoes();
+  if(!filaDias.length&&!filaSessoes.length)return;
   if(!navigator.onLine){setSyncState('local');return;}
   _syncEmAndamento=true;
   setSyncState('sync');
   let houveErro=false;
-  for(const iso of fila){
+  for(const iso of filaDias){
     const okLog=await syncDailyLog(iso);
     const okEnt=await syncHabitEntries(iso);
     if(okLog&&okEnt)setPendentes(pendentes().filter(d=>d!==iso));
+    else{houveErro=true;break;}
+  }
+  for(const lid of filaSessoes){
+    const ok=await syncWorkoutSession(lid);
+    if(ok)setPendentesSessoes(pendentesSessoes().filter(x=>x!==lid));
     else{houveErro=true;break;}
   }
   _syncEmAndamento=false;
@@ -1795,7 +1850,7 @@ function initOnboarding(){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v12',
+  cacheVersion:'hpc-cache-v13',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
