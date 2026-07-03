@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v17"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v18"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -510,6 +510,13 @@ nav button.active{color:var(--teal)}
     </div>
     <button class="btn btn-ghost" onclick="enviarMagicLink()">Enviar link mágico</button>
     <button class="btn btn-ghost" id="authLogoutBtn" style="display:none;color:var(--rose)" onclick="sairAuth()">Sair</button>
+    <div id="authDisplayNameRow" style="display:none;margin-top:4px">
+      <label>Seu nome no feed</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="authDisplayNameInput" placeholder="Como você quer aparecer nos posts?" maxlength="40" style="flex:1">
+        <button onclick="salvarDisplayName()" style="background:var(--teal);border:none;color:#00332c;font-weight:800;border-radius:12px;padding:0 14px;font-size:14px;cursor:pointer;flex-shrink:0">Salvar</button>
+      </div>
+    </div>
     <button class="btn btn-ghost" id="authMigrateBtn" style="display:none;color:var(--teal)" onclick="fecharModal('modalAuth');abrirMigracao()">Migrar dados para a nuvem →</button>
     <button class="btn btn-ghost" id="authLoadCloudBtn" style="display:none;color:var(--violet)" onclick="fecharModal('modalAuth');abrirModalCarregarNuvem()">Carregar dados da nuvem ↓</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalAuth')">Fechar</button>
@@ -1601,6 +1608,15 @@ function renderAuth(){
     if(migrateBtn)migrateBtn.style.display='block';
     const loadBtn=document.getElementById('authLoadCloudBtn');
     if(loadBtn)loadBtn.style.display='block';
+    const dnRow=document.getElementById('authDisplayNameRow');
+    if(dnRow){
+      dnRow.style.display='block';
+      // pré-preencher com display_name salvo (async, não bloqueia renderização)
+      supaQuery(supabaseClient.from('profiles').select('display_name').eq('id',authUser.id).single()).then(({data})=>{
+        const inp=document.getElementById('authDisplayNameInput');
+        if(inp&&data?.display_name)inp.value=data.display_name;
+      });
+    }
     setAuthStatus('Login ativo. Seus dados continuam no localStorage até a etapa de migração/sync.');
   }else{
     btn.textContent='Entrar';
@@ -1610,6 +1626,8 @@ function renderAuth(){
     if(migrateBtn)migrateBtn.style.display='none';
     const loadBtn2=document.getElementById('authLoadCloudBtn');
     if(loadBtn2)loadBtn2.style.display='none';
+    const dnRow2=document.getElementById('authDisplayNameRow');
+    if(dnRow2)dnRow2.style.display='none';
     setAuthStatus(supabaseClient?'O app continua funcionando sem login. Entrar prepara sua conta para sync futuro.':'Supabase ainda não carregou. O app local continua funcionando.');
   }
 }
@@ -1983,6 +2001,22 @@ function initOnboarding(){
   }catch(_){}
 }
 
+/* ================= SUPABASE TIMEOUT HELPER ================= */
+async function supaQuery(queryBuilder, timeoutMs=10000){
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),timeoutMs);
+  try{
+    const res=await queryBuilder.abortSignal(ctrl.signal);
+    clearTimeout(tid);
+    return res;
+  }catch(e){
+    clearTimeout(tid);
+    if(e.name==='AbortError'||e.message?.includes('abort'))
+      return{data:null,error:{message:'Supabase sem resposta (projeto pausado?)',code:'timeout'}};
+    return{data:null,error:{message:e.message,code:'unknown'}};
+  }
+}
+
 /* ================= CARREGAR DA NUVEM ================= */
 let _cloudPreviewData = null;
 
@@ -1997,13 +2031,13 @@ async function abrirModalCarregarNuvem(){
   const uid=authUser.id;
   try{
     const[hRes,dlRes,dheRes,wpRes,weRes,wsRes,wsetRes]=await Promise.all([
-      supabaseClient.from('habits').select('id,local_id,name,kind,icon').eq('user_id',uid),
-      supabaseClient.from('daily_logs').select('log_date,slept_at,woke_at,sleep_minutes,note,score').eq('user_id',uid),
-      supabaseClient.from('daily_habit_entries').select('habit_id,entry_date,done,detail').eq('user_id',uid),
-      supabaseClient.from('workout_programs').select('id,local_id,name').eq('user_id',uid),
-      supabaseClient.from('workout_exercises').select('program_id,name,target_sets,sort_order').eq('user_id',uid).order('sort_order'),
-      supabaseClient.from('workout_sessions').select('id,local_id,name,session_date,started_at,ended_at,duration_ms,prs,program_id').eq('user_id',uid),
-      supabaseClient.from('workout_sets').select('session_id,exercise_name,set_index,weight,reps,done,is_pr').eq('user_id',uid),
+      supaQuery(supabaseClient.from('habits').select('id,local_id,name,kind,icon').eq('user_id',uid)),
+      supaQuery(supabaseClient.from('daily_logs').select('log_date,slept_at,woke_at,sleep_minutes,note,score').eq('user_id',uid)),
+      supaQuery(supabaseClient.from('daily_habit_entries').select('habit_id,entry_date,done,detail').eq('user_id',uid)),
+      supaQuery(supabaseClient.from('workout_programs').select('id,local_id,name').eq('user_id',uid)),
+      supaQuery(supabaseClient.from('workout_exercises').select('program_id,name,target_sets,sort_order').eq('user_id',uid).order('sort_order')),
+      supaQuery(supabaseClient.from('workout_sessions').select('id,local_id,name,session_date,started_at,ended_at,duration_ms,prs,program_id').eq('user_id',uid)),
+      supaQuery(supabaseClient.from('workout_sets').select('session_id,exercise_name,set_index,weight,reps,done,is_pr').eq('user_id',uid)),
     ]);
     const errors=[hRes,dlRes,dheRes,wpRes,weRes,wsRes,wsetRes].map(r=>r.error?.message).filter(Boolean);
     if(errors.length){
@@ -2156,6 +2190,17 @@ async function confirmarCarregarNuvem(){
   }
 }
 
+async function salvarDisplayName(){
+  if(!authUser||!supabaseClient){mostrarToast('Faça login primeiro');return;}
+  const nome=document.getElementById('authDisplayNameInput')?.value.trim();
+  if(!nome){mostrarToast('Digite seu nome');return;}
+  const{error}=await supaQuery(
+    supabaseClient.from('profiles').update({display_name:nome}).eq('id',authUser.id)
+  );
+  if(error){mostrarToast('Erro ao salvar: '+error.message);return;}
+  mostrarToast('Nome salvo: '+nome);
+}
+
 /* ================= FEED SOCIAL ================= */
 let _meusGrupos=[];
 let _postComentarioAtual=null;
@@ -2235,17 +2280,23 @@ async function carregarFeedSocial(){
   document.getElementById('feedSocialContent').style.display='block';
 
   // Carregar grupos
-  const{data:memberships}=await supabaseClient
-    .from('group_members').select('group_id,role,groups(id,name,invite_code)')
-    .eq('user_id',authUser.id);
+  const{data:memberships,error:memErr}=await supaQuery(
+    supabaseClient.from('group_members').select('group_id,role,groups(id,name,invite_code)').eq('user_id',authUser.id)
+  );
+  if(memErr){
+    document.getElementById('gruposArea').innerHTML='<div class="feed-empty">Supabase indisponível — tente novamente mais tarde.</div>';
+    document.getElementById('feedArea').innerHTML='';
+    return;
+  }
   if(!memberships){_meusGrupos=[];renderGrupos([]);return;}
 
   // Contar membros por grupo
   const groupIds=memberships.map(m=>m.groups?.id).filter(Boolean);
   let memberCounts={};
   if(groupIds.length){
-    const{data:counts}=await supabaseClient
-      .from('group_members').select('group_id').in('group_id',groupIds);
+    const{data:counts}=await supaQuery(
+      supabaseClient.from('group_members').select('group_id').in('group_id',groupIds)
+    );
     (counts||[]).forEach(r=>{memberCounts[r.group_id]=(memberCounts[r.group_id]||0)+1;});
   }
 
@@ -2260,21 +2311,22 @@ async function carregarFeedSocial(){
   }
 
   // Carregar posts
-  const{data:posts}=await supabaseClient
-    .from('feed_posts')
-    .select('id,title,kind,stats,created_at,user_id,group_id,groups(name),profiles(display_name)')
-    .in('group_id',groupIds)
-    .order('created_at',{ascending:false})
-    .limit(40);
+  const{data:posts}=await supaQuery(
+    supabaseClient.from('feed_posts')
+      .select('id,title,kind,stats,created_at,user_id,group_id,groups(name),profiles(display_name)')
+      .in('group_id',groupIds)
+      .order('created_at',{ascending:false})
+      .limit(40)
+  );
 
   if(!posts){renderFeedPosts([]);return;}
 
   // Likes e comentários em batch
   const postIds=posts.map(p=>p.id);
   const[{data:likes},{data:myLikes},{data:comments}]=await Promise.all([
-    supabaseClient.from('post_likes').select('post_id').in('post_id',postIds),
-    supabaseClient.from('post_likes').select('post_id').in('post_id',postIds).eq('user_id',authUser.id),
-    supabaseClient.from('post_comments').select('post_id').in('post_id',postIds)
+    supaQuery(supabaseClient.from('post_likes').select('post_id').in('post_id',postIds)),
+    supaQuery(supabaseClient.from('post_likes').select('post_id').in('post_id',postIds).eq('user_id',authUser.id)),
+    supaQuery(supabaseClient.from('post_comments').select('post_id').in('post_id',postIds))
   ]);
   const likeMap={},myLikeSet=new Set(),commentMap={};
   (likes||[]).forEach(l=>{likeMap[l.post_id]=(likeMap[l.post_id]||0)+1;});
@@ -2429,7 +2481,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v17',
+  cacheVersion:'hpc-cache-v18',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
