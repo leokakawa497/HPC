@@ -603,8 +603,28 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 const DIAS_PT=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
 const MESES_PT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 
+function parseISODate(isoDate){
+  const[y,m,d]=String(isoDate||'').split('-').map(Number);
+  if(!y||!m||!d)return null;
+  return new Date(y,m-1,d,12,0,0,0);
+}
+function formatDateBR(isoDate){
+  const d=parseISODate(isoDate);if(!d)return '';
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+}
+function formatShortDateBR(isoDate){
+  const d=parseISODate(isoDate);if(!d)return '';
+  return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');
+}
+function formatLongDateBR(isoDate){
+  const d=parseISODate(isoDate);if(!d)return '';
+  return d.getDate()+' de '+MESES_PT[d.getMonth()]+' de '+d.getFullYear();
+}
+function formatMonthYearBR(y,m){return MESES_PT[m-1]+' de '+y;}
+function formatBackupDateBR(isoDate){return formatDateBR(isoDate).replace(/\//g,'-');}
+
 function mudarDia(n){
-  const d=new Date(diaAtual+'T12:00:00');d.setDate(d.getDate()+n);
+  const d=parseISODate(diaAtual);d.setDate(d.getDate()+n);
   const novo=d.toISOString().slice(0,10);
   if(novo>hojeISO())return;
   diaAtual=novo;renderHoje();
@@ -660,9 +680,9 @@ function scoreDoDia(iso){
 
 /* ================= HOJE ================= */
 function renderHoje(){
-  const d=new Date(diaAtual+'T12:00:00');
+  const d=parseISODate(diaAtual);
   document.getElementById('dl1').textContent=(diaAtual===hojeISO()?'Hoje · ':'')+DIAS_PT[d.getDay()];
-  document.getElementById('dl2').textContent=d.getDate()+' de '+MESES_PT[d.getMonth()]+' de '+d.getFullYear();
+  document.getElementById('dl2').textContent=formatLongDateBR(diaAtual);
   document.getElementById('btnNext').style.opacity=diaAtual===hojeISO()?'0.3':'1';
 
   const dia=getDia(diaAtual);
@@ -691,7 +711,7 @@ function renderHoje(){
   if(mins!==null)badge.classList.add(corSono(mins));
   let bars='';
   for(let i=6;i>=0;i--){
-    const dd=new Date(diaAtual+'T12:00:00');dd.setDate(dd.getDate()-i);
+    const dd=parseISODate(diaAtual);dd.setDate(dd.getDate()-i);
     const iso=dd.toISOString().slice(0,10);
     const dObj=db.dias[iso];
     const m=dObj?calcSono(dObj.sono.dormiu,dObj.sono.acordou):null;
@@ -720,7 +740,7 @@ function sugestoes(hid){
 function streakHabito(hid){
   let s=0;
   for(let i=0;i<200;i++){
-    const d=new Date(diaAtual+'T12:00:00');d.setDate(d.getDate()-i);
+    const d=parseISODate(diaAtual);d.setDate(d.getDate()-i);
     const iso=d.toISOString().slice(0,10);
     const dia=db.dias[iso];
     if(dia&&dia.habitos[hid]&&dia.habitos[hid].feito)s++;
@@ -788,7 +808,7 @@ function renderTreinos(){
     div.className='prog';
     div.style.borderLeftColor=CORES_PROG[i%4];
     div.innerHTML='<div class="pt">'+esc(t.nome)+'</div><div class="ps">'+t.exercicios.length+' exercícios</div>'+
-      '<div class="plast">'+(ultima?'Último: '+fmtRel(ultima.data):'Nunca feito')+'</div>';
+      '<div class="plast">'+(ultima?'Último: '+formatShortDateBR(ultima.data):'Nunca feito')+'</div>';
     div.onclick=()=>iniciarOuEditar(t);
     el.appendChild(div);
   });
@@ -799,7 +819,7 @@ function renderTreinos(){
   renderSessao();
 }
 function fmtRel(iso){
-  const dias=Math.round((new Date(hojeISO())-new Date(iso))/86400000);
+  const dias=Math.round((parseISODate(hojeISO())-parseISODate(iso))/86400000);
   return dias===0?'hoje':dias===1?'ontem':'há '+dias+' dias';
 }
 function iniciarOuEditar(t){
@@ -1020,7 +1040,8 @@ function renderFeed(){
     const div=document.createElement('div');
     div.className='post';
     const dt=new Date(p.ts);
-    const quando=fmtRel(dt.toISOString().slice(0,10))+' · '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+    const postIso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+    const quando=formatDateBR(postIso)+' · '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
     const badge=p.tipo==='pr'?'<span class="post-badge pr">🏆 NOVO PR</span>':p.tipo==='badge'?'<span class="post-badge bg">🎖️ BADGE</span>':'<span class="post-badge tr">TREINO</span>';
     div.innerHTML='<div class="post-head"><div class="pava">L</div><div><div class="pn">Leonardo</div><div class="pt">'+quando+'</div></div>'+badge+'</div>'+
       '<div class="post-body">'+esc(p.titulo)+'</div>'+
@@ -1137,7 +1158,7 @@ function renderStats(){
   if(frase)frase+='. ';
   if(diasAtivos)frase+='Foram <b>'+diasAtivos+' dias ativos</b> no mês.';
   document.getElementById('insightArea').innerHTML=frase?
-    '<div class="insight"><div class="ihead">✦ Resumo de '+MESES_PT[m-1]+'</div><p>'+frase+'</p></div>':
+    '<div class="insight"><div class="ihead">✦ Resumo de '+formatMonthYearBR(y,m)+'</div><p>'+frase+'</p></div>':
     '<div class="empty">Registre alguns dias para gerar insights 🧠</div>';
 
   // stat grid
@@ -1194,7 +1215,7 @@ function mudarMes(n){
 }
 function renderHistTable(){
   const[y,m]=mesVisto.split('-').map(Number);
-  document.getElementById('mesLabel').textContent=MESES_PT[m-1]+' '+y;
+  document.getElementById('mesLabel').textContent=formatMonthYearBR(y,m);
   const nDias=new Date(y,m,0).getDate();
   const hoje=hojeISO();
   let ths='<th>Data</th><th>Sono</th>';
@@ -1203,10 +1224,10 @@ function renderHistTable(){
   for(let d=1;d<=nDias;d++){
     const iso=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     if(iso>hoje)break;
-    const dt=new Date(iso+'T12:00:00');
+    const dt=parseISODate(iso);
     const dia=db.dias[iso];
     const cls=(dt.getDay()===0||dt.getDay()===6?'weekend':'')+(iso===hoje?' istoday':'');
-    let tds='<td class="dcol">'+DIAS_PT[dt.getDay()].slice(0,3)+' '+String(d).padStart(2,'0')+'</td>';
+    let tds='<td class="dcol">'+DIAS_PT[dt.getDay()].slice(0,3)+' '+formatShortDateBR(iso)+'</td>';
     if(dia){
       const mm=calcSono(dia.sono.dormiu,dia.sono.acordou);
       tds+=mm!==null?'<td><span class="cell-sleep '+corSono(mm)+'">'+fmtMins(mm)+'</span></td>':'<td class="cell-empty">—</td>';
@@ -1257,7 +1278,7 @@ function exportarDados(){
   const blob=new Blob([JSON.stringify(db,null,1)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='hpc_backup_'+hojeISO()+'.json';
+  a.download='hpc_backup_'+formatBackupDateBR(hojeISO())+'.json';
   a.click();
 }
 
