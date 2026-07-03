@@ -11,22 +11,32 @@
 | Login email/senha + magic link | ✅ (funcional) |
 | `profiles` criado automaticamente no login | ✅ |
 | `supabase/schema.sql` aplicado no Dashboard | ✅ |
-| Tela de migração localStorage → Supabase (fase 1) | ✅ (hábitos + sono) |
+| Tela de migração completa (6 fases) | ✅ (hábitos, sono, entradas, treinos, sessões, sets) |
+| Sync badge (ponto verde no botão Entrar) | ✅ |
+| Onboarding modal (primeira vez, demo) | ✅ |
 | `window.hpcDiagnostics` utilitário | ✅ |
 | Sync automático | ❌ (não implementado — aguarda aprovação) |
-| Migração de treinos/sessões/feed | ❌ (fase futura) |
+| Feed social real (grupos, likes, comentários) | ❌ (fase futura) |
 
 ---
 
 ## O que já foi feito
 
-1. App publicado como PWA com cache offline completo.
+1. App publicado como PWA com cache offline completo (`hpc-cache-v9`).
 2. Dados reais de 2023–2026 importados via `assets/real-data.js`.
 3. Supabase Auth configurado (email/senha e magic link).
 4. Schema SQL com 13 tabelas, indexes e RLS aplicado no Supabase Dashboard.
 5. `profiles` é criado/atualizado automaticamente ao fazer login.
-6. Tela de migração (fase 1) implementada: hábitos e registros de sono.
-7. `window.hpcDiagnostics` disponível no console do browser.
+6. Tela de migração completa com 6 fases e dots de progresso por fase:
+   - Fase 1: `habits` (upsert por `user_id, local_id`)
+   - Fase 2: `daily_logs` (upsert por `user_id, log_date`)
+   - Fase 3: `daily_habit_entries` (batch upsert de 200 por `user_id, habit_id, entry_date`)
+   - Fase 4: `workout_programs` + `workout_exercises`
+   - Fase 5: `workout_sessions` (upsert por `user_id, local_id`)
+   - Fase 6: `workout_sets`
+7. Sync badge (ponto verde no botão "Entrar") persiste via `hpc_last_sync` no localStorage.
+8. Onboarding modal exibido uma vez para usuários em modo demo.
+9. `window.hpcDiagnostics` disponível no console do browser.
 
 ---
 
@@ -58,25 +68,15 @@ O script é idempotente — pode rodar várias vezes sem erro.
 
 ## Ordem correta das próximas fases
 
-### Fase 2 — Testar login e profile (prioridade imediata)
-1. Criar usuário no Dashboard → **Authentication → Users → Add user**
+### Fase 2 — Testar login e migração (prioridade imediata)
+1. No Supabase Dashboard → **Authentication → Users → Add user** (sem enviar email)
 2. Fazer login no app com as credenciais criadas
 3. Confirmar linha em `profiles` no Table Editor
-4. Testar `window.hpcDiagnostics.run()` no console
+4. Abrir modal de auth → clicar "Migrar dados para a nuvem →"
+5. Revisar preview → confirmar migração
+6. Verificar no Table Editor: `habits`, `daily_logs`, `daily_habit_entries`, `workout_sessions`
 
-### Fase 3 — Migração manual (hábitos + sono)
-1. Estando logado, abrir modal de login → clicar "Migrar dados para a nuvem →"
-2. Revisar preview de dados
-3. Confirmar migração
-4. Verificar no Dashboard → Table Editor → `habits` e `daily_logs`
-
-### Fase 4 — Migração de entradas de hábitos
-- Implementar upsert de `daily_habit_entries` na tela de migração (fase 2 da migração)
-
-### Fase 5 — Migração de treinos
-- `workout_programs` → `workout_exercises` → `workout_sessions` → `workout_sets`
-
-### Fase 6 — Sync automático (requer aprovação explícita)
+### Fase 3 — Sync automático (requer aprovação explícita do usuário)
 - Definir regra de conflito (last-write-wins ou manual)
 - Implementar por módulo, um de cada vez
 - Testar em dois dispositivos antes de ativar

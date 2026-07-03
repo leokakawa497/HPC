@@ -776,7 +776,7 @@ function salvarSono(){
   dia.sono.dormiu=document.getElementById('inpDormiu').value;
   dia.sono.acordou=document.getElementById('inpAcordou').value;
   if(!tinha&&dia.sono.dormiu&&dia.sono.acordou)ganharXP(XP_POR.sono);
-  salvar();renderHoje();
+  salvar();renderHoje();syncDia(diaAtual);
 }
 function salvarNota(){getDia(diaAtual).nota=document.getElementById('inpNota').value;salvar();}
 
@@ -928,7 +928,7 @@ function toggleHabito(h){
     verificarBadges();
   }else{st.detalhe='';detalheAberto=null;}
   dia.habitos[h.id]=st;
-  salvar();renderHoje();
+  salvar();renderHoje();syncDia(diaAtual);
 }
 
 /* ================= TREINOS ================= */
@@ -1108,6 +1108,7 @@ function finalizarSessao(){
   const s=sessaoAtiva;
   sessaoAtiva=null;
   salvar();
+  syncSessao(s);
   verificarBadges();
   renderTreinos();renderHoje();
   if(!s.prs.length)celebrar('💪','Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
@@ -1543,7 +1544,7 @@ function initSupabase(){
   window.hpcSupabase=supabaseClient;
   supabaseClient.auth.onAuthStateChange((_event,session)=>{
     authUser=session&&session.user?session.user:null;
-    garantirProfile().finally(renderAuth);
+    garantirProfile().finally(()=>{renderAuth();if(authUser)carregarHabitIdMap();});
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
@@ -1686,8 +1687,56 @@ async function confirmarMigracao(){
     setStatus('✓ Migração completa! '+habitosPayload.length+' hábitos, '+logsPayload.length+' dias de sono, '+entriesPayload.length+' entradas, '+programasPayload.length+' programas, '+sessoesPayload.length+' sessões. localStorage preservado.');
     try{localStorage.setItem('hpc_last_sync',JSON.stringify({at:new Date().toISOString(),userId:uid}));}catch(_){}
     renderSyncBadge();
+    carregarHabitIdMap();
     toast('Migração completa ✓');
   }
+}
+
+/* ================= AUTO-SYNC ================= */
+let _habitIdMap={};
+
+async function carregarHabitIdMap(){
+  if(!authUser||!supabaseClient)return;
+  const{data}=await supabaseClient.from('habits').select('id,local_id').eq('user_id',authUser.id);
+  if(data)_habitIdMap=Object.fromEntries(data.map(h=>[h.local_id,h.id]));
+}
+
+async function syncDia(iso){
+  if(!authUser||!supabaseClient)return;
+  const dia=db.dias[iso];if(!dia)return;
+  const uid=authUser.id;
+  const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
+  const{data:logData,error:logErr}=await supabaseClient.from('daily_logs').upsert({
+    user_id:uid,log_date:iso,
+    slept_at:dia.sono.dormiu||null,woke_at:dia.sono.acordou||null,
+    sleep_minutes:mins,note:dia.nota||null,score:scoreDoDia(iso),source:'manual'
+  },{onConflict:'user_id,log_date'}).select('id').single();
+  if(logErr)return;
+  const entries=db.habitos.map(h=>{
+    const sid=_habitIdMap[h.id];if(!sid)return null;
+    const st=dia.habitos[h.id]||{feito:false,detalhe:''};
+    return{user_id:uid,daily_log_id:logData.id,habit_id:sid,entry_date:iso,done:!!st.feito,detail:st.detalhe||null,source:'manual'};
+  }).filter(Boolean);
+  if(entries.length)await supabaseClient.from('daily_habit_entries').upsert(entries,{onConflict:'user_id,habit_id,entry_date'});
+}
+
+async function syncSessao(s){
+  if(!authUser||!supabaseClient)return;
+  const uid=authUser.id;
+  const{data:sessData,error:sessErr}=await supabaseClient.from('workout_sessions').upsert({
+    user_id:uid,local_id:s.id,name:s.nome,session_date:s.data,
+    started_at:new Date(s.inicio).toISOString(),ended_at:new Date(s.fim).toISOString(),
+    duration_ms:s.fim-s.inicio,prs:s.prs||[],source:'manual'
+  },{onConflict:'user_id,local_id'}).select('id').single();
+  if(sessErr)return;
+  const{data:existSets}=await supabaseClient.from('workout_sets').select('id').eq('session_id',sessData.id).limit(1);
+  if(existSets&&existSets.length)return;
+  const sets=[];
+  s.exercicios.forEach(ex=>ex.sets.forEach((set,si)=>sets.push({
+    user_id:uid,session_id:sessData.id,exercise_name:ex.nome,set_index:si,
+    weight:set.peso||null,reps:set.reps||null,done:!!set.feito,is_pr:!!set.pr
+  })));
+  if(sets.length)await supabaseClient.from('workout_sets').insert(sets);
 }
 
 /* ================= SYNC BADGE ================= */
