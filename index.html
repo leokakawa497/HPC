@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v15"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v16"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -511,6 +511,7 @@ nav button.active{color:var(--teal)}
     <button class="btn btn-ghost" onclick="enviarMagicLink()">Enviar link mágico</button>
     <button class="btn btn-ghost" id="authLogoutBtn" style="display:none;color:var(--rose)" onclick="sairAuth()">Sair</button>
     <button class="btn btn-ghost" id="authMigrateBtn" style="display:none;color:var(--teal)" onclick="fecharModal('modalAuth');abrirMigracao()">Migrar dados para a nuvem →</button>
+    <button class="btn btn-ghost" id="authLoadCloudBtn" style="display:none;color:var(--violet)" onclick="fecharModal('modalAuth');abrirModalCarregarNuvem()">Carregar dados da nuvem ↓</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalAuth')">Fechar</button>
   </div>
 </div>
@@ -558,6 +559,22 @@ nav button.active{color:var(--teal)}
     </div>
     <button class="btn btn-primary" onclick="fecharOnboarding()">Vamos lá 💪</button>
     <button class="btn btn-ghost" style="margin-top:6px;font-size:12px" onclick="fecharOnboarding()">Fechar</button>
+  </div>
+</div>
+
+<!-- modal carregar da nuvem -->
+<div class="modal-bg" id="modalCarregarNuvem">
+  <div class="modal">
+    <h3>Carregar dados da nuvem ↓</h3>
+    <div class="auth-status" id="cloudLoadStatus">Consultando Supabase…</div>
+    <div id="cloudLoadPreview" style="display:none">
+      <div class="migrate-preview" id="cloudLoadCounts"></div>
+      <div class="migrate-warning" style="margin-top:10px">Um backup do localStorage atual será criado antes de qualquer alteração.</div>
+    </div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-primary" id="cloudLoadConfirmBtn" style="display:none;background:var(--violet);border-color:var(--violet)" onclick="confirmarCarregarNuvem()">Confirmar e carregar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalCarregarNuvem')">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -1582,6 +1599,8 @@ function renderAuth(){
     emailEl.style.display='block';
     logout.style.display='block';
     if(migrateBtn)migrateBtn.style.display='block';
+    const loadBtn=document.getElementById('authLoadCloudBtn');
+    if(loadBtn)loadBtn.style.display='block';
     setAuthStatus('Login ativo. Seus dados continuam no localStorage até a etapa de migração/sync.');
   }else{
     btn.textContent='Entrar';
@@ -1589,6 +1608,8 @@ function renderAuth(){
     emailEl.style.display='none';
     logout.style.display='none';
     if(migrateBtn)migrateBtn.style.display='none';
+    const loadBtn2=document.getElementById('authLoadCloudBtn');
+    if(loadBtn2)loadBtn2.style.display='none';
     setAuthStatus(supabaseClient?'O app continua funcionando sem login. Entrar prepara sua conta para sync futuro.':'Supabase ainda não carregou. O app local continua funcionando.');
   }
 }
@@ -1962,6 +1983,170 @@ function initOnboarding(){
   }catch(_){}
 }
 
+/* ================= CARREGAR DA NUVEM ================= */
+let _cloudPreviewData = null;
+
+async function abrirModalCarregarNuvem(){
+  if(!authUser||!supabaseClient){mostrarToast('Faça login primeiro');return;}
+  _cloudPreviewData=null;
+  document.getElementById('cloudLoadStatus').textContent='Consultando Supabase…';
+  document.getElementById('cloudLoadPreview').style.display='none';
+  document.getElementById('cloudLoadConfirmBtn').style.display='none';
+  document.getElementById('modalCarregarNuvem').classList.add('open');
+
+  const uid=authUser.id;
+  try{
+    const[hRes,dlRes,dheRes,wpRes,wsRes,wsetRes]=await Promise.all([
+      supabaseClient.from('habits').select('id,local_id,name,kind,icon').eq('user_id',uid),
+      supabaseClient.from('daily_logs').select('log_date,slept_at,woke_at,sleep_minutes,note,score').eq('user_id',uid),
+      supabaseClient.from('daily_habit_entries').select('habit_id,entry_date,done,detail').eq('user_id',uid),
+      supabaseClient.from('workout_programs').select('id,local_id,name').eq('user_id',uid),
+      supabaseClient.from('workout_sessions').select('id,local_id,name,session_date,started_at,ended_at,duration_ms,prs,program_id').eq('user_id',uid),
+      supabaseClient.from('workout_sets').select('session_id,exercise_name,set_index,weight,reps,done,is_pr').eq('user_id',uid),
+    ]);
+    const errors=[hRes,dlRes,dheRes,wpRes,wsRes,wsetRes].map(r=>r.error?.message).filter(Boolean);
+    if(errors.length){
+      document.getElementById('cloudLoadStatus').textContent='Erro ao consultar: '+errors[0];
+      return;
+    }
+    _cloudPreviewData={
+      habits:hRes.data||[],
+      daily_logs:dlRes.data||[],
+      daily_habit_entries:dheRes.data||[],
+      workout_programs:wpRes.data||[],
+      workout_sessions:wsRes.data||[],
+      workout_sets:wsetRes.data||[]
+    };
+    const c=_cloudPreviewData;
+    if(!c.habits.length&&!c.daily_logs.length&&!c.workout_sessions.length){
+      document.getElementById('cloudLoadStatus').textContent='Nenhum dado encontrado na nuvem para este usuário. Execute a migração primeiro.';
+      return;
+    }
+    document.getElementById('cloudLoadStatus').textContent='Dados encontrados na nuvem:';
+    document.getElementById('cloudLoadCounts').innerHTML=[
+      ['Hábitos',c.habits.length],
+      ['Dias com registro',c.daily_logs.length],
+      ['Entradas de hábito',c.daily_habit_entries.length],
+      ['Treinos',c.workout_programs.length],
+      ['Sessões',c.workout_sessions.length],
+      ['Sets',c.workout_sets.length],
+    ].map(([k,v])=>`<div class="migrate-row"><span class="mk">${k}</span><span class="mv">${v}</span></div>`).join('');
+    document.getElementById('cloudLoadPreview').style.display='block';
+    document.getElementById('cloudLoadConfirmBtn').style.display='block';
+  }catch(e){
+    document.getElementById('cloudLoadStatus').textContent='Erro inesperado: '+e.message;
+  }
+}
+
+async function confirmarCarregarNuvem(){
+  if(!_cloudPreviewData)return;
+  const btn=document.getElementById('cloudLoadConfirmBtn');
+  btn.disabled=true;
+  btn.textContent='Carregando…';
+  try{
+    // 1. Backup do localStorage atual
+    const ts=Date.now();
+    const backupKey='hpc_v3_backup_before_cloud_load_'+ts;
+    try{localStorage.setItem(backupKey,localStorage.getItem(DB_KEY)||'{}');}catch(_){}
+
+    const c=_cloudPreviewData;
+
+    // 2. Reconstruir hábitos (local_id → id local)
+    const habitos=c.habits.map(h=>({
+      id:h.local_id||h.id,
+      nome:h.name,
+      tipo:h.kind||'check',
+      ico:h.icon||'✅'
+    }));
+    // mapa habit supabase id → local_id
+    const habitSupaToLocal={};
+    c.habits.forEach(h=>{habitSupaToLocal[h.id]=h.local_id||h.id;});
+
+    // 3. Reconstruir dias (daily_logs + daily_habit_entries)
+    const dias={};
+    c.daily_logs.forEach(dl=>{
+      const d=dl.log_date;
+      if(!dias[d])dias[d]={sono:{},habitos:{},nota:''};
+      if(dl.slept_at)dias[d].sono.dormiu=dl.slept_at;
+      if(dl.woke_at)dias[d].sono.acordou=dl.woke_at;
+      if(dl.note)dias[d].nota=dl.note;
+    });
+    c.daily_habit_entries.forEach(dhe=>{
+      const d=dhe.entry_date;
+      if(!dias[d])dias[d]={sono:{},habitos:{},nota:''};
+      const localHabId=habitSupaToLocal[dhe.habit_id];
+      if(localHabId)dias[d].habitos[localHabId]={feito:!!dhe.done,detalhe:dhe.detail||''};
+    });
+
+    // 4. Reconstruir treinos (workout_programs)
+    const programSupaToLocal={};
+    c.workout_programs.forEach(p=>{programSupaToLocal[p.id]=p.local_id||p.id;});
+    // Não temos workout_exercises no fetch — preservamos treinos locais se existirem
+    const treinosLocais=db.treinos||[];
+    const treinos=treinosLocais.length?treinosLocais:c.workout_programs.map(p=>({
+      id:p.local_id||p.id,nome:p.name,exercicios:[]
+    }));
+
+    // 5. Reconstruir sessões + sets
+    const setsBySession={};
+    c.workout_sets.forEach(s=>{
+      if(!setsBySession[s.session_id])setsBySession[s.session_id]=[];
+      setsBySession[s.session_id].push(s);
+    });
+    const sessoes=c.workout_sessions.map(ws=>{
+      const rawSets=setsBySession[ws.id]||[];
+      // Agrupar sets por exercise_name
+      const exMap={};
+      rawSets.sort((a,b)=>a.set_index-b.set_index).forEach(s=>{
+        if(!exMap[s.exercise_name])exMap[s.exercise_name]=[];
+        exMap[s.exercise_name].push({peso:s.weight||'',reps:s.reps||'',feito:!!s.done,pr:!!s.is_pr});
+      });
+      const exercicios=Object.entries(exMap).map(([nome,sets])=>({nome,sets}));
+      const localProgId=programSupaToLocal[ws.program_id];
+      return{
+        id:ws.local_id||ws.id,
+        nome:ws.name,
+        data:ws.session_date,
+        inicio:ws.started_at?new Date(ws.started_at).getTime():null,
+        fim:ws.ended_at?new Date(ws.ended_at).getTime():null,
+        treinoId:localProgId||null,
+        prs:ws.prs||[],
+        exercicios
+      };
+    });
+
+    // 6. Calcular XP preservado (não recalculamos do zero para não perder)
+    const xpAtual=db.xp||0;
+
+    // 7. Montar hpc_v3 novo
+    const novoDb={
+      habitos,dias,treinos,sessoes,
+      feed:db.feed||[],
+      badges:db.badges||[],
+      xp:xpAtual,
+      demo:false,
+      meta:{cloudLoadedAt:new Date().toISOString(),userId:authUser.id}
+    };
+
+    // 8. Salvar
+    localStorage.setItem(DB_KEY,JSON.stringify(novoDb));
+    // Recarregar db global
+    try{
+      const loaded=JSON.parse(localStorage.getItem(DB_KEY));
+      Object.assign(db,loaded);
+    }catch(_){}
+
+    fecharModal('modalCarregarNuvem');
+    mostrarToast('Dados carregados! Backup salvo em '+backupKey.slice(-13));
+    renderHoje();
+    renderSyncBadge();
+  }catch(e){
+    btn.disabled=false;
+    btn.textContent='Confirmar e carregar';
+    document.getElementById('cloudLoadStatus').textContent='Erro ao carregar: '+e.message;
+  }
+}
+
 /* ================= FEED SOCIAL ================= */
 let _meusGrupos=[];
 let _postComentarioAtual=null;
@@ -2235,7 +2420,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v15',
+  cacheVersion:'hpc-cache-v16',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
