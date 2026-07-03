@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v11"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v12"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -776,7 +776,7 @@ function salvarSono(){
   dia.sono.dormiu=document.getElementById('inpDormiu').value;
   dia.sono.acordou=document.getElementById('inpAcordou').value;
   if(!tinha&&dia.sono.dormiu&&dia.sono.acordou)ganharXP(XP_POR.sono);
-  salvar();renderHoje();syncDia(diaAtual);
+  salvar();renderHoje();marcarPendente(diaAtual);
 }
 function salvarNota(){getDia(diaAtual).nota=document.getElementById('inpNota').value;salvar();}
 
@@ -928,7 +928,7 @@ function toggleHabito(h){
     verificarBadges();
   }else{st.detalhe='';detalheAberto=null;}
   dia.habitos[h.id]=st;
-  salvar();renderHoje();syncDia(diaAtual);
+  salvar();renderHoje();marcarPendente(diaAtual);
 }
 
 /* ================= TREINOS ================= */
@@ -1108,7 +1108,6 @@ function finalizarSessao(){
   const s=sessaoAtiva;
   sessaoAtiva=null;
   salvar();
-  syncSessao(s);
   verificarBadges();
   renderTreinos();renderHoje();
   if(!s.prs.length)celebrar('💪','Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
@@ -1544,7 +1543,7 @@ function initSupabase(){
   window.hpcSupabase=supabaseClient;
   supabaseClient.auth.onAuthStateChange((_event,session)=>{
     authUser=session&&session.user?session.user:null;
-    garantirProfile().finally(()=>{renderAuth();if(authUser)carregarHabitIdMap();});
+    garantirProfile().finally(()=>{renderAuth();if(authUser){carregarHabitIdMap().then(processarPendencias);}});
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
@@ -1692,8 +1691,28 @@ async function confirmarMigracao(){
   }
 }
 
-/* ================= AUTO-SYNC ================= */
+/* ================= AUTO-SYNC (sono + hábitos, incremental) =================
+   Escopo desta etapa: apenas daily_logs e daily_habit_entries.
+   - localStorage é sempre a fonte primária; sync nunca apaga nada local.
+   - Payload omite campos vazios: o upsert só atualiza colunas enviadas,
+     então valor remoto preenchido nunca é sobrescrito por vazio local.
+   - Datas alteradas entram na fila hpc_sync_pending; ao voltar online
+     (evento 'online' ou novo login) as pendências são reprocessadas. */
 let _habitIdMap={};
+let _syncEmAndamento=false;
+
+function pendentes(){try{return JSON.parse(localStorage.getItem('hpc_sync_pending'))||[];}catch(_){return[];}}
+function setPendentes(l){try{localStorage.setItem('hpc_sync_pending',JSON.stringify([...new Set(l)]));}catch(_){}}
+
+function setSyncState(estado){
+  const dot=document.getElementById('syncDot');if(!dot)return;
+  if(!authUser){dot.style.display='none';return;}
+  const cores={local:'var(--muted)',sync:'var(--amber)',ok:'var(--green)',erro:'var(--rose)'};
+  const titulos={local:'Salvo localmente — sync pendente',sync:'Sincronizando…',ok:'Sincronizado',erro:'Erro de sync — nova tentativa ao salvar ou voltar online'};
+  dot.style.display='inline-block';
+  dot.style.background=cores[estado]||cores.local;
+  dot.title=titulos[estado]||titulos.local;
+}
 
 async function carregarHabitIdMap(){
   if(!authUser||!supabaseClient)return;
@@ -1701,61 +1720,65 @@ async function carregarHabitIdMap(){
   if(data)_habitIdMap=Object.fromEntries(data.map(h=>[h.local_id,h.id]));
 }
 
-async function syncDia(iso){
-  if(!authUser||!supabaseClient){console.log('[sync] pulado: sem login');return;}
-  const dia=db.dias[iso];if(!dia)return;
-  const uid=authUser.id;
+async function syncDailyLog(iso){
+  const dia=db.dias[iso];if(!dia)return true;
+  const payload={user_id:authUser.id,log_date:iso,score:scoreDoDia(iso),source:'manual'};
+  if(dia.sono.dormiu)payload.slept_at=dia.sono.dormiu;
+  if(dia.sono.acordou)payload.woke_at=dia.sono.acordou;
   const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
-  const{data:logData,error:logErr}=await supabaseClient.from('daily_logs').upsert({
-    user_id:uid,log_date:iso,
-    slept_at:dia.sono.dormiu||null,woke_at:dia.sono.acordou||null,
-    sleep_minutes:mins,note:dia.nota||null,score:scoreDoDia(iso),source:'manual'
-  },{onConflict:'user_id,log_date'}).select('id').single();
-  if(logErr){console.warn('[sync] daily_logs falhou:',logErr.message);return;}
-  console.log('[sync] daily_logs ok:',iso);
-  const entries=db.habitos.map(h=>{
-    const sid=_habitIdMap[h.id];if(!sid)return null;
-    const st=dia.habitos[h.id]||{feito:false,detalhe:''};
-    return{user_id:uid,daily_log_id:logData.id,habit_id:sid,entry_date:iso,done:!!st.feito,detail:st.detalhe||null,source:'manual'};
-  }).filter(Boolean);
-  if(!entries.length)console.warn('[sync] nenhuma entrada de hábito (habitIdMap vazio? '+Object.keys(_habitIdMap).length+' ids)');
-  if(entries.length){
-    const{error:eE}=await supabaseClient.from('daily_habit_entries').upsert(entries,{onConflict:'user_id,habit_id,entry_date'});
-    if(eE)console.warn('[sync] entries falhou:',eE.message);else console.log('[sync] entries ok:',entries.length);
-  }
+  if(mins!==null)payload.sleep_minutes=mins;
+  if(dia.nota)payload.note=dia.nota;
+  const{error}=await supabaseClient.from('daily_logs').upsert(payload,{onConflict:'user_id,log_date'});
+  if(error){console.warn('[sync] daily_logs:',error.message);return false;}
+  return true;
 }
 
-async function syncSessao(s){
-  if(!authUser||!supabaseClient)return;
-  const uid=authUser.id;
-  const{data:sessData,error:sessErr}=await supabaseClient.from('workout_sessions').upsert({
-    user_id:uid,local_id:s.id,name:s.nome,session_date:s.data,
-    started_at:new Date(s.inicio).toISOString(),ended_at:new Date(s.fim).toISOString(),
-    duration_ms:s.fim-s.inicio,prs:s.prs||[],source:'manual'
-  },{onConflict:'user_id,local_id'}).select('id').single();
-  if(sessErr){console.warn('[sync] sessão falhou:',sessErr.message);return;}
-  console.log('[sync] sessão ok:',s.nome);
-  const{data:existSets}=await supabaseClient.from('workout_sets').select('id').eq('session_id',sessData.id).limit(1);
-  if(existSets&&existSets.length)return;
-  const sets=[];
-  s.exercicios.forEach(ex=>ex.sets.forEach((set,si)=>sets.push({
-    user_id:uid,session_id:sessData.id,exercise_name:ex.nome,set_index:si,
-    weight:set.peso||null,reps:set.reps||null,done:!!set.feito,is_pr:!!set.pr
-  })));
-  if(sets.length)await supabaseClient.from('workout_sets').insert(sets);
+async function syncHabitEntries(iso){
+  const dia=db.dias[iso];if(!dia)return true;
+  if(!Object.keys(_habitIdMap).length)await carregarHabitIdMap();
+  const entries=db.habitos.map(h=>{
+    const sid=_habitIdMap[h.id];if(!sid)return null;
+    const st=dia.habitos[h.id];if(!st)return null; // só hábitos tocados localmente — não zera remoto
+    return{user_id:authUser.id,habit_id:sid,entry_date:iso,done:!!st.feito,detail:st.detalhe||null,source:'manual'};
+  }).filter(Boolean);
+  if(!entries.length)return true;
+  const{error}=await supabaseClient.from('daily_habit_entries').upsert(entries,{onConflict:'user_id,habit_id,entry_date'});
+  if(error){console.warn('[sync] entries:',error.message);return false;}
+  return true;
 }
+
+function marcarPendente(iso){
+  if(!authUser||!supabaseClient)return;
+  setPendentes([...pendentes(),iso]);
+  processarPendencias();
+}
+
+async function processarPendencias(){
+  if(_syncEmAndamento||!authUser||!supabaseClient)return;
+  const fila=pendentes();
+  if(!fila.length)return;
+  if(!navigator.onLine){setSyncState('local');return;}
+  _syncEmAndamento=true;
+  setSyncState('sync');
+  let houveErro=false;
+  for(const iso of fila){
+    const okLog=await syncDailyLog(iso);
+    const okEnt=await syncHabitEntries(iso);
+    if(okLog&&okEnt)setPendentes(pendentes().filter(d=>d!==iso));
+    else{houveErro=true;break;}
+  }
+  _syncEmAndamento=false;
+  if(houveErro){setSyncState('erro');return;}
+  try{localStorage.setItem('hpc_last_sync',JSON.stringify({at:new Date().toISOString(),userId:authUser.id}));}catch(_){}
+  setSyncState('ok');
+}
+window.addEventListener('online',processarPendencias);
 
 /* ================= SYNC BADGE ================= */
 function renderSyncBadge(){
-  const dot=document.getElementById('syncDot');if(!dot)return;
-  try{
-    const raw=localStorage.getItem('hpc_last_sync');
-    dot.style.display=raw&&authUser?'inline-block':'none';
-    if(raw&&authUser){
-      const {at}=JSON.parse(raw);
-      dot.title='Sincronizado em '+new Date(at).toLocaleString('pt-BR');
-    }
-  }catch(_){dot.style.display='none';}
+  if(!authUser){const dot=document.getElementById('syncDot');if(dot)dot.style.display='none';return;}
+  const jaSincronizou=!!localStorage.getItem('hpc_last_sync');
+  setSyncState(pendentes().length?'local':(jaSincronizou?'ok':'local'));
 }
 
 /* ================= ONBOARDING ================= */
@@ -1772,11 +1795,11 @@ function initOnboarding(){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v11',
+  cacheVersion:'hpc-cache-v12',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
-  syncNow:()=>syncDia(hojeISO()),
+  syncNow:()=>marcarPendente(hojeISO()),
   counts:()=>({
     dias:Object.keys(db.dias||{}).length,
     diasComSono:Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length,
