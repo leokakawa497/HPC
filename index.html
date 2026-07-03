@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v13"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v14"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1741,17 +1741,20 @@ async function syncWorkoutSession(localId){
   if(s.fim&&s.inicio)payload.duration_ms=s.fim-s.inicio;
   const progId=_programaIdMap[s.treinoId];
   if(progId)payload.program_id=progId;
-  const{data:sessData,error:sessErr}=await supabaseClient
-    .from('workout_sessions').upsert(payload,{onConflict:'user_id,local_id'})
-    .select('id').single();
+  const{error:sessErr}=await supabaseClient
+    .from('workout_sessions').upsert(payload,{onConflict:'user_id,local_id'});
   if(sessErr){console.warn('[sync] sessão:',sessErr.message);return false;}
+  const{data:sessRow,error:sessSelErr}=await supabaseClient
+    .from('workout_sessions').select('id').eq('user_id',uid).eq('local_id',s.id).single();
+  if(sessSelErr||!sessRow){console.warn('[sync] sessão id:',sessSelErr?.message);return false;}
+  const sessId=sessRow.id;
   // sets: inserir apenas se ainda não existem para esta sessão
   const{data:existSets}=await supabaseClient
-    .from('workout_sets').select('id').eq('session_id',sessData.id).limit(1);
+    .from('workout_sets').select('id').eq('session_id',sessId).limit(1);
   if(existSets&&existSets.length)return true;
   const sets=[];
   (s.exercicios||[]).forEach(ex=>(ex.sets||[]).forEach((set,si)=>{
-    const row={user_id:uid,session_id:sessData.id,exercise_name:ex.nome,set_index:si,done:!!set.feito,is_pr:!!set.pr};
+    const row={user_id:uid,session_id:sessId,exercise_name:ex.nome,set_index:si,done:!!set.feito,is_pr:!!set.pr};
     if(set.peso)row.weight=set.peso;
     if(set.reps)row.reps=set.reps;
     sets.push(row);
@@ -1850,7 +1853,7 @@ function initOnboarding(){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v13',
+  cacheVersion:'hpc-cache-v14',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
