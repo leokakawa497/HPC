@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v19"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v20"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -336,16 +336,137 @@ nav button.active{color:var(--teal)}
 .comment-form button{background:var(--teal);border:none;color:#fff;font-weight:800;border-radius:12px;padding:0 14px;font-size:16px;cursor:pointer;flex-shrink:0}
 .feed-login-note{text-align:center;color:var(--muted);font-size:13px;padding:24px 0;line-height:1.5}
 .feed-login-note b{color:var(--teal)}
+
+/* ===== REDESIGN v2 ===== */
+/* Header redesign */
+header{padding:12px 16px 10px}
+.header-right{display:flex;gap:8px;align-items:center}
+.bell-btn{width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;box-shadow:var(--shadow);flex-shrink:0;position:relative}
+.bell-btn .notif-dot{position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--rose);border:2px solid var(--bg);display:none}
+
+/* Greeting */
+.greeting{padding:12px 0 6px}
+.greeting h1{font-size:24px;font-weight:800;letter-spacing:-.4px;line-height:1.1}
+.greeting .gsub{font-size:14px;color:var(--muted);margin-top:3px}
+
+/* Score card */
+.score-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;margin-top:10px;box-shadow:var(--shadow)}
+.score-card .sc-ico{width:44px;height:44px;background:var(--card2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.score-card .sc-main{flex-shrink:0}
+.score-card .sc-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.score-card .sc-num{font-size:34px;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:1px}
+.score-card .sc-num sub{font-size:14px;font-weight:500;color:var(--muted);vertical-align:baseline}
+.score-card .sc-info{flex:1;min-width:0}
+.score-card .sc-status{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;margin-bottom:3px}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;display:inline-block}
+.sdot.amber{background:var(--amber)}.sdot.rose{background:var(--rose)}.sdot.muted{background:var(--border)}
+.score-card .sc-desc{font-size:11.5px;color:var(--muted);line-height:1.4}
+.score-card .sc-chev{color:var(--border);font-size:20px;flex-shrink:0}
+
+/* 2-col quick grid */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px 13px;box-shadow:var(--shadow);cursor:pointer}
+.qcard-hdr{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.qcard-big{font-size:27px;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:1px}
+.qcard-big .qu{font-size:13px;font-weight:500;color:var(--muted)}
+.qcard-st{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--text);margin-top:5px}
+.qdot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;display:inline-block}
+.qdot.amber{background:var(--amber)}.qdot.rose{background:var(--rose)}.qdot.muted{background:var(--border)}
+.qcard-bars{display:flex;gap:3px;align-items:flex-end;height:26px;margin-top:8px}
+.qcard-bars i{flex:1;border-radius:3px;background:var(--teal);display:block;min-height:3px}
+.qcard-bars i.y{background:var(--amber)}.qcard-bars i.r{background:var(--rose)}.qcard-bars i.e{background:var(--card2)}
+.qcard-time{font-size:9.5px;color:var(--muted);margin-top:5px}
+.hdots{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+.hdot{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted)}
+.hdot.done{background:var(--text);border-color:var(--text);color:#fff}
+.qcard-link{font-size:11px;color:var(--teal);font-weight:700;margin-top:8px}
+
+/* Quick stats row */
+.qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px 8px;margin-top:10px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:var(--shadow)}
+.qst{display:flex;flex-direction:column;align-items:center;gap:3px;border-right:1px solid var(--border);padding:2px 4px}
+.qst:last-child{border-right:none}
+.qst-ico{font-size:18px}
+.qst-val{font-size:15px;font-weight:800;line-height:1.1}
+.qst-lbl{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-align:center}
+
+/* Sync bar */
+.sync-bar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:9px;margin-top:12px;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
+.sync-bar .sb-ico{font-size:14px;color:var(--muted)}
+.sync-bar .sb-lbl{font-weight:700}
+.sync-bar .sb-ok{display:flex;align-items:center;gap:5px;color:var(--teal);font-size:11.5px;font-weight:600}
+.sync-bar .sb-time{margin-left:auto;color:var(--muted);font-size:11px}
+
+/* Page titles (for Grupo/Stats) */
+.page-title{padding:10px 0 2px}
+.page-title h2{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.page-title .psub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* Sub-tabs (Feed/Grupos, Leaderboard/Groups) */
+.sub-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px;margin-top:8px}
+.sub-tab{background:none;border:none;font-size:14px;font-weight:700;color:var(--muted);padding:10px 16px 9px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.sub-tab.active{color:var(--text);border-bottom-color:var(--text)}
+
+/* Post composer */
+.post-composer{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin-bottom:14px;box-shadow:var(--shadow)}
+.composer-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.composer-ava{width:36px;height:36px;border-radius:50%;background:var(--card2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;color:var(--muted)}
+.composer-input{flex:1;font-size:13.5px;color:var(--muted);cursor:pointer}
+.composer-btns{display:flex;gap:8px;border-top:1px solid var(--border);padding-top:11px}
+.composer-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;cursor:pointer;padding:6px}
+
+/* Stats: monthly insight cards 2x2 */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ig-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.ig-card .ig-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ig-card .ig-val{font-size:30px;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:2px}
+.ig-card .ig-val .ig-unit{font-size:16px;font-weight:700;color:var(--muted)}
+.ig-card .ig-st{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;margin-top:5px}
+.ig-card .ig-sub{font-size:10.5px;color:var(--muted);margin-top:3px}
+
+/* AI Insights card */
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:0;margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden}
+.ai-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px 10px;border-bottom:1px solid var(--border)}
+.ai-card-hdr span{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.ai-card-hdr .ai-badge{font-size:9.5px;font-weight:700;background:var(--violet-dim);color:var(--violet);border:1px solid var(--violet);border-radius:99px;padding:2px 8px;letter-spacing:0;text-transform:none}
+.ai-row{display:flex;align-items:flex-start;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border)}
+.ai-row:last-child{border-bottom:none}
+.ai-row .ai-ico{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-row .ai-text b{font-size:13.5px;font-weight:700;display:block;line-height:1.2}
+.ai-row .ai-text span{font-size:12px;color:var(--muted);margin-top:2px;display:block;line-height:1.4}
+
+/* Profile tab */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px 16px;display:flex;align-items:center;gap:14px;margin-top:10px;box-shadow:var(--shadow)}
+.profile-ava{width:64px;height:64px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;flex-shrink:0}
+.profile-info{flex:1;min-width:0}
+.profile-info .pname{font-size:20px;font-weight:800}
+.profile-info .psince{font-size:12px;color:var(--muted);margin-top:2px}
+.profile-badge{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;margin-top:8px}
+.profile-edit{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;flex-shrink:0;align-self:flex-start}
+.settings-section{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:12px;box-shadow:var(--shadow)}
+.settings-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px}
+.settings-row:last-child{border-bottom:none}
+.settings-row .sr-ico{font-size:17px;width:22px;text-align:center;color:var(--muted)}
+.settings-row .sr-lbl{flex:1;font-weight:600}
+.settings-row .sr-val{font-size:12px;color:var(--muted)}
+.settings-row .sr-chev{color:var(--border);font-size:16px}
+.section-cap{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:20px 0 8px}
+
+/* Nav icons (text-based outline style) */
+nav button .ico{font-size:20px;line-height:1}
+nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo"><img src="./assets/hpc-logo.png" alt="High Performance Club"></div>
-  <div style="display:flex;gap:10px;align-items:center">
-    <button class="auth-pill" id="authBtn" onclick="abrirAuth()">Entrar<span class="sync-dot" id="syncDot" style="display:none"></span></button>
+  <div class="header-right">
     <div class="streak-pill" id="streakPill">🔥 0 dias</div>
-    <div class="avatar" onclick="go('stats',document.querySelectorAll('nav button')[3])">L<span class="lvl" id="lvlTag">LV 1</span></div>
+    <button class="bell-btn" onclick="abrirAuth()" title="Conta">🔔<span class="notif-dot" id="notifDot"></span></button>
+  </div>
+  <div style="display:none">
+    <button id="authBtn" class="auth-pill" onclick="abrirAuth()">Entrar<span class="sync-dot" id="syncDot" style="display:none"></span></button>
+    <div class="avatar" onclick="abrirAuth()">L<span class="lvl" id="lvlTag">LV 1</span></div>
   </div>
 </header>
 
@@ -356,31 +477,70 @@ nav button.active{color:var(--teal)}
 <!-- ============ HOJE ============ -->
 <div class="tab active" id="t-hoje">
 <main>
+  <div class="greeting">
+    <h1 id="greetingText">Bom dia 👋</h1>
+    <p class="gsub" id="greetingSub">Vamos construir algo ótimo hoje.</p>
+  </div>
+
   <div class="datenav">
     <button onclick="mudarDia(-1)">‹</button>
     <div class="datelabel"><div class="d1" id="dl1"></div><div class="d2" id="dl2"></div></div>
     <button onclick="mudarDia(1)" id="btnNext">›</button>
   </div>
 
-  <div class="hero">
-    <div class="ring">
-      <svg width="110" height="110">
-        <circle cx="55" cy="55" r="47" fill="none" stroke="#E5E5EA" stroke-width="9"/>
-        <circle class="prog" id="ringProg" cx="55" cy="55" r="47" fill="none" stroke="url(#g1)" stroke-width="9" stroke-linecap="round" stroke-dasharray="295" stroke-dashoffset="295"/>
-        <defs><linearGradient id="g1"><stop offset="0%" stop-color="#34C759"/><stop offset="100%" stop-color="#5856D6"/></linearGradient></defs>
-      </svg>
-      <div class="rv"><b id="scoreVal">0</b><span>HPC Score</span></div>
+  <!-- Score card -->
+  <div class="score-card">
+    <div class="sc-ico">📈</div>
+    <div class="sc-main">
+      <div class="sc-lbl">Daily Score</div>
+      <div class="sc-num"><span id="scoreVal">0</span><sub>/100</sub></div>
     </div>
-    <div class="hero-stats">
-      <div class="hstat s1"><div class="hico">😴</div><div><div class="hv" id="hsSleep">—</div><div class="hl">Sono do dia</div></div></div>
-      <div class="hstat s2"><div class="hico">⚡</div><div><div class="hv" id="hsXP">0 XP</div><div class="hl" id="hsXPsub">Nível 1</div></div></div>
-      <div class="hstat s3"><div class="hico">🎯</div><div><div class="hv" id="hsAtiv">0 de 0</div><div class="hl">Atividades hoje</div></div></div>
+    <div class="sc-info">
+      <div class="sc-status"><span class="sdot" id="scoreDot"></span><span id="scoreLabel">—</span></div>
+      <div class="sc-desc" id="scoreDesc">—</div>
     </div>
+    <span class="sc-chev">›</span>
+  </div>
+
+  <!-- Hidden elements kept for JS compatibility -->
+  <div style="display:none" aria-hidden="true">
+    <div class="ring"><svg width="110" height="110">
+      <circle cx="55" cy="55" r="47" fill="none" stroke="#E5E5EA" stroke-width="9"/>
+      <circle class="prog" id="ringProg" cx="55" cy="55" r="47" fill="none" stroke="url(#g1)" stroke-width="9" stroke-linecap="round" stroke-dasharray="295" stroke-dashoffset="295"/>
+      <defs><linearGradient id="g1"><stop offset="0%" stop-color="#34C759"/><stop offset="100%" stop-color="#5856D6"/></linearGradient></defs>
+    </svg></div>
+    <span id="hsSleep"></span><span id="hsXP"></span><span id="hsXPsub"></span><span id="hsAtiv"></span>
   </div>
 
   <div id="prBannerSlot"></div>
 
-  <div class="section-title">😴 Sono</div>
+  <!-- 2-col quick grid -->
+  <div class="quick-grid">
+    <div class="qcard" onclick="document.getElementById('inpDormiu').focus()">
+      <div class="qcard-hdr">🌙 Sono</div>
+      <div class="qcard-big" id="qSleepBig">—</div>
+      <div class="qcard-st"><span class="qdot muted" id="qSleepDot"></span><span id="qSleepLabel">—</span></div>
+      <div class="qcard-bars" id="qSleepBars"></div>
+      <div class="qcard-time" id="qSleepTime">—</div>
+    </div>
+    <div class="qcard" onclick="document.getElementById('habitChips').scrollIntoView({behavior:'smooth'})">
+      <div class="qcard-hdr">✓ Hábitos</div>
+      <div class="qcard-big" id="qHabBig">—</div>
+      <div class="qcard-st"><span class="qdot muted" id="qHabDot"></span><span id="qHabLabel">—</span></div>
+      <div class="hdots" id="qHabDots"></div>
+      <div class="qcard-link">Ver hábitos ›</div>
+    </div>
+  </div>
+
+  <!-- Quick stats row -->
+  <div class="qstats-row">
+    <div class="qst"><span class="qst-ico">⚡</span><span class="qst-val" id="qsXP">0</span><span class="qst-lbl">XP Total</span></div>
+    <div class="qst"><span class="qst-ico">😴</span><span class="qst-val" id="qsSono">—</span><span class="qst-lbl">Sono hoje</span></div>
+    <div class="qst"><span class="qst-ico">🎯</span><span class="qst-val" id="qsAtiv">0</span><span class="qst-lbl">Atividades</span></div>
+    <div class="qst"><span class="qst-ico">🔥</span><span class="qst-val" id="qsStreak">0</span><span class="qst-lbl">Dias seguidos</span></div>
+  </div>
+
+  <div class="section-title" style="margin-top:18px">😴 Sono <span style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)">— registrar horários</span></div>
   <div class="sleep-card">
     <div class="sleep-top">
       <div class="sleep-badge" id="sleepBadge"><b id="sleepVal">—</b><span>Total</span></div>
@@ -398,6 +558,13 @@ nav button.active{color:var(--teal)}
 
   <div class="section-title">📝 Observações</div>
   <div class="note-card"><textarea id="inpNota" placeholder="Alguma nota sobre o dia..." onchange="salvarNota()"></textarea></div>
+
+  <div class="sync-bar" onclick="abrirAuth()">
+    <span class="sb-ico">⟳</span>
+    <span class="sb-lbl">HPC Sync</span>
+    <span class="sb-ok"><span class="qdot"></span><span id="syncBarText">Conectado</span></span>
+    <span class="sb-time">Agora ›</span>
+  </div>
 </main>
 </div>
 
@@ -413,17 +580,46 @@ nav button.active{color:var(--teal)}
 <!-- ============ GRUPO ============ -->
 <div class="tab" id="t-grupo">
 <main>
-  <div id="feedLoginNote" class="feed-login-note" style="display:none">
-    Faça login para criar grupos e ver o feed de atividades.<br><b>Entrar →</b> no topo da tela.
+  <div class="page-title">
+    <h2>Comunidade</h2>
+    <p class="psub">Conecte-se e compartilhe conquistas.</p>
   </div>
-  <div id="feedSocialContent">
-    <div class="section-title" style="margin-top:10px">👥 Meus grupos <button class="more" onclick="abrirModalCriarGrupo()">criar →</button></div>
-    <div id="gruposArea"><div class="feed-empty">Carregando…</div></div>
-    <div class="group-actions">
-      <button class="btn" style="background:var(--card);color:var(--teal);border:1px solid var(--teal)" onclick="abrirModalEntrarGrupo()">Entrar com código</button>
+
+  <div class="sub-tabs">
+    <button class="sub-tab active" id="subTabFeed" onclick="switchGrupoTab('feed')">Feed</button>
+    <button class="sub-tab" id="subTabGrupos" onclick="switchGrupoTab('grupos')">Grupos</button>
+  </div>
+
+  <!-- Feed panel -->
+  <div id="panelFeed">
+    <div id="feedLoginNote" class="feed-login-note" style="display:none">
+      Faça login para criar grupos e ver o feed de atividades.<br><b>Entrar →</b> no topo da tela.
     </div>
-    <div class="section-title">📣 Feed <button class="more" onclick="abrirModalNovoPost()">novo post →</button></div>
-    <div id="feedArea"><div class="feed-empty">Carregando…</div></div>
+    <div id="feedSocialContent">
+      <!-- Post composer -->
+      <div class="post-composer" id="postComposer" style="display:none">
+        <div class="composer-top">
+          <div class="composer-ava" id="composerAva">👤</div>
+          <div class="composer-input" onclick="abrirModalNovoPost()">Compartilhe seu treino ou conquista…</div>
+        </div>
+        <div class="composer-btns">
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'photo'})">📷 Foto</button>
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'activity'})">💪 Treino</button>
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'achievement'})">🏆 Conquista</button>
+        </div>
+      </div>
+      <div id="feedArea"><div class="feed-empty">Carregando…</div></div>
+    </div>
+  </div>
+
+  <!-- Grupos panel -->
+  <div id="panelGrupos" style="display:none">
+    <div class="group-actions">
+      <button class="btn btn-primary" style="margin:0;flex:1;padding:11px;font-size:13px" onclick="abrirModalCriarGrupo()">+ Criar grupo</button>
+      <button class="btn btn-ghost" style="margin:0;flex:1;padding:11px;font-size:13px;border:1px solid var(--border)" onclick="abrirModalEntrarGrupo()">Entrar com código</button>
+    </div>
+    <div class="section-title" style="margin-top:14px">👥 Meus grupos</div>
+    <div id="gruposArea"><div class="feed-empty">Carregando…</div></div>
   </div>
 </main>
 </div>
@@ -431,20 +627,33 @@ nav button.active{color:var(--teal)}
 <!-- ============ STATS ============ -->
 <div class="tab" id="t-stats">
 <main>
-  <div class="section-title" style="margin-top:10px">🧠 Insights do mês</div>
-  <div id="insightArea"></div>
-  <div class="stat-grid" id="statGrid"></div>
+  <div class="page-title" style="margin-top:6px">
+    <h2>Monthly Insights</h2>
+    <p class="psub">Acompanhe seu progresso.</p>
+  </div>
+
+  <div class="month-nav" style="margin-top:12px">
+    <button onclick="mudarMes(-1)">‹</button>
+    <div class="mlabel" id="mesLabel"></div>
+    <button onclick="mudarMes(1)">›</button>
+  </div>
+
+  <!-- 2x2 insight cards (populated by JS) -->
+  <div class="insight-grid" id="insightGrid"></div>
+
+  <!-- AI Insights card (populated by JS) -->
+  <div id="aiInsightCard"></div>
+
+  <!-- Hidden original insight area for JS compat -->
+  <div style="display:none" id="insightArea"></div>
+  <div class="stat-grid" id="statGrid" style="display:none"></div>
+
   <div id="chartsArea"></div>
 
   <div class="section-title">🎖️ Conquistas</div>
   <div class="badges" id="badgesArea"></div>
 
   <div class="section-title">📅 Tabela mensal</div>
-  <div class="month-nav">
-    <button onclick="mudarMes(-1)">‹</button>
-    <div class="mlabel" id="mesLabel"></div>
-    <button onclick="mudarMes(1)">›</button>
-  </div>
   <div class="hist-scroll" id="histTable"></div>
 
   <div class="section-title" id="cfgAnchor">⚙️ Minhas atividades</div>
@@ -459,13 +668,67 @@ nav button.active{color:var(--teal)}
 </main>
 </div>
 
+<!-- ============ PROFILE ============ -->
+<div class="tab" id="t-profile">
+<main>
+  <div class="profile-card" style="margin-top:10px">
+    <div class="profile-ava" id="profileAva">L</div>
+    <div class="profile-info">
+      <div class="pname" id="profileName">Leonardo</div>
+      <div class="psince" id="profileSince">HPC Athlete</div>
+      <div class="profile-badge">🏆 HPC Athlete</div>
+    </div>
+    <button class="profile-edit" onclick="abrirAuth()">Editar</button>
+  </div>
+
+  <div class="section-cap">Conquistas</div>
+  <div class="badges" id="badgesAreaProfile"></div>
+
+  <div class="section-cap" style="margin-top:20px">Conta &amp; Sync</div>
+  <div class="settings-section">
+    <div class="settings-row" onclick="abrirAuth()">
+      <span class="sr-ico">👤</span><span class="sr-lbl">Configurações da conta</span><span class="sr-chev">›</span>
+    </div>
+    <div class="settings-row" id="syncSettingsRow" onclick="abrirAuth()">
+      <span class="sr-ico">⟳</span><span class="sr-lbl">HPC Sync</span>
+      <span class="sr-val"><span class="qdot" style="margin-right:4px"></span>Conectado</span>
+      <span class="sr-chev">›</span>
+    </div>
+    <div class="settings-row" onclick="abrirAuth()">
+      <span class="sr-ico">☁️</span><span class="sr-lbl">Carregar dados da nuvem</span><span class="sr-chev">›</span>
+    </div>
+    <div class="settings-row" onclick="fecharModal&&abrirMigracao&&(fecharModal('modalAuth'),abrirMigracao())">
+      <span class="sr-ico">⬆️</span><span class="sr-lbl">Migrar para nuvem</span><span class="sr-chev">›</span>
+    </div>
+  </div>
+
+  <div class="section-cap">Dados</div>
+  <div class="settings-section">
+    <div class="settings-row" onclick="exportarDados()">
+      <span class="sr-ico">⬇️</span><span class="sr-lbl">Exportar backup</span><span class="sr-chev">›</span>
+    </div>
+    <div class="settings-row" onclick="importarDados()">
+      <span class="sr-ico">⬆️</span><span class="sr-lbl">Importar backup</span><span class="sr-chev">›</span>
+    </div>
+  </div>
+
+  <div class="section-cap">Suporte</div>
+  <div class="settings-section">
+    <div class="settings-row" onclick="toast('HPC v1.0 — High Performance Club')">
+      <span class="sr-ico">ℹ️</span><span class="sr-lbl">Sobre o HPC</span><span class="sr-val" id="appVersionLabel">v1.0</span><span class="sr-chev">›</span>
+    </div>
+  </div>
+</main>
+</div>
+
 <button class="fab" id="fabNovo" onclick="abrirNovoTreino()">+</button>
 
 <nav>
-  <button class="active" onclick="go('hoje',this)"><span class="ico">📅</span>Hoje</button>
-  <button onclick="go('treino',this)"><span class="ico">🏋️</span>Treino</button>
-  <button onclick="go('grupo',this)"><span class="ico">👥</span>Grupo</button>
+  <button class="active" onclick="go('hoje',this)"><span class="ico">🏠</span>Home</button>
+  <button onclick="go('treino',this)"><span class="ico">🏋️</span>Train</button>
+  <button onclick="go('grupo',this)"><span class="ico">👥</span>Group</button>
   <button onclick="go('stats',this)"><span class="ico">📊</span>Stats</button>
+  <button onclick="go('profile',this)"><span class="ico">👤</span>Profile</button>
 </nav>
 
 <!-- modal novo/editar treino -->
@@ -943,6 +1206,128 @@ function scoreDoDia(iso){
   return Math.min(100,s);
 }
 
+/* ================= GREETING ================= */
+function renderGreeting(){
+  const h=new Date().getHours();
+  let nome='';
+  if(authUser){
+    const meta=authUser.user_metadata||{};
+    nome=meta.display_name||meta.full_name||(authUser.email||'').split('@')[0]||'';
+    if(nome)nome=', '+nome.split(' ')[0];
+  }
+  const el=document.getElementById('greetingText');
+  if(el)el.textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+nome+' 👋';
+}
+
+/* ================= QUICK CARDS ================= */
+function renderQuickCards(){
+  const dia=getDia(diaAtual);
+  const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
+  const sc=scoreDoDia(diaAtual);
+  const total=db.habitos.length||1;
+  const feitos=db.habitos.filter(h=>dia.habitos[h.id]&&dia.habitos[h.id].feito).length;
+
+  // Score card status
+  const scoreDotEl=document.getElementById('scoreDot');
+  const scoreLabelEl=document.getElementById('scoreLabel');
+  const scoreDescEl=document.getElementById('scoreDesc');
+  if(scoreDotEl&&scoreLabelEl&&scoreDescEl){
+    let cls,lbl,desc;
+    if(sc>=80){cls='';lbl='Excelente';desc='Você está no caminho certo hoje.';}
+    else if(sc>=60){cls='';lbl='Bom';desc='Bom progresso, continue assim!';}
+    else if(sc>=40){cls='amber';lbl='Regular';desc='Dá pra melhorar, vai lá!';}
+    else{cls='rose';lbl='Iniciando';desc='Registre sono e hábitos para pontuar.';}
+    scoreDotEl.className='sdot'+(cls?' '+cls:'');
+    scoreLabelEl.textContent=lbl;
+    scoreDescEl.textContent=desc;
+  }
+
+  // Sleep quick card
+  const qSleepBig=document.getElementById('qSleepBig');
+  const qSleepDot=document.getElementById('qSleepDot');
+  const qSleepLabel=document.getElementById('qSleepLabel');
+  const qSleepBars=document.getElementById('qSleepBars');
+  const qSleepTime=document.getElementById('qSleepTime');
+  if(qSleepBig){
+    if(mins!==null){
+      const h=Math.floor(mins/60),m=mins%60;
+      qSleepBig.innerHTML='<span>'+h+'h</span><span class="qu"> '+String(m).padStart(2,'0')+'m</span>';
+      const cor=corSono(mins);
+      qSleepDot.className='qdot'+(cor==='red'?' rose':cor==='yellow'?' amber':'');
+      qSleepLabel.textContent=cor==='green'?'Bom':cor==='yellow'?'Regular':'Insuficiente';
+    }else{qSleepBig.textContent='—';qSleepDot.className='qdot muted';qSleepLabel.textContent='Não registrado';}
+    // bars
+    if(qSleepBars){
+      let bars='';
+      for(let i=6;i>=0;i--){
+        const dd=parseISODate(diaAtual);dd.setDate(dd.getDate()-i);
+        const iso=dd.toISOString().slice(0,10);
+        const dObj=db.dias[iso];
+        const m2=dObj?calcSono(dObj.sono.dormiu,dObj.sono.acordou):null;
+        if(m2===null)bars+='<i class="e" style="height:20%"></i>';
+        else{const cor=corSono(m2);bars+='<i class="'+(cor==='red'?'r':cor==='yellow'?'y':'')+'" style="height:'+Math.min(100,Math.round(m2/600*100))+'%"></i>';}
+      }
+      qSleepBars.innerHTML=bars;
+    }
+    if(qSleepTime&&dia.sono.dormiu&&dia.sono.acordou)qSleepTime.textContent=dia.sono.dormiu+' – '+dia.sono.acordou;
+    else if(qSleepTime)qSleepTime.textContent='';
+  }
+
+  // Habits quick card
+  const qHabBig=document.getElementById('qHabBig');
+  const qHabDot=document.getElementById('qHabDot');
+  const qHabLabel=document.getElementById('qHabLabel');
+  const qHabDots=document.getElementById('qHabDots');
+  if(qHabBig){
+    qHabBig.innerHTML=feitos+'<span class="qu">/'+total+'</span>';
+    const pct=feitos/total;
+    qHabDot.className='qdot'+(pct>=0.8?'':pct>=0.5?' amber':feitos>0?' amber':' muted');
+    qHabLabel.textContent=pct>=0.8?'No ritmo':pct>=0.5?'Em andamento':feitos>0?'Começando':'Nenhum ainda';
+    if(qHabDots){
+      let dots='';
+      db.habitos.slice(0,6).forEach(h=>{
+        const done=dia.habitos[h.id]&&dia.habitos[h.id].feito;
+        dots+='<div class="hdot'+(done?' done':'')+'">'+( done?'✓':h.ico)+'</div>';
+      });
+      qHabDots.innerHTML=dots;
+    }
+  }
+
+  // Quick stats
+  const xpEl=document.getElementById('qsXP');
+  const sonoEl=document.getElementById('qsSono');
+  const ativEl=document.getElementById('qsAtiv');
+  const streakEl=document.getElementById('qsStreak');
+  if(xpEl)xpEl.textContent=db.xp>=1000?(db.xp/1000).toFixed(1)+'k':db.xp;
+  if(sonoEl)sonoEl.textContent=mins!==null?fmtMins(mins):'—';
+  if(ativEl)ativEl.textContent=feitos+'/'+total;
+  if(streakEl)streakEl.textContent=calcStreak();
+}
+
+/* ================= GRUPO SUB-TABS ================= */
+function switchGrupoTab(tab){
+  document.getElementById('subTabFeed').classList.toggle('active',tab==='feed');
+  document.getElementById('subTabGrupos').classList.toggle('active',tab==='grupos');
+  document.getElementById('panelFeed').style.display=tab==='feed'?'':'none';
+  document.getElementById('panelGrupos').style.display=tab==='grupos'?'':'none';
+}
+
+/* ================= PROFILE ================= */
+function renderProfile(){
+  const ava=document.getElementById('profileAva');
+  const nm=document.getElementById('profileName');
+  if(authUser&&ava&&nm){
+    const meta=authUser.user_metadata||{};
+    const name=meta.display_name||meta.full_name||(authUser.email||'').split('@')[0]||'L';
+    ava.textContent=name[0].toUpperCase();
+    nm.textContent=name;
+  }
+  // copy badges to profile
+  const dst=document.getElementById('badgesAreaProfile');
+  const src=document.getElementById('badgesArea');
+  if(dst&&src)dst.innerHTML=src.innerHTML;
+}
+
 /* ================= HOJE ================= */
 function renderHoje(){
   const d=parseISODate(diaAtual);
@@ -992,6 +1377,8 @@ function renderHoje(){
 
   renderChips();
   renderHeader();
+  renderGreeting();
+  renderQuickCards();
 }
 
 function sugestoes(hid){
@@ -1429,6 +1816,26 @@ function renderStats(){
   if(prsMes.length)frase+=' e bateu <b>'+prsMes.length+' PR'+(prsMes.length>1?'s':'')+'</b> na academia';
   if(frase)frase+='. ';
   if(diasAtivos)frase+='Foram <b>'+diasAtivos+' dias ativos</b> no mês.';
+  // New insight grid (2x2)
+  const sleepConsistency=c>0?Math.round((verdes/c)*100):0;
+  const habitComp=diasMes.length>0?Math.round((diasAtivos/diasMes.length)*100):0;
+  const ig=document.getElementById('insightGrid');
+  if(ig){
+    ig.innerHTML=
+      '<div class="ig-card"><div class="ig-lbl">Sleep Consistency</div><div class="ig-val"><span>'+sleepConsistency+'</span><span class="ig-unit">%</span></div><div class="ig-st"><span class="qdot'+(sleepConsistency>=70?'':sleepConsistency>=50?' amber':' rose')+'"></span><span>'+(sleepConsistency>=70?'Bom':sleepConsistency>=50?'Regular':'Melhorar')+'</span></div><div class="ig-sub">Noites ≥8h no mês</div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">Habit Completion</div><div class="ig-val"><span>'+habitComp+'</span><span class="ig-unit">%</span></div><div class="ig-st"><span class="qdot'+(habitComp>=70?'':habitComp>=50?' amber':' rose')+'"></span><span>'+(habitComp>=70?'No ritmo':habitComp>=50?'Regular':'Melhorar')+'</span></div><div class="ig-sub">Dias ativos no mês</div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">Training Frequency</div><div class="ig-val"><span>'+sessoesMes+'</span></div><div class="ig-st"><span class="qdot'+(sessoesMes>=12?'':sessoesMes>=6?' amber':' rose')+'"></span><span>Sessões</span></div><div class="ig-sub">Este mês</div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">PR Highlights</div><div class="ig-val"><span>'+prsMes.length+'</span></div><div class="ig-st"><span class="qdot'+(prsMes.length>0?'':' muted')+'"></span><span>Novos PRs</span></div><div class="ig-sub">Este mês</div></div>';
+  }
+  const aic=document.getElementById('aiInsightCard');
+  if(aic&&frase){
+    aic.innerHTML='<div class="ai-card"><div class="ai-card-hdr"><span>✦ IA Insights</span><span class="ai-badge">Personalizado</span></div>'+
+      (c>0?'<div class="ai-row"><div class="ai-ico">📈</div><div class="ai-text"><b>Você está construindo consistência.</b><span>Sono médio de '+fmtMins(Math.round(soma/c))+' e '+sessoesMes+' sessões este mês.</span></div></div>':'')+
+      (prsMes.length>0?'<div class="ai-row"><div class="ai-ico">🏆</div><div class="ai-text"><b>'+prsMes.length+' PR'+(prsMes.length>1?'s':'')+' batidos!</b><span>Você está ficando mais forte. Continue evoluindo as cargas.</span></div></div>':'')+
+      (diasAtivos>0?'<div class="ai-row"><div class="ai-ico">⚡</div><div class="ai-text"><b>'+diasAtivos+' dias ativos este mês.</b><span>Mantenha a frequência para maximizar seu progresso.</span></div></div>':'')+
+      '</div>';
+  }else if(aic){aic.innerHTML='';}
+
   document.getElementById('insightArea').innerHTML=frase?
     '<div class="insight"><div class="ihead">✦ Resumo de '+formatMonthYearBR(y,m)+'</div><p>'+frase+'</p></div>':
     '<div class="empty">Registre alguns dias para gerar insights 🧠</div>';
@@ -1587,6 +1994,7 @@ function go(t,btn){
   if(t==='treino')renderTreinos();
   if(t==='grupo')carregarFeedSocial();
   if(t==='stats')renderStats();
+  if(t==='profile')renderProfile();
   window.scrollTo(0,0);
 }
 function fecharModal(id){document.getElementById(id).classList.remove('open');}
@@ -1599,6 +2007,13 @@ function renderAuth(){
   const logout=document.getElementById('authLogoutBtn');
   if(!btn)return;
   renderSyncBadge();
+  // show post composer
+  const composer=document.getElementById('postComposer');
+  if(composer)composer.style.display=authUser?'block':'none';
+  if(authUser){
+    const ca=document.getElementById('composerAva');
+    if(ca){const meta=authUser.user_metadata||{};const n=meta.display_name||(authUser.email||'').split('@')[0]||'?';ca.textContent=n[0].toUpperCase();}
+  }
   const migrateBtn=document.getElementById('authMigrateBtn');
   if(authUser){
     const email=authUser.email||'Conta HPC';
@@ -2483,7 +2898,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v19',
+  cacheVersion:'hpc-cache-v20',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
