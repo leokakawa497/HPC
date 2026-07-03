@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v8"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v9"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -251,6 +251,15 @@ td.dcol{color:var(--muted);font-weight:600}
 .ex-edit input.exs{flex:.8;text-align:center}
 .ex-edit button{background:none;border:none;color:var(--rose);font-size:15px;cursor:pointer;flex-shrink:0}
 
+/* migration modal */
+.migrate-preview{margin:12px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.migrate-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;font-size:13px;border-bottom:1px solid rgba(53,53,106,.4)}
+.migrate-row:last-child{border-bottom:none}
+.migrate-row .mk{color:var(--muted)}
+.migrate-row .mv{font-weight:800;color:var(--teal)}
+.migrate-status{font-size:12px;color:var(--muted);line-height:1.5;margin:10px 0;min-height:36px}
+.migrate-warning{font-size:11px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:10px;padding:8px 12px;margin-bottom:10px;line-height:1.4}
+
 /* celebration overlay */
 .celebrate{position:fixed;inset:0;background:rgba(5,5,12,.88);z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px}
 .celebrate.open{display:flex}
@@ -444,7 +453,27 @@ nav button.active{color:var(--teal)}
     </div>
     <button class="btn btn-ghost" onclick="enviarMagicLink()">Enviar link mágico</button>
     <button class="btn btn-ghost" id="authLogoutBtn" style="display:none;color:var(--rose)" onclick="sairAuth()">Sair</button>
+    <button class="btn btn-ghost" id="authMigrateBtn" style="display:none;color:var(--teal)" onclick="fecharModal('modalAuth');abrirMigracao()">Migrar dados para a nuvem →</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalAuth')">Fechar</button>
+  </div>
+</div>
+
+<!-- modal migração -->
+<div class="modal-bg" id="modalMigrate">
+  <div class="modal">
+    <h3>Migrar dados para a nuvem</h3>
+    <div class="migrate-warning">⚠️ Esta operação copia dados do localStorage para o Supabase. O localStorage <b>não será apagado</b>.</div>
+    <div class="migrate-status" id="migrateStatus">Calculando dados locais...</div>
+    <div class="migrate-preview">
+      <div class="migrate-row"><span class="mk">Dias com registro de sono</span><span class="mv" id="migratePreviewDias">—</span></div>
+      <div class="migrate-row"><span class="mk">Hábitos configurados</span><span class="mv" id="migratePreviewHabitos">—</span></div>
+      <div class="migrate-row"><span class="mk">Programas de treino</span><span class="mv" id="migratePreviewTreinos">—</span></div>
+      <div class="migrate-row"><span class="mk">Sessões de treino</span><span class="mv" id="migratePreviewSessoes">—</span></div>
+      <div class="migrate-row"><span class="mk">Posts no feed local</span><span class="mv" id="migratePreviewFeed">—</span></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5">Fase 1 migra apenas <b style="color:var(--text)">hábitos</b> e <b style="color:var(--text)">registros de sono</b>. Treinos, entradas de hábitos e feed serão migrados nas próximas fases.</p>
+    <button class="btn btn-primary" id="migrateConfirmBtn" onclick="confirmarMigracao()">Confirmar migração</button>
+    <button class="btn btn-ghost" onclick="fecharModal('modalMigrate')">Cancelar</button>
   </div>
 </div>
 
@@ -1394,6 +1423,7 @@ function renderAuth(){
   const emailEl=document.getElementById('authEmail');
   const logout=document.getElementById('authLogoutBtn');
   if(!btn)return;
+  const migrateBtn=document.getElementById('authMigrateBtn');
   if(authUser){
     const email=authUser.email||'Conta HPC';
     btn.textContent=email;
@@ -1401,12 +1431,14 @@ function renderAuth(){
     emailEl.textContent='Logado como '+email;
     emailEl.style.display='block';
     logout.style.display='block';
+    if(migrateBtn)migrateBtn.style.display='block';
     setAuthStatus('Login ativo. Seus dados continuam no localStorage até a etapa de migração/sync.');
   }else{
     btn.textContent='Entrar';
     btn.classList.remove('on');
     emailEl.style.display='none';
     logout.style.display='none';
+    if(migrateBtn)migrateBtn.style.display='none';
     setAuthStatus(supabaseClient?'O app continua funcionando sem login. Entrar prepara sua conta para sync futuro.':'Supabase ainda não carregou. O app local continua funcionando.');
   }
 }
@@ -1478,6 +1510,88 @@ function initSupabase(){
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
 }
+
+/* ================= MIGRAÇÃO localStorage → Supabase ================= */
+function abrirMigracao(){
+  if(!authUser){toast('Faça login primeiro');return;}
+  previewMigracao();
+  document.getElementById('modalMigrate').classList.add('open');
+}
+function previewMigracao(){
+  const dias=Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length;
+  document.getElementById('migratePreviewDias').textContent=dias;
+  document.getElementById('migratePreviewHabitos').textContent=(db.habitos||[]).length;
+  document.getElementById('migratePreviewTreinos').textContent=(db.treinos||[]).length;
+  document.getElementById('migratePreviewSessoes').textContent=(db.sessoes||[]).length;
+  document.getElementById('migratePreviewFeed').textContent=(db.feed||[]).length;
+  document.getElementById('migrateStatus').textContent='Revise os dados abaixo. Confirme para subir ao Supabase.';
+  const btn=document.getElementById('migrateConfirmBtn');if(btn)btn.style.display='block';
+}
+async function confirmarMigracao(){
+  if(!authUser||!supabaseClient){
+    document.getElementById('migrateStatus').textContent='Login necessário para migrar.';return;
+  }
+  const setStatus=m=>document.getElementById('migrateStatus').textContent=m;
+  const source=db.meta&&db.meta.realDataVersion?'real':'manual';
+
+  setStatus('Migrando hábitos...');
+  const habitos=(db.habitos||[]).map(h=>({
+    user_id:authUser.id,local_id:h.id||null,
+    name:h.nome||'Sem nome',kind:h.tipo==='text'?'text':'check',
+    icon:h.ico||null,active:true,sort_order:0,source
+  }));
+  if(habitos.length>0){
+    const {error:eH}=await supabaseClient.from('habits').upsert(habitos,{onConflict:'user_id,local_id',ignoreDuplicates:true});
+    if(eH){setStatus('Erro ao migrar hábitos: '+eH.message);return;}
+  }
+
+  setStatus('Migrando registros de sono...');
+  const logs=Object.entries(db.dias||{})
+    .filter(([,d])=>d.sono&&(d.sono.dormiu||d.sono.acordou))
+    .map(([iso,d])=>({
+      user_id:authUser.id,log_date:iso,
+      slept_at:d.sono.dormiu||null,woke_at:d.sono.acordou||null,
+      sleep_minutes:d.sono.minutos||null,note:d.nota||null,
+      score:d.score||null,source
+    }));
+  if(logs.length>0){
+    const {error:eL}=await supabaseClient.from('daily_logs').upsert(logs,{onConflict:'user_id,log_date',ignoreDuplicates:true});
+    if(eL){setStatus('Erro ao migrar sono: '+eL.message);return;}
+  }
+
+  setStatus('✓ '+habitos.length+' hábitos e '+logs.length+' registros de sono migrados. localStorage preservado.');
+  const btn=document.getElementById('migrateConfirmBtn');if(btn)btn.style.display='none';
+  toast('Migração fase 1 concluída ✓');
+}
+
+/* ================= DIAGNÓSTICO ================= */
+window.hpcDiagnostics={
+  cacheVersion:'hpc-cache-v9',
+  checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
+  supabaseReady:()=>!!supabaseClient,
+  authActive:()=>!!authUser,
+  counts:()=>({
+    dias:Object.keys(db.dias||{}).length,
+    diasComSono:Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length,
+    habitos:(db.habitos||[]).length,
+    treinos:(db.treinos||[]).length,
+    sessoes:(db.sessoes||[]).length,
+    feed:(db.feed||[]).length,
+    xp:db.xp||0,
+    demo:!!db.demo
+  }),
+  run:()=>{
+    const c=window.hpcDiagnostics.counts();
+    console.group('%c HPC Diagnostics','color:#00e5c8;font-weight:bold');
+    console.log('Cache version:',window.hpcDiagnostics.cacheVersion);
+    console.log('localStorage hpc_v3:',window.hpcDiagnostics.checkLocalStorage()?'✓ presente':'✗ ausente');
+    console.log('Supabase client:',window.hpcDiagnostics.supabaseReady()?'✓ pronto':'✗ não carregado');
+    console.log('Auth user:',window.hpcDiagnostics.authActive()?'✓ logado':'✗ não logado');
+    console.log('Contagens locais:',c);
+    console.groupEnd();
+    return c;
+  }
+};
 
 /* init */
 initSupabase();
