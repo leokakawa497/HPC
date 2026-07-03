@@ -167,6 +167,7 @@ create index if not exists workout_sets_session_idx on public.workout_sets(sessi
 create index if not exists feed_posts_user_created_idx on public.feed_posts(user_id, created_at desc);
 create index if not exists feed_posts_group_created_idx on public.feed_posts(group_id, created_at desc);
 create index if not exists group_members_user_idx on public.group_members(user_id);
+create index if not exists group_members_group_idx on public.group_members(group_id);
 create index if not exists post_comments_post_idx on public.post_comments(post_id, created_at);
 
 alter table public.profiles enable row level security;
@@ -192,6 +193,9 @@ create policy "profiles_insert_own" on public.profiles
 drop policy if exists "profiles_update_own" on public.profiles;
 create policy "profiles_update_own" on public.profiles
   for update using (auth.uid() = id) with check (auth.uid() = id);
+drop policy if exists "profiles_delete_own" on public.profiles;
+create policy "profiles_delete_own" on public.profiles
+  for delete using (auth.uid() = id);
 
 drop policy if exists "daily_logs_own" on public.daily_logs;
 create policy "daily_logs_own" on public.daily_logs
