@@ -27,8 +27,8 @@ Ao alterar `index.html`, `manifest.json`, `service-worker.js` ou arquivos em `as
 1. Atualize o app normalmente.
 2. Abra `service-worker.js`.
 3. Troque `CACHE_VERSION` para o proximo numero:
-   - atual: `hpc-cache-v7`
-   - proxima: `hpc-cache-v8`
+   - atual: `hpc-cache-v8`
+   - proxima: `hpc-cache-v9`
 4. Publique no GitHub Pages.
 
 O service worker apaga caches antigos no evento `activate`, entao os usuarios nao devem ficar presos em arquivos antigos.
