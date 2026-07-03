@@ -5,91 +5,62 @@
 | Item | Status |
 |---|---|
 | PWA publicado no GitHub Pages | ✅ |
-| Service worker + cache offline | ✅ (`hpc-cache-v9`) |
+| Service worker + cache offline | ✅ (`hpc-cache-v17`) |
 | Dados reais importados (2023–2026) | ✅ (`assets/real-data.js`) |
 | Supabase client no front-end | ✅ (`assets/supabase-config.js`) |
-| Login email/senha + magic link | ✅ (funcional) |
+| Login email/senha + magic link | ✅ |
 | `profiles` criado automaticamente no login | ✅ |
 | `supabase/schema.sql` aplicado no Dashboard | ✅ |
-| Tela de migração completa (6 fases) | ✅ (hábitos, sono, entradas, treinos, sessões, sets) |
-| Sync badge (ponto verde no botão Entrar) | ✅ |
-| Onboarding modal (primeira vez, demo) | ✅ |
-| `window.hpcDiagnostics` utilitário | ✅ |
-| Sync automático | ❌ (não implementado — aguarda aprovação) |
-| Feed social real (grupos, likes, comentários) | ❌ (fase futura) |
+| Tela de migração completa (6 fases) | ✅ |
+| Sync badge (dot no botão Entrar) | ✅ |
+| Onboarding modal | ✅ |
+| Sync automático (sono + hábitos + treinos) | ✅ (incremental, offline queue, 4 estados) |
+| Feed social (grupos, posts, likes, comentários) | ✅ (tab Grupo) |
+| Carregar dados da nuvem | ✅ (botão no modal de auth, com backup + preview) |
+| Feed social migration SQL | ⚠️ Pendente rodar no Dashboard (`supabase/feed-social-migration.sql`) |
+| Beta fechado | ❌ (próxima fase) |
 
 ---
 
-## O que já foi feito
+## Pendências obrigatórias antes de convidar usuários
 
-1. App publicado como PWA com cache offline completo (`hpc-cache-v9`).
-2. Dados reais de 2023–2026 importados via `assets/real-data.js`.
-3. Supabase Auth configurado (email/senha e magic link).
-4. Schema SQL com 13 tabelas, indexes e RLS aplicado no Supabase Dashboard.
-5. `profiles` é criado/atualizado automaticamente ao fazer login.
-6. Tela de migração completa com 6 fases e dots de progresso por fase:
-   - Fase 1: `habits` (upsert por `user_id, local_id`)
-   - Fase 2: `daily_logs` (upsert por `user_id, log_date`)
-   - Fase 3: `daily_habit_entries` (batch upsert de 200 por `user_id, habit_id, entry_date`)
-   - Fase 4: `workout_programs` + `workout_exercises`
-   - Fase 5: `workout_sessions` (upsert por `user_id, local_id`)
-   - Fase 6: `workout_sets`
-7. Sync badge (ponto verde no botão "Entrar") persiste via `hpc_last_sync` no localStorage.
-8. Onboarding modal exibido uma vez para usuários em modo demo.
-9. `window.hpcDiagnostics` disponível no console do browser.
+### 1. Reativar projeto Supabase (free tier pausa após inatividade)
+- Acesse supabase.com → projeto HPC → ele reativa ao abrir
+
+### 2. Rodar migration do feed social
+- SQL Editor → New query → colar conteúdo de `supabase/feed-social-migration.sql` → Run
+- Isso atualiza a policy de `profiles` para que nomes de membros apareçam nos posts
 
 ---
 
-## Como aplicar `supabase/schema.sql` no SQL Editor (se ainda não foi feito)
+## Como o "Carregar dados da nuvem" funciona
 
-1. Acesse **supabase.com** → faça login → abra o projeto HPC
-2. Menu lateral → **SQL Editor**
-3. Clique em **New query**
-4. Abra `supabase/schema.sql`, copie todo o conteúdo (`Ctrl+A`, `Ctrl+C`)
-5. Cole no SQL Editor (`Ctrl+V`)
-6. Clique em **Run** (ou `Ctrl+Enter`)
-7. Resultado esperado: `Success. No rows returned.`
+No modal de auth (botão "Entrar"), quando logado aparece:
+- **Migrar dados para a nuvem →** — envia dados locais para Supabase
+- **Carregar dados da nuvem ↓** — baixa dados do Supabase para localStorage (novo dispositivo)
 
-O script é idempotente — pode rodar várias vezes sem erro.
-
----
-
-## Checklist pós-aplicação do schema
-
-- [ ] No Dashboard → **Table Editor**, confirmar que as 13 tabelas existem:
-  - `profiles`, `daily_logs`, `habits`, `daily_habit_entries`
-  - `workout_programs`, `workout_exercises`, `workout_sessions`, `workout_sets`
-  - `groups`, `group_members`, `feed_posts`, `post_likes`, `post_comments`
-- [ ] Fazer login no app → verificar que `profiles` recebe uma linha com `id` e `email`
-- [ ] Abrir **Authentication → Users** e confirmar que o usuário aparece
-- [ ] Testar `window.hpcDiagnostics.run()` no console do browser
+O botão de carregar:
+1. Consulta todas as tabelas do usuário
+2. Mostra preview de contagens antes de qualquer escrita
+3. Cria backup `hpc_v3_backup_before_cloud_load_<timestamp>`
+4. Reconstrói o `hpc_v3` localmente (hábitos, dias, treinos + exercícios, sessões + sets)
+5. Define `demo: false` e re-renderiza o app
 
 ---
 
-## Ordem correta das próximas fases
-
-### Fase 2 — Testar login e migração (prioridade imediata)
-1. No Supabase Dashboard → **Authentication → Users → Add user** (sem enviar email)
-2. Fazer login no app com as credenciais criadas
-3. Confirmar linha em `profiles` no Table Editor
-4. Abrir modal de auth → clicar "Migrar dados para a nuvem →"
-5. Revisar preview → confirmar migração
-6. Verificar no Table Editor: `habits`, `daily_logs`, `daily_habit_entries`, `workout_sessions`
-
-### Fase 3 — Sync automático (requer aprovação explícita do usuário)
-- Definir regra de conflito (last-write-wins ou manual)
-- Implementar por módulo, um de cada vez
-- Testar em dois dispositivos antes de ativar
-
-### Fase 7 — Feed social real
-- `feed_posts` com `visibility='group'`
-- Grupos e convites
-- Likes e comentários multiusuário
-- Adicionar policy `profiles_select_group_member` (já planejada)
+## Próximas fases
 
 ### Fase 8 — Beta fechado
-- Convidar usuários de teste
-- Monitorar erros no Dashboard → Logs
+1. Criar grupo no app (tab Grupo → "criar →")
+2. Compartilhar o invite_code com testadores
+3. Testadores: baixar o app, criar conta, entrar com código
+4. Monitorar erros no Supabase Dashboard → Logs
+
+### Fase 9 — Melhorias de UX pós-beta
+- Notificações push (PWA)
+- Streak compartilhado no grupo
+- Gráficos de progresso no feed
+- Foto em posts (photo_url já existe no schema)
 
 ---
 
@@ -97,7 +68,8 @@ O script é idempotente — pode rodar várias vezes sem erro.
 
 | Risco | Mitigação |
 |---|---|
-| Conflito de dados entre dispositivos no sync | Não implementar sync sem regra de conflito definida |
-| Dados demo em browsers antigos | Campo `source: "demo"` marca dados de exemplo |
-| Rate limit de email no Supabase | Usar "Add user" no Dashboard em vez de signup pelo app durante testes |
-| localStorage apagado por erro | `salvar()` sempre preserva; nunca chamar `removeItem(DB_KEY)` |
+| Supabase free tier pausa | Acessar o projeto periodicamente ou upgrade para Pro |
+| Conflito de dados entre dispositivos | Cloud load cria backup antes de sobrescrever |
+| Dados demo em browsers antigos | Campo `demo: true` marca dados de exemplo; cloud load limpa |
+| Rate limit de email no Supabase | Usar "Add user" no Dashboard durante testes |
+| localStorage apagado por erro | `salvar()` preserva sempre; backup criado antes de cloud load |
