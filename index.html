@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v10"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v11"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1702,7 +1702,7 @@ async function carregarHabitIdMap(){
 }
 
 async function syncDia(iso){
-  if(!authUser||!supabaseClient)return;
+  if(!authUser||!supabaseClient){console.log('[sync] pulado: sem login');return;}
   const dia=db.dias[iso];if(!dia)return;
   const uid=authUser.id;
   const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
@@ -1711,13 +1711,18 @@ async function syncDia(iso){
     slept_at:dia.sono.dormiu||null,woke_at:dia.sono.acordou||null,
     sleep_minutes:mins,note:dia.nota||null,score:scoreDoDia(iso),source:'manual'
   },{onConflict:'user_id,log_date'}).select('id').single();
-  if(logErr)return;
+  if(logErr){console.warn('[sync] daily_logs falhou:',logErr.message);return;}
+  console.log('[sync] daily_logs ok:',iso);
   const entries=db.habitos.map(h=>{
     const sid=_habitIdMap[h.id];if(!sid)return null;
     const st=dia.habitos[h.id]||{feito:false,detalhe:''};
     return{user_id:uid,daily_log_id:logData.id,habit_id:sid,entry_date:iso,done:!!st.feito,detail:st.detalhe||null,source:'manual'};
   }).filter(Boolean);
-  if(entries.length)await supabaseClient.from('daily_habit_entries').upsert(entries,{onConflict:'user_id,habit_id,entry_date'});
+  if(!entries.length)console.warn('[sync] nenhuma entrada de hábito (habitIdMap vazio? '+Object.keys(_habitIdMap).length+' ids)');
+  if(entries.length){
+    const{error:eE}=await supabaseClient.from('daily_habit_entries').upsert(entries,{onConflict:'user_id,habit_id,entry_date'});
+    if(eE)console.warn('[sync] entries falhou:',eE.message);else console.log('[sync] entries ok:',entries.length);
+  }
 }
 
 async function syncSessao(s){
@@ -1728,7 +1733,8 @@ async function syncSessao(s){
     started_at:new Date(s.inicio).toISOString(),ended_at:new Date(s.fim).toISOString(),
     duration_ms:s.fim-s.inicio,prs:s.prs||[],source:'manual'
   },{onConflict:'user_id,local_id'}).select('id').single();
-  if(sessErr)return;
+  if(sessErr){console.warn('[sync] sessão falhou:',sessErr.message);return;}
+  console.log('[sync] sessão ok:',s.nome);
   const{data:existSets}=await supabaseClient.from('workout_sets').select('id').eq('session_id',sessData.id).limit(1);
   if(existSets&&existSets.length)return;
   const sets=[];
@@ -1766,10 +1772,11 @@ function initOnboarding(){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v10',
+  cacheVersion:'hpc-cache-v11',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
+  syncNow:()=>syncDia(hojeISO()),
   counts:()=>({
     dias:Object.keys(db.dias||{}).length,
     diasComSono:Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length,
