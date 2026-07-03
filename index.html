@@ -13,6 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
+<script src="./assets/real-data.js"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -33,6 +34,8 @@ header{padding:18px 16px 6px;display:flex;align-items:center;justify-content:spa
 .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--violet));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#0d0d18;position:relative;cursor:pointer}
 .avatar .lvl{position:absolute;bottom:-4px;right:-6px;background:var(--amber);color:#332b00;font-size:9px;font-weight:800;border-radius:99px;padding:1px 5px;border:2px solid var(--bg)}
 .streak-pill{display:flex;align-items:center;gap:5px;background:var(--rose-dim);border:1px solid var(--rose);color:var(--rose);font-weight:800;font-size:13px;border-radius:99px;padding:5px 12px}
+.auth-pill{background:var(--card);border:1px solid var(--border);color:var(--muted);font-size:11px;font-weight:800;border-radius:99px;padding:7px 10px;max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.auth-pill.on{border-color:var(--teal);color:var(--teal);background:var(--teal-dim)}
 .section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:baseline}
 .section-title .more{font-size:11px;color:var(--teal);letter-spacing:0;text-transform:none;font-weight:600;cursor:pointer;background:none;border:none}
 
@@ -236,6 +239,10 @@ td.dcol{color:var(--muted);font-weight:600}
 .modal label{display:block;font-size:11px;color:var(--muted);font-weight:700;margin:12px 0 5px;text-transform:uppercase;letter-spacing:.5px}
 .modal input,.modal select{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:12px;font-size:15px}
 .modal input:focus{outline:none;border-color:var(--teal)}
+.auth-status{font-size:12px;color:var(--muted);line-height:1.45;margin:-2px 0 10px}
+.auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.auth-actions .btn{margin-top:0;padding:12px;font-size:13px}
+.auth-email{font-size:12px;color:var(--teal);font-weight:700;margin-bottom:10px;word-break:break-all}
 .mrow{display:flex;gap:10px}
 .mrow>div{flex:1}
 .ex-edit{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:11px;margin-bottom:8px;display:flex;gap:8px;align-items:center}
@@ -277,13 +284,14 @@ nav button.active{color:var(--teal)}
 <header>
   <div class="logo"><img src="./assets/hpc-logo.png" alt="High Performance Club"></div>
   <div style="display:flex;gap:10px;align-items:center">
+    <button class="auth-pill" id="authBtn" onclick="abrirAuth()">Entrar</button>
     <div class="streak-pill" id="streakPill">🔥 0 dias</div>
     <div class="avatar" onclick="go('stats',document.querySelectorAll('nav button')[3])">L<span class="lvl" id="lvlTag">LV 1</span></div>
   </div>
 </header>
 
 <div class="demo-banner" id="demoBanner" style="display:none">
-  <div>⚡ <span><b>Modo demonstração</b> — dados de exemplo carregados.</span><button onclick="removerDemo()">Remover e começar do zero</button></div>
+  <div>⚡ <span><b>Modo demonstração</b> — dados de exemplo carregados.</span><button onclick="removerDemo()">Remover exemplo</button></div>
 </div>
 
 <!-- ============ HOJE ============ -->
@@ -420,6 +428,26 @@ nav button.active{color:var(--teal)}
   </div>
 </div>
 
+<!-- modal login -->
+<div class="modal-bg" id="modalAuth">
+  <div class="modal">
+    <h3>Entrar no HPC</h3>
+    <div class="auth-status" id="authStatus">O app continua funcionando sem login. Entrar prepara sua conta para sync futuro.</div>
+    <div class="auth-email" id="authEmail" style="display:none"></div>
+    <label>Email</label>
+    <input type="email" id="authEmailInput" placeholder="voce@email.com" autocomplete="email">
+    <label>Senha</label>
+    <input type="password" id="authPasswordInput" placeholder="Mínimo 6 caracteres" autocomplete="current-password">
+    <div class="auth-actions">
+      <button class="btn btn-primary" onclick="entrarComSenha()">Entrar</button>
+      <button class="btn btn-ghost" onclick="criarContaComSenha()">Criar conta</button>
+    </div>
+    <button class="btn btn-ghost" onclick="enviarMagicLink()">Enviar link mágico</button>
+    <button class="btn btn-ghost" id="authLogoutBtn" style="display:none;color:var(--rose)" onclick="sairAuth()">Sair</button>
+    <button class="btn btn-ghost" onclick="fecharModal('modalAuth')">Fechar</button>
+  </div>
+</div>
+
 <!-- celebração -->
 <div class="celebrate" id="celebrate">
   <div id="confettiHost"></div>
@@ -434,6 +462,7 @@ nav button.active{color:var(--teal)}
 <script>
 /* ================= ESTADO ================= */
 const DB_KEY='hpc_v3';
+const REAL_DATA_VERSION='hpc-real-2023-2026-v1';
 const HABITOS_PADRAO=[
   {id:'bjj',nome:'BJJ',tipo:'text',ico:'🥋'},
   {id:'fisio',nome:'Fisio',tipo:'check',ico:'🩹'},
@@ -464,6 +493,7 @@ let setEditando=null;      // {exIdx,setIdx}
 let treinoEditando=null;   // id do treino no modal
 let restInterval=null;
 let supabaseClient=null;   // preparado para login/sync futuro; dados atuais seguem no localStorage
+let authUser=null;
 
 function carregar(){
   try{const raw=localStorage.getItem(DB_KEY);if(raw){const d=JSON.parse(raw);if(d&&d.dias)return migrar(d);}}catch(e){}
@@ -471,10 +501,10 @@ function carregar(){
 }
 
 /* ================= DADOS DE EXEMPLO (DEMO) ================= */
-function dbVazio(){return {habitos:JSON.parse(JSON.stringify(HABITOS_PADRAO)),dias:{},treinos:[],sessoes:[],feed:[],badges:{},xp:0,demo:false};}
+function dbVazio(){return {habitos:JSON.parse(JSON.stringify(HABITOS_PADRAO)),dias:{},treinos:[],sessoes:[],feed:[],badges:{},xp:0,demo:false,meta:{}};}
 function removerDemo(){
-  if(confirm('Remover todos os dados de exemplo e começar do zero?')){
-    db=dbVazio();sessaoAtiva=null;salvar();
+  if(confirm('Remover os dados de exemplo? Os dados reais importados serão preservados.')){
+    db=aplicarDadosReais(dbVazio());sessaoAtiva=null;salvar();
     document.getElementById('demoBanner').style.display='none';
     renderHoje();toast('Dados de exemplo removidos ✓');
   }
@@ -491,7 +521,7 @@ function gerarDemo(){
     const iso=isoNdias(i);
     const dt=new Date(iso+'T12:00:00');
     const wd=dt.getDay();
-    const dia={sono:{dormiu:'',acordou:''},habitos:{},nota:''};
+    const dia={sono:{dormiu:'',acordou:''},habitos:{},nota:'',source:'demo'};
 
     // sono: maioria verde, algumas amarelas/vermelhas
     const roll=r();
@@ -505,32 +535,32 @@ function gerarDemo(){
     dia.sono.acordou=pad(Math.floor(acordouMin/60))+':'+pad(acordouMin%60);
 
     // hábitos por padrão semanal (seg/ter/qui/dom BJJ; gym seg-sáb alternado…)
-    if([1,2,4].includes(wd)&&r()<0.85)dia.habitos.bjj={feito:true,detalhe:'12:30'};
-    if(wd===0&&r()<0.4)dia.habitos.bjj={feito:true,detalhe:'14:30'};
+    if([1,2,4].includes(wd)&&r()<0.85)dia.habitos.bjj={feito:true,detalhe:'12:30',source:'demo'};
+    if(wd===0&&r()<0.4)dia.habitos.bjj={feito:true,detalhe:'14:30',source:'demo'};
     if([1,2,4,5,6].includes(wd)&&r()<0.7){
       const gyms=['Peito + Tríceps','Costas + Bíceps','Ombro + Legs','Peito + Tríceps + ABS','Costas + Bíceps + Neck'];
-      dia.habitos.academia={feito:true,detalhe:gyms[Math.floor(r()*gyms.length)]};
+      dia.habitos.academia={feito:true,detalhe:gyms[Math.floor(r()*gyms.length)],source:'demo'};
     }
-    if([2,4].includes(wd)&&r()<0.6)dia.habitos.pilates={feito:true,detalhe:''};
-    if([1,2].includes(wd)&&r()<0.35)dia.habitos.fisio={feito:true,detalhe:''};
-    if(wd===0&&r()<0.35)dia.habitos.corrida={feito:true,detalhe:'5km leve'};
-    if(r()<0.1)dia.habitos.sauna={feito:true,detalhe:''};
-    if(wd===6&&r()<0.15)dia.habitos.sup={feito:true,detalhe:''};
+    if([2,4].includes(wd)&&r()<0.6)dia.habitos.pilates={feito:true,detalhe:'',source:'demo'};
+    if([1,2].includes(wd)&&r()<0.35)dia.habitos.fisio={feito:true,detalhe:'',source:'demo'};
+    if(wd===0&&r()<0.35)dia.habitos.corrida={feito:true,detalhe:'5km leve',source:'demo'};
+    if(r()<0.1)dia.habitos.sauna={feito:true,detalhe:'',source:'demo'};
+    if(wd===6&&r()<0.15)dia.habitos.sup={feito:true,detalhe:'',source:'demo'};
 
     // garante streak dos últimos 12 dias
-    if(i<=12&&!Object.keys(dia.habitos).length)dia.habitos.academia={feito:true,detalhe:'Full Body'};
+    if(i<=12&&!Object.keys(dia.habitos).length)dia.habitos.academia={feito:true,detalhe:'Full Body',source:'demo'};
     d.dias[iso]=dia;
   }
 
   /* --- treinos --- */
   d.treinos=[
-    {id:'demoA',nome:'Treino A — Peito + Tríceps',exercicios:[
+    {id:'demoA',nome:'Treino A — Peito + Tríceps',source:'demo',exercicios:[
       {nome:'Supino reto',series:4},{nome:'Supino inclinado halter',series:3},
       {nome:'Crucifixo máquina',series:3},{nome:'Tríceps corda',series:3},{nome:'Tríceps francês',series:3}]},
-    {id:'demoB',nome:'Treino B — Costas + Bíceps',exercicios:[
+    {id:'demoB',nome:'Treino B — Costas + Bíceps',source:'demo',exercicios:[
       {nome:'Puxada frente',series:4},{nome:'Remada curvada',series:4},
       {nome:'Remada baixa',series:3},{nome:'Rosca direta',series:3},{nome:'Rosca martelo',series:3}]},
-    {id:'demoC',nome:'Treino C — Ombro + Legs',exercicios:[
+    {id:'demoC',nome:'Treino C — Ombro + Legs',source:'demo',exercicios:[
       {nome:'Desenvolvimento halter',series:4},{nome:'Elevação lateral',series:3},
       {nome:'Agachamento livre',series:4},{nome:'Leg press',series:3}]}
   ];
@@ -544,7 +574,7 @@ function gerarDemo(){
   for(let i=42;i>=1;i-=3){
     const t=d.treinos.find(x=>x.id===seq[si%3]);si++;
     const prog=Math.floor((42-i)/9)*2.5; // sobe 2,5kg a cada ~3 semanas
-    const sess={id:'demoS'+i,treinoId:t.id,nome:t.nome,data:isoNdias(i),
+    const sess={id:'demoS'+i,treinoId:t.id,nome:t.nome,data:isoNdias(i),source:'demo',
       inicio:0,fim:52*60000,prs:[],
       exercicios:t.exercicios.map(e=>{
         const base=(bases[e.nome]||40)+prog;
@@ -555,7 +585,7 @@ function gerarDemo(){
   }
   // sessão de hoje com PR no supino
   const hoje=hojeISO();
-  const prSess={id:'demoHoje',treinoId:'demoA',nome:'Treino A — Peito + Tríceps',data:hoje,
+  const prSess={id:'demoHoje',treinoId:'demoA',nome:'Treino A — Peito + Tríceps',data:hoje,source:'demo',
     inicio:Date.now()-52*60000,fim:Date.now(),
     prs:['Supino reto: 82.5kg — antes 80kg'],
     exercicios:[
@@ -565,18 +595,18 @@ function gerarDemo(){
     ]};
   d.sessoes.push(prSess);
   // garante hábito academia hoje
-  d.dias[hoje].habitos.academia={feito:true,detalhe:'Peito + Tríceps'};
-  d.dias[hoje].habitos.bjj={feito:true,detalhe:'12:30'};
+  d.dias[hoje].habitos.academia={feito:true,detalhe:'Peito + Tríceps',source:'demo'};
+  d.dias[hoje].habitos.bjj={feito:true,detalhe:'12:30',source:'demo'};
 
   /* --- feed --- */
   const agora=Date.now();
   d.feed=[
-    {id:'f1',tipo:'pr',ts:agora-20*60000,titulo:'Amassou o Treino A — Peito + Tríceps. Novo recorde no supino! 🏆',
+    {id:'f1',tipo:'pr',source:'demo',ts:agora-20*60000,titulo:'Amassou o Treino A — Peito + Tríceps. Novo recorde no supino! 🏆',
       stats:[{v:'52min',l:'Duração'},{v:'3',l:'Exercícios'},{v:'82,5kg',l:'PR Supino'}],likes:8,liked:true,comentarios:['Semana que vem vou pro 85 😤'],foto:null},
-    {id:'f2',tipo:'badge',ts:agora-26*3600000,titulo:'Desbloqueou a conquista "7 dias seguidos" 🔥',stats:[],likes:4,liked:false,comentarios:[],foto:null},
-    {id:'f3',tipo:'treino',ts:agora-3*86400000,titulo:'Finalizou o Treino B — Costas + Bíceps 💪',
+    {id:'f2',tipo:'badge',source:'demo',ts:agora-26*3600000,titulo:'Desbloqueou a conquista "7 dias seguidos" 🔥',stats:[],likes:4,liked:false,comentarios:[],foto:null},
+    {id:'f3',tipo:'treino',source:'demo',ts:agora-3*86400000,titulo:'Finalizou o Treino B — Costas + Bíceps 💪',
       stats:[{v:'48min',l:'Duração'},{v:'5',l:'Exercícios'}],likes:5,liked:false,comentarios:[],foto:null},
-    {id:'f4',tipo:'treino',ts:agora-5*86400000,titulo:'Finalizou o Treino C — Ombro + Legs 💪',
+    {id:'f4',tipo:'treino',source:'demo',ts:agora-5*86400000,titulo:'Finalizou o Treino C — Ombro + Legs 💪',
       stats:[{v:'55min',l:'Duração'},{v:'4',l:'Exercícios'}],likes:3,liked:false,comentarios:[],foto:null}
   ];
 
@@ -584,11 +614,49 @@ function gerarDemo(){
   d.xp=2840;
   d.badges={pr1:agora-10*86400000,streak7:agora-26*3600000,bjj10:agora-6*86400000,sono8x7:agora-15*86400000};
 
-  return d;
+  return aplicarDadosReais(d);
 }
 function migrar(d){
   d.treinos=d.treinos||[];d.sessoes=d.sessoes||[];d.feed=d.feed||[];d.badges=d.badges||{};d.xp=d.xp||0;
+  d.meta=d.meta||{};
+  d.habitos=d.habitos||JSON.parse(JSON.stringify(HABITOS_PADRAO));
   d.habitos.forEach(h=>{if(!h.ico)h.ico='✅';});
+  if(d.demo){
+    Object.values(d.dias||{}).forEach(dia=>{
+      if(!dia.source)dia.source='demo';
+      Object.values(dia.habitos||{}).forEach(st=>{if(st&&!st.source)st.source='demo';});
+    });
+    d.treinos.forEach(t=>{if(!t.source)t.source='demo';});
+    d.sessoes.forEach(s=>{if(!s.source)s.source='demo';});
+    d.feed.forEach(p=>{if(!p.source)p.source='demo';});
+  }
+  return aplicarDadosReais(d);
+}
+function aplicarDadosReais(d){
+  const real=window.HPC_REAL_DATA;
+  if(!real||!Array.isArray(real.entries)||d.meta.realDataVersion===real.version)return d;
+  real.entries.forEach(item=>{
+    const dia=d.dias[item.date]||{sono:{dormiu:'',acordou:''},habitos:{},nota:''};
+    if(item.sleep){
+      dia.sono=dia.sono||{};
+      if(!dia.sono.dormiu)dia.sono.dormiu=item.sleep.dormiu;
+      if(!dia.sono.acordou)dia.sono.acordou=item.sleep.acordou;
+      dia.realSleep=true;
+    }
+    if(item.habits){
+      dia.habitos=dia.habitos||{};
+      Object.entries(item.habits).forEach(([hid,st])=>{
+        const atual=dia.habitos[hid];
+        if(!atual||atual.source==='demo'||(!atual.feito&&!atual.detalhe)){
+          dia.habitos[hid]={feito:!!st.feito,detalhe:st.detalhe||'',source:'real'};
+        }
+      });
+    }
+    dia.source=dia.source==='demo'?'mixed':(dia.source||'real');
+    d.dias[item.date]=dia;
+  });
+  d.meta.realDataVersion=real.version;
+  d.meta.realDataSource=real.source||'HPC spreadsheet';
   return d;
 }
 function salvar(){localStorage.setItem(DB_KEY,JSON.stringify(db));}
@@ -1320,18 +1388,101 @@ function go(t,btn){
 function fecharModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
+function setAuthStatus(msg){const el=document.getElementById('authStatus');if(el)el.textContent=msg;}
+function renderAuth(){
+  const btn=document.getElementById('authBtn');
+  const emailEl=document.getElementById('authEmail');
+  const logout=document.getElementById('authLogoutBtn');
+  if(!btn)return;
+  if(authUser){
+    const email=authUser.email||'Conta HPC';
+    btn.textContent=email;
+    btn.classList.add('on');
+    emailEl.textContent='Logado como '+email;
+    emailEl.style.display='block';
+    logout.style.display='block';
+    setAuthStatus('Login ativo. Seus dados continuam no localStorage até a etapa de migração/sync.');
+  }else{
+    btn.textContent='Entrar';
+    btn.classList.remove('on');
+    emailEl.style.display='none';
+    logout.style.display='none';
+    setAuthStatus(supabaseClient?'O app continua funcionando sem login. Entrar prepara sua conta para sync futuro.':'Supabase ainda não carregou. O app local continua funcionando.');
+  }
+}
+function abrirAuth(){renderAuth();document.getElementById('modalAuth').classList.add('open');}
+function authCreds(){
+  const email=document.getElementById('authEmailInput').value.trim();
+  const password=document.getElementById('authPasswordInput').value;
+  if(!email)return setAuthStatus('Informe seu email.'),null;
+  return {email,password};
+}
+async function garantirProfile(){
+  if(!supabaseClient||!authUser)return;
+  const profile={id:authUser.id,email:authUser.email||null,display_name:(authUser.email||'').split('@')[0]||null,updated_at:new Date().toISOString()};
+  const {error}=await supabaseClient.from('profiles').upsert(profile,{onConflict:'id'});
+  if(error)console.warn('Profile ainda não foi salvo. Aplique supabase/schema.sql antes do sync.',error);
+}
+async function refreshAuth(){
+  if(!supabaseClient){renderAuth();return;}
+  const {data}=await supabaseClient.auth.getUser();
+  authUser=data&&data.user?data.user:null;
+  await garantirProfile();
+  renderAuth();
+}
+async function entrarComSenha(){
+  if(!supabaseClient)return setAuthStatus('Supabase ainda não carregou.');
+  const creds=authCreds();if(!creds)return;
+  if(!creds.password)return setAuthStatus('Informe sua senha.');
+  setAuthStatus('Entrando...');
+  const {data,error}=await supabaseClient.auth.signInWithPassword(creds);
+  if(error)return setAuthStatus(error.message);
+  authUser=data.user;await garantirProfile();renderAuth();toast('Login realizado ✓');
+}
+async function criarContaComSenha(){
+  if(!supabaseClient)return setAuthStatus('Supabase ainda não carregou.');
+  const creds=authCreds();if(!creds)return;
+  if(!creds.password||creds.password.length<6)return setAuthStatus('Use uma senha com pelo menos 6 caracteres.');
+  setAuthStatus('Criando conta...');
+  const {data,error}=await supabaseClient.auth.signUp(creds);
+  if(error)return setAuthStatus(error.message);
+  authUser=data.user||null;await garantirProfile();renderAuth();
+  setAuthStatus(authUser?'Conta criada. Login ativo.':'Conta criada. Confira seu email para confirmar.');
+  toast('Conta criada ✓');
+}
+async function enviarMagicLink(){
+  if(!supabaseClient)return setAuthStatus('Supabase ainda não carregou.');
+  const email=document.getElementById('authEmailInput').value.trim();
+  if(!email)return setAuthStatus('Informe seu email.');
+  const redirectTo=location.origin+location.pathname;
+  setAuthStatus('Enviando link mágico...');
+  const {error}=await supabaseClient.auth.signInWithOtp({email,options:{emailRedirectTo:redirectTo}});
+  setAuthStatus(error?error.message:'Link enviado. Confira seu email.');
+}
+async function sairAuth(){
+  if(!supabaseClient)return;
+  await supabaseClient.auth.signOut();
+  authUser=null;renderAuth();toast('Você saiu da conta');
+}
 function initSupabase(){
+  if(supabaseClient)return;
   const cfg=window.HPC_SUPABASE_CONFIG;
   document.documentElement.dataset.supabase='pending';
   if(!cfg||!window.supabase||!window.supabase.createClient)return;
   supabaseClient=window.supabase.createClient(cfg.url,cfg.publishableKey);
   window.hpcSupabase=supabaseClient;
+  supabaseClient.auth.onAuthStateChange((_event,session)=>{
+    authUser=session&&session.user?session.user:null;
+    garantirProfile().finally(renderAuth);
+  });
+  refreshAuth();
   document.documentElement.dataset.supabase='ready';
 }
 
 /* init */
 initSupabase();
 window.addEventListener('load',initSupabase);
+if(db.meta&&db.meta.realDataVersion===window.HPC_REAL_DATA?.version)salvar();
 if(db.demo){document.getElementById('demoBanner').style.display='block';salvar();}
 renderHoje();
 
