@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v9"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v10"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1766,7 +1766,7 @@ function initOnboarding(){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v9',
+  cacheVersion:'hpc-cache-v10',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
