@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v14"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v15"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -296,6 +296,44 @@ nav button.active{color:var(--teal)}
 .demo-banner>div{background:var(--amber-dim);border:1px solid var(--amber);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px}
 .demo-banner b{color:var(--amber)}
 .demo-banner button{margin-left:auto;background:var(--amber);color:#332b00;border:none;font-weight:800;font-size:11px;border-radius:99px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+
+/* feed social */
+.group-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.group-card .gc-ico{font-size:20px;width:34px;text-align:center}
+.group-card .gc-info{flex:1;min-width:0}
+.group-card .gc-name{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.group-card .gc-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.group-card .gc-code{font-size:11px;color:var(--teal);font-weight:700;background:var(--teal-dim);border-radius:99px;padding:3px 10px;white-space:nowrap;cursor:pointer;flex-shrink:0}
+.group-actions{display:flex;gap:8px;margin-bottom:16px}
+.group-actions .btn{margin:0;flex:1;padding:11px;font-size:13px}
+.feed-post{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px}
+.fp-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fp-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#0d0d18;flex-shrink:0}
+.fp-meta{flex:1;min-width:0}
+.fp-author{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.fp-title{font-size:15px;font-weight:700;line-height:1.35;margin-bottom:8px}
+.fp-stats{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.fp-stat{font-size:11px;background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;color:var(--muted)}
+.fp-stat b{color:var(--text)}
+.fp-actions{display:flex;gap:12px;padding-top:10px;border-top:1px solid rgba(53,53,106,.4)}
+.fp-btn{background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;padding:3px 0}
+.fp-btn.liked{color:var(--rose)}
+.fp-btn .fbi{font-size:15px}
+.feed-empty{text-align:center;color:var(--muted);font-size:13px;line-height:1.6;padding:32px 16px;border:1px dashed var(--border);border-radius:14px}
+.comment-item{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid rgba(53,53,106,.3)}
+.comment-item:last-of-type{border-bottom:none}
+.comment-item .ca{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--teal));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:#0d0d18;flex-shrink:0}
+.comment-item .cb{flex:1;min-width:0}
+.comment-item .cn{font-size:12px;font-weight:800}
+.comment-item .ct{font-size:13px;color:var(--text);margin-top:2px;line-height:1.35}
+.comment-item .cd{font-size:10px;color:var(--muted);margin-top:3px}
+.comment-form{display:flex;gap:8px;margin-top:12px}
+.comment-form input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:10px 12px;font-size:14px}
+.comment-form input:focus{outline:none;border-color:var(--teal)}
+.comment-form button{background:var(--teal);border:none;color:#00332c;font-weight:800;border-radius:12px;padding:0 14px;font-size:16px;cursor:pointer;flex-shrink:0}
+.feed-login-note{text-align:center;color:var(--muted);font-size:13px;padding:24px 0;line-height:1.5}
+.feed-login-note b{color:var(--teal)}
 </style>
 </head>
 <body>
@@ -373,9 +411,18 @@ nav button.active{color:var(--teal)}
 <!-- ============ GRUPO ============ -->
 <div class="tab" id="t-grupo">
 <main>
-  <div class="section-title" style="margin-top:10px">👥 Feed — Minhas atividades</div>
-  <div id="feedArea"></div>
-  <div class="group-banner"><b>Grupos em breve.</b> Na próxima fase você poderá criar grupos, convidar pessoas por código e ver as atividades de todo mundo aqui — com likes e comentários de verdade. Por enquanto o feed registra suas próprias conquistas.</div>
+  <div id="feedLoginNote" class="feed-login-note" style="display:none">
+    Faça login para criar grupos e ver o feed de atividades.<br><b>Entrar →</b> no topo da tela.
+  </div>
+  <div id="feedSocialContent">
+    <div class="section-title" style="margin-top:10px">👥 Meus grupos <button class="more" onclick="abrirModalCriarGrupo()">criar →</button></div>
+    <div id="gruposArea"><div class="feed-empty">Carregando…</div></div>
+    <div class="group-actions">
+      <button class="btn" style="background:var(--card);color:var(--teal);border:1px solid var(--teal)" onclick="abrirModalEntrarGrupo()">Entrar com código</button>
+    </div>
+    <div class="section-title">📣 Feed <button class="more" onclick="abrirModalNovoPost()">novo post →</button></div>
+    <div id="feedArea"><div class="feed-empty">Carregando…</div></div>
+  </div>
 </main>
 </div>
 
@@ -514,6 +561,63 @@ nav button.active{color:var(--teal)}
   </div>
 </div>
 
+<!-- modal criar grupo -->
+<div class="modal-bg" id="modalCriarGrupo">
+  <div class="modal">
+    <h3>Criar grupo</h3>
+    <label>Nome do grupo</label>
+    <input id="inputNomeGrupo" type="text" placeholder="Ex: HPC Turma 2026" maxlength="40">
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-primary" onclick="criarGrupo()">Criar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalCriarGrupo')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal entrar com código -->
+<div class="modal-bg" id="modalEntrarGrupo">
+  <div class="modal">
+    <h3>Entrar com código</h3>
+    <label>Código do grupo</label>
+    <input id="inputCodigoGrupo" type="text" placeholder="Ex: ABC123" maxlength="10" style="text-transform:uppercase;letter-spacing:2px">
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-primary" onclick="entrarGrupo()">Entrar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalEntrarGrupo')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal novo post -->
+<div class="modal-bg" id="modalNovoPost">
+  <div class="modal">
+    <h3>Nova postagem</h3>
+    <label>Grupo</label>
+    <select id="selectGrupoPost"></select>
+    <label>Título</label>
+    <input id="inputTituloPost" type="text" placeholder="O que você fez hoje?" maxlength="120">
+    <div id="postStatsPreview" style="display:none;margin-top:10px"></div>
+    <input type="hidden" id="inputPostKind" value="note">
+    <input type="hidden" id="inputPostStats" value="[]">
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-primary" onclick="publicarPost()">Publicar</button>
+      <button class="btn btn-ghost" onclick="fecharModal('modalNovoPost')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- modal comentários -->
+<div class="modal-bg" id="modalComentarios">
+  <div class="modal">
+    <h3 id="comentariosTitle">Comentários</h3>
+    <div id="comentariosList"></div>
+    <div class="comment-form">
+      <input id="inputComentario" type="text" placeholder="Adicionar comentário…" maxlength="300">
+      <button onclick="enviarComentario()">↑</button>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:12px" onclick="fecharModal('modalComentarios')">Fechar</button>
+  </div>
+</div>
+
 <!-- celebração -->
 <div class="celebrate" id="celebrate">
   <div id="confettiHost"></div>
@@ -521,6 +625,7 @@ nav button.active{color:var(--teal)}
   <h2 id="celTitle">NOVO RECORDE!</h2>
   <p id="celMsg"></p>
   <button class="btn btn-amber" onclick="fecharCelebrate()">Continuar 💪</button>
+  <button class="btn btn-ghost" id="celShareBtn" style="display:none;margin-top:8px;color:var(--teal)" onclick="fecharCelebrate();abrirModalNovoPost(window._celShareOpts||{})">Compartilhar no feed 📣</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1111,6 +1216,12 @@ function finalizarSessao(){
   marcarSessaoPendente(s.id);
   verificarBadges();
   renderTreinos();renderHoje();
+  const durMin=Math.round((s.fim-s.inicio)/60000);
+  const shareStats=[{label:'Duração',value:durMin+'min'},{label:'Exercícios',value:String(s.exercicios.length)},{label:'Séries',value:String(feitos)}];
+  if(s.prs.length)shareStats.push({label:'PRs',value:'★ '+s.prs.length});
+  window._celShareOpts={title:s.nome,kind:'activity',stats:shareStats};
+  const shareBtn=document.getElementById('celShareBtn');
+  if(shareBtn)shareBtn.style.display=authUser&&_meusGrupos.length?'block':'none';
   if(!s.prs.length)celebrar('💪','Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
 }
 function cancelarSessao(){
@@ -1448,7 +1559,7 @@ function go(t,btn){
   btn.classList.add('active');
   document.getElementById('fabNovo').classList.toggle('show',t==='treino');
   if(t==='treino')renderTreinos();
-  if(t==='grupo')renderFeed();
+  if(t==='grupo')carregarFeedSocial();
   if(t==='stats')renderStats();
   window.scrollTo(0,0);
 }
@@ -1851,9 +1962,280 @@ function initOnboarding(){
   }catch(_){}
 }
 
+/* ================= FEED SOCIAL ================= */
+let _meusGrupos=[];
+let _postComentarioAtual=null;
+
+function gerarInviteCode(){
+  return Math.random().toString(36).slice(2,8).toUpperCase();
+}
+
+function tempoRelativo(iso){
+  const diff=(Date.now()-new Date(iso))/1000;
+  if(diff<60)return 'agora';
+  if(diff<3600)return Math.floor(diff/60)+'min';
+  if(diff<86400)return Math.floor(diff/3600)+'h';
+  return Math.floor(diff/86400)+'d';
+}
+
+function renderGrupos(grupos){
+  const el=document.getElementById('gruposArea');
+  if(!el)return;
+  if(!grupos.length){
+    el.innerHTML='<div class="feed-empty">Sem grupos ainda.<br>Crie um ou entre com um código.</div>';
+    return;
+  }
+  el.innerHTML=grupos.map(g=>`
+    <div class="group-card">
+      <div class="gc-ico">👥</div>
+      <div class="gc-info">
+        <div class="gc-name">${g.name}</div>
+        <div class="gc-meta">${g._memberCount||0} membro${(g._memberCount||0)!==1?'s':''} · ${g.role||'membro'}</div>
+      </div>
+      ${g.invite_code?`<div class="gc-code" title="Copiar código" onclick="copiarCodigo('${g.invite_code}')">🔗 ${g.invite_code}</div>`:''}
+    </div>`).join('');
+}
+
+function renderFeedPosts(posts){
+  const el=document.getElementById('feedArea');
+  if(!el)return;
+  if(!posts.length){
+    el.innerHTML='<div class="feed-empty">Nenhum post ainda.<br>Compartilhe seu treino ou conquista!</div>';
+    return;
+  }
+  el.innerHTML=posts.map(p=>{
+    const initial=(p.profiles?.display_name||p._authorEmail||'?')[0].toUpperCase();
+    const authorName=p.profiles?.display_name||p._authorEmail||'Você';
+    const groupName=p.groups?.name||'';
+    const stats=Array.isArray(p.stats)?p.stats:[];
+    const statsHtml=stats.length?`<div class="fp-stats">${stats.map(s=>`<span class="fp-stat">${s.label||''} <b>${s.value||''}</b></span>`).join('')}</div>`:'';
+    return`<div class="feed-post" id="fpost-${p.id}">
+      <div class="fp-header">
+        <div class="fp-avatar">${initial}</div>
+        <div class="fp-meta">
+          <div class="fp-author">${authorName}</div>
+          <div class="fp-sub">${groupName?groupName+' · ':''}${tempoRelativo(p.created_at)}</div>
+        </div>
+      </div>
+      <div class="fp-title">${p.title}</div>
+      ${statsHtml}
+      <div class="fp-actions">
+        <button class="fp-btn${p._liked?' liked':''}" id="like-${p.id}" onclick="toggleLike('${p.id}',this)">
+          <span class="fbi">${p._liked?'❤️':'🤍'}</span> ${p._likeCount||0}
+        </button>
+        <button class="fp-btn" onclick="abrirComentarios('${p.id}','${p.title.replace(/'/g,"\\'")}')">
+          <span class="fbi">💬</span> ${p._commentCount||0}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function carregarFeedSocial(){
+  if(!authUser||!supabaseClient){
+    document.getElementById('feedLoginNote').style.display='block';
+    document.getElementById('feedSocialContent').style.display='none';
+    return;
+  }
+  document.getElementById('feedLoginNote').style.display='none';
+  document.getElementById('feedSocialContent').style.display='block';
+
+  // Carregar grupos
+  const{data:memberships}=await supabaseClient
+    .from('group_members').select('group_id,role,groups(id,name,invite_code)')
+    .eq('user_id',authUser.id);
+  if(!memberships){_meusGrupos=[];renderGrupos([]);return;}
+
+  // Contar membros por grupo
+  const groupIds=memberships.map(m=>m.groups?.id).filter(Boolean);
+  let memberCounts={};
+  if(groupIds.length){
+    const{data:counts}=await supabaseClient
+      .from('group_members').select('group_id').in('group_id',groupIds);
+    (counts||[]).forEach(r=>{memberCounts[r.group_id]=(memberCounts[r.group_id]||0)+1;});
+  }
+
+  _meusGrupos=memberships.map(m=>({
+    ...m.groups,role:m.role,_memberCount:memberCounts[m.groups?.id]||1
+  })).filter(g=>g.id);
+  renderGrupos(_meusGrupos);
+
+  if(!groupIds.length){
+    document.getElementById('feedArea').innerHTML='<div class="feed-empty">Entre em um grupo para ver o feed.</div>';
+    return;
+  }
+
+  // Carregar posts
+  const{data:posts}=await supabaseClient
+    .from('feed_posts')
+    .select('id,title,kind,stats,created_at,user_id,group_id,groups(name),profiles(display_name)')
+    .in('group_id',groupIds)
+    .order('created_at',{ascending:false})
+    .limit(40);
+
+  if(!posts){renderFeedPosts([]);return;}
+
+  // Likes e comentários em batch
+  const postIds=posts.map(p=>p.id);
+  const[{data:likes},{data:myLikes},{data:comments}]=await Promise.all([
+    supabaseClient.from('post_likes').select('post_id').in('post_id',postIds),
+    supabaseClient.from('post_likes').select('post_id').in('post_id',postIds).eq('user_id',authUser.id),
+    supabaseClient.from('post_comments').select('post_id').in('post_id',postIds)
+  ]);
+  const likeMap={},myLikeSet=new Set(),commentMap={};
+  (likes||[]).forEach(l=>{likeMap[l.post_id]=(likeMap[l.post_id]||0)+1;});
+  (myLikes||[]).forEach(l=>myLikeSet.add(l.post_id));
+  (comments||[]).forEach(c=>{commentMap[c.post_id]=(commentMap[c.post_id]||0)+1;});
+
+  const enriched=posts.map(p=>({
+    ...p,
+    _liked:myLikeSet.has(p.id),
+    _likeCount:likeMap[p.id]||0,
+    _commentCount:commentMap[p.id]||0
+  }));
+  renderFeedPosts(enriched);
+}
+
+async function criarGrupo(){
+  const nome=document.getElementById('inputNomeGrupo').value.trim();
+  if(!nome)return;
+  if(!authUser){mostrarToast('Faça login primeiro');return;}
+  const code=gerarInviteCode();
+  const{data:grp,error}=await supabaseClient
+    .from('groups').insert({owner_user_id:authUser.id,name:nome,invite_code:code})
+    .select('id').single();
+  if(error){mostrarToast('Erro ao criar grupo');console.warn(error);return;}
+  await supabaseClient.from('group_members')
+    .insert({group_id:grp.id,user_id:authUser.id,role:'owner'});
+  fecharModal('modalCriarGrupo');
+  document.getElementById('inputNomeGrupo').value='';
+  mostrarToast('Grupo criado! Código: '+code);
+  carregarFeedSocial();
+}
+
+async function entrarGrupo(){
+  const code=document.getElementById('inputCodigoGrupo').value.trim().toUpperCase();
+  if(!code)return;
+  if(!authUser){mostrarToast('Faça login primeiro');return;}
+  const{data:grp,error}=await supabaseClient
+    .from('groups').select('id,name').eq('invite_code',code).single();
+  if(error||!grp){mostrarToast('Código inválido');return;}
+  const{error:e2}=await supabaseClient
+    .from('group_members').insert({group_id:grp.id,user_id:authUser.id,role:'member'});
+  if(e2&&e2.code==='23505'){mostrarToast('Você já está neste grupo');fecharModal('modalEntrarGrupo');return;}
+  if(e2){mostrarToast('Erro ao entrar');return;}
+  fecharModal('modalEntrarGrupo');
+  document.getElementById('inputCodigoGrupo').value='';
+  mostrarToast('Entrou em '+grp.name+'!');
+  carregarFeedSocial();
+}
+
+function abrirModalCriarGrupo(){
+  if(!authUser){mostrarToast('Faça login para criar grupos');return;}
+  document.getElementById('modalCriarGrupo').classList.add('open');
+}
+
+function abrirModalEntrarGrupo(){
+  if(!authUser){mostrarToast('Faça login para entrar em grupos');return;}
+  document.getElementById('modalEntrarGrupo').classList.add('open');
+}
+
+function abrirModalNovoPost(opts={}){
+  if(!authUser){mostrarToast('Faça login para postar');return;}
+  if(!_meusGrupos.length){mostrarToast('Entre em um grupo primeiro');return;}
+  const sel=document.getElementById('selectGrupoPost');
+  sel.innerHTML=_meusGrupos.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  document.getElementById('inputTituloPost').value=opts.title||'';
+  document.getElementById('inputPostKind').value=opts.kind||'note';
+  document.getElementById('inputPostStats').value=JSON.stringify(opts.stats||[]);
+  const prev=document.getElementById('postStatsPreview');
+  if(opts.stats&&opts.stats.length){
+    prev.style.display='flex';
+    prev.innerHTML='<div class="fp-stats">'+opts.stats.map(s=>`<span class="fp-stat">${s.label} <b>${s.value}</b></span>`).join('')+'</div>';
+  }else{
+    prev.style.display='none';
+  }
+  document.getElementById('modalNovoPost').classList.add('open');
+}
+
+async function publicarPost(){
+  const groupId=document.getElementById('selectGrupoPost').value;
+  const title=document.getElementById('inputTituloPost').value.trim();
+  const kind=document.getElementById('inputPostKind').value;
+  let stats=[];
+  try{stats=JSON.parse(document.getElementById('inputPostStats').value);}catch(_){}
+  if(!title){mostrarToast('Escreva um título');return;}
+  const{error}=await supabaseClient.from('feed_posts').insert({
+    user_id:authUser.id,group_id:groupId,kind,title,stats,visibility:'group',source:'manual'
+  });
+  if(error){mostrarToast('Erro ao publicar');console.warn(error);return;}
+  fecharModal('modalNovoPost');
+  mostrarToast('Postado!');
+  carregarFeedSocial();
+}
+
+async function toggleLike(postId,btn){
+  if(!authUser){mostrarToast('Faça login para curtir');return;}
+  const isLiked=btn.classList.contains('liked');
+  if(isLiked){
+    await supabaseClient.from('post_likes').delete()
+      .eq('post_id',postId).eq('user_id',authUser.id);
+  }else{
+    await supabaseClient.from('post_likes').insert({post_id:postId,user_id:authUser.id});
+  }
+  btn.classList.toggle('liked');
+  const ico=btn.querySelector('.fbi');
+  const count=parseInt(btn.textContent.trim().replace(/\D/g,''))||0;
+  if(isLiked){ico.textContent='🤍';btn.innerHTML=`<span class="fbi">🤍</span> ${Math.max(0,count-1)}`;}
+  else{ico.textContent='❤️';btn.innerHTML=`<span class="fbi">❤️</span> ${count+1}`;}
+}
+
+async function abrirComentarios(postId,postTitle){
+  _postComentarioAtual=postId;
+  document.getElementById('comentariosTitle').textContent=postTitle||'Comentários';
+  document.getElementById('comentariosList').innerHTML='<div style="color:var(--muted);font-size:13px;padding:12px 0">Carregando…</div>';
+  document.getElementById('modalComentarios').classList.add('open');
+  const{data:comments}=await supabaseClient
+    .from('post_comments')
+    .select('id,body,created_at,profiles(display_name)')
+    .eq('post_id',postId)
+    .order('created_at',{ascending:true});
+  const el=document.getElementById('comentariosList');
+  if(!comments||!comments.length){
+    el.innerHTML='<div style="color:var(--muted);font-size:13px;padding:12px 0">Sem comentários ainda. Seja o primeiro!</div>';
+    return;
+  }
+  el.innerHTML=comments.map(c=>{
+    const name=c.profiles?.display_name||'Usuário';
+    return`<div class="comment-item">
+      <div class="ca">${name[0].toUpperCase()}</div>
+      <div class="cb">
+        <div class="cn">${name}</div>
+        <div class="ct">${c.body}</div>
+        <div class="cd">${tempoRelativo(c.created_at)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function enviarComentario(){
+  if(!authUser){mostrarToast('Faça login para comentar');return;}
+  const body=document.getElementById('inputComentario').value.trim();
+  if(!body||!_postComentarioAtual)return;
+  const{error}=await supabaseClient.from('post_comments')
+    .insert({post_id:_postComentarioAtual,user_id:authUser.id,body});
+  if(error){mostrarToast('Erro ao comentar');return;}
+  document.getElementById('inputComentario').value='';
+  abrirComentarios(_postComentarioAtual,document.getElementById('comentariosTitle').textContent);
+}
+
+function copiarCodigo(code){
+  navigator.clipboard.writeText(code).then(()=>mostrarToast('Código copiado: '+code)).catch(()=>mostrarToast('Código: '+code));
+}
+
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v14',
+  cacheVersion:'hpc-cache-v15',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,

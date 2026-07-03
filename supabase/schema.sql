@@ -186,7 +186,14 @@ alter table public.post_comments enable row level security;
 
 drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own" on public.profiles
-  for select using (auth.uid() = id);
+  for select using (
+    auth.uid() = id
+    or exists (
+      select 1 from public.group_members gm1
+      join public.group_members gm2 on gm1.group_id = gm2.group_id
+      where gm1.user_id = auth.uid() and gm2.user_id = profiles.id
+    )
+  );
 drop policy if exists "profiles_insert_own" on public.profiles;
 create policy "profiles_insert_own" on public.profiles
   for insert with check (auth.uid() = id);
