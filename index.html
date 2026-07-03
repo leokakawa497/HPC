@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v16"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v17"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1996,15 +1996,16 @@ async function abrirModalCarregarNuvem(){
 
   const uid=authUser.id;
   try{
-    const[hRes,dlRes,dheRes,wpRes,wsRes,wsetRes]=await Promise.all([
+    const[hRes,dlRes,dheRes,wpRes,weRes,wsRes,wsetRes]=await Promise.all([
       supabaseClient.from('habits').select('id,local_id,name,kind,icon').eq('user_id',uid),
       supabaseClient.from('daily_logs').select('log_date,slept_at,woke_at,sleep_minutes,note,score').eq('user_id',uid),
       supabaseClient.from('daily_habit_entries').select('habit_id,entry_date,done,detail').eq('user_id',uid),
       supabaseClient.from('workout_programs').select('id,local_id,name').eq('user_id',uid),
+      supabaseClient.from('workout_exercises').select('program_id,name,target_sets,sort_order').eq('user_id',uid).order('sort_order'),
       supabaseClient.from('workout_sessions').select('id,local_id,name,session_date,started_at,ended_at,duration_ms,prs,program_id').eq('user_id',uid),
       supabaseClient.from('workout_sets').select('session_id,exercise_name,set_index,weight,reps,done,is_pr').eq('user_id',uid),
     ]);
-    const errors=[hRes,dlRes,dheRes,wpRes,wsRes,wsetRes].map(r=>r.error?.message).filter(Boolean);
+    const errors=[hRes,dlRes,dheRes,wpRes,weRes,wsRes,wsetRes].map(r=>r.error?.message).filter(Boolean);
     if(errors.length){
       document.getElementById('cloudLoadStatus').textContent='Erro ao consultar: '+errors[0];
       return;
@@ -2014,6 +2015,7 @@ async function abrirModalCarregarNuvem(){
       daily_logs:dlRes.data||[],
       daily_habit_entries:dheRes.data||[],
       workout_programs:wpRes.data||[],
+      workout_exercises:weRes.data||[],
       workout_sessions:wsRes.data||[],
       workout_sets:wsetRes.data||[]
     };
@@ -2028,6 +2030,7 @@ async function abrirModalCarregarNuvem(){
       ['Dias com registro',c.daily_logs.length],
       ['Entradas de hábito',c.daily_habit_entries.length],
       ['Treinos',c.workout_programs.length],
+      ['Exercícios',c.workout_exercises.length],
       ['Sessões',c.workout_sessions.length],
       ['Sets',c.workout_sets.length],
     ].map(([k,v])=>`<div class="migrate-row"><span class="mk">${k}</span><span class="mv">${v}</span></div>`).join('');
@@ -2081,10 +2084,16 @@ async function confirmarCarregarNuvem(){
     // 4. Reconstruir treinos (workout_programs)
     const programSupaToLocal={};
     c.workout_programs.forEach(p=>{programSupaToLocal[p.id]=p.local_id||p.id;});
-    // Não temos workout_exercises no fetch — preservamos treinos locais se existirem
-    const treinosLocais=db.treinos||[];
-    const treinos=treinosLocais.length?treinosLocais:c.workout_programs.map(p=>({
-      id:p.local_id||p.id,nome:p.name,exercicios:[]
+    // Agrupar exercises por program_id
+    const exByProgram={};
+    (c.workout_exercises||[]).forEach(e=>{
+      if(!exByProgram[e.program_id])exByProgram[e.program_id]=[];
+      exByProgram[e.program_id].push({nome:e.name,series:e.target_sets||3,sets:[]});
+    });
+    const treinos=c.workout_programs.map(p=>({
+      id:p.local_id||p.id,
+      nome:p.name,
+      exercicios:exByProgram[p.id]||[]
     }));
 
     // 5. Reconstruir sessões + sets
@@ -2420,7 +2429,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v16',
+  cacheVersion:'hpc-cache-v17',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
