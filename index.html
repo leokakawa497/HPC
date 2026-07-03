@@ -259,6 +259,16 @@ td.dcol{color:var(--muted);font-weight:600}
 .migrate-row .mv{font-weight:800;color:var(--teal)}
 .migrate-status{font-size:12px;color:var(--muted);line-height:1.5;margin:10px 0;min-height:36px}
 .migrate-warning{font-size:11px;color:var(--amber);background:var(--amber-dim);border:1px solid var(--amber);border-radius:10px;padding:8px 12px;margin-bottom:10px;line-height:1.4}
+.migrate-phase{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);padding:6px 0;border-bottom:1px solid rgba(53,53,106,.3)}
+.migrate-phase:last-child{border-bottom:none}
+.migrate-phase .mp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0}
+.migrate-phase.done .mp-dot{background:var(--green)}
+.migrate-phase.running .mp-dot{background:var(--amber)}
+.migrate-phase.error .mp-dot{background:var(--rose)}
+.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:5px;vertical-align:middle;flex-shrink:0}
+.onboard-feature{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(53,53,106,.3);font-size:13px;align-items:flex-start}
+.onboard-feature:last-child{border-bottom:none}
+.onboard-feature .oico{font-size:18px;width:26px;flex-shrink:0;text-align:center}
 
 /* celebration overlay */
 .celebrate{position:fixed;inset:0;background:rgba(5,5,12,.88);z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:30px}
@@ -293,7 +303,7 @@ nav button.active{color:var(--teal)}
 <header>
   <div class="logo"><img src="./assets/hpc-logo.png" alt="High Performance Club"></div>
   <div style="display:flex;gap:10px;align-items:center">
-    <button class="auth-pill" id="authBtn" onclick="abrirAuth()">Entrar</button>
+    <button class="auth-pill" id="authBtn" onclick="abrirAuth()">Entrar<span class="sync-dot" id="syncDot" style="display:none"></span></button>
     <div class="streak-pill" id="streakPill">🔥 0 dias</div>
     <div class="avatar" onclick="go('stats',document.querySelectorAll('nav button')[3])">L<span class="lvl" id="lvlTag">LV 1</span></div>
   </div>
@@ -465,15 +475,42 @@ nav button.active{color:var(--teal)}
     <div class="migrate-warning">⚠️ Esta operação copia dados do localStorage para o Supabase. O localStorage <b>não será apagado</b>.</div>
     <div class="migrate-status" id="migrateStatus">Calculando dados locais...</div>
     <div class="migrate-preview">
-      <div class="migrate-row"><span class="mk">Dias com registro de sono</span><span class="mv" id="migratePreviewDias">—</span></div>
       <div class="migrate-row"><span class="mk">Hábitos configurados</span><span class="mv" id="migratePreviewHabitos">—</span></div>
+      <div class="migrate-row"><span class="mk">Dias com registro de sono</span><span class="mv" id="migratePreviewDias">—</span></div>
+      <div class="migrate-row"><span class="mk">Entradas de hábitos (check-ins)</span><span class="mv" id="migratePreviewEntradas">—</span></div>
       <div class="migrate-row"><span class="mk">Programas de treino</span><span class="mv" id="migratePreviewTreinos">—</span></div>
       <div class="migrate-row"><span class="mk">Sessões de treino</span><span class="mv" id="migratePreviewSessoes">—</span></div>
-      <div class="migrate-row"><span class="mk">Posts no feed local</span><span class="mv" id="migratePreviewFeed">—</span></div>
     </div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5">Fase 1 migra apenas <b style="color:var(--text)">hábitos</b> e <b style="color:var(--text)">registros de sono</b>. Treinos, entradas de hábitos e feed serão migrados nas próximas fases.</p>
+    <div id="migratePhases" style="margin:10px 0;display:none;background:var(--card2);border-radius:12px;padding:8px 12px">
+      <div class="migrate-phase" id="mp1"><span class="mp-dot"></span>Hábitos</div>
+      <div class="migrate-phase" id="mp2"><span class="mp-dot"></span>Registros de sono</div>
+      <div class="migrate-phase" id="mp3"><span class="mp-dot"></span>Entradas de hábitos</div>
+      <div class="migrate-phase" id="mp4"><span class="mp-dot"></span>Programas e exercícios</div>
+      <div class="migrate-phase" id="mp5"><span class="mp-dot"></span>Sessões de treino</div>
+      <div class="migrate-phase" id="mp6"><span class="mp-dot"></span>Sets de treino</div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5">Migração completa: hábitos, sono, entradas, programas e sessões. <b style="color:var(--text)">localStorage não é apagado.</b></p>
     <button class="btn btn-primary" id="migrateConfirmBtn" onclick="confirmarMigracao()">Confirmar migração</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalMigrate')">Cancelar</button>
+  </div>
+</div>
+
+<!-- onboarding -->
+<div class="modal-bg" id="modalOnboarding">
+  <div class="modal">
+    <div style="text-align:center;padding:8px 0 4px">
+      <div style="font-size:52px">🏆</div>
+      <h3 style="margin-top:10px">Bem-vindo ao HPC</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.55;margin-top:6px">Seu app de performance pessoal. Dados de exemplo estão carregados — explore à vontade.</p>
+    </div>
+    <div style="margin:16px 0;background:var(--card2);border-radius:14px;padding:4px 14px">
+      <div class="onboard-feature"><span class="oico">😴</span><div><b>Sono</b><br><span style="color:var(--muted);font-size:11px">Registre horários e monitore qualidade</span></div></div>
+      <div class="onboard-feature"><span class="oico">✅</span><div><b>Hábitos</b><br><span style="color:var(--muted);font-size:11px">Marque atividades diárias e veja streaks</span></div></div>
+      <div class="onboard-feature"><span class="oico">💪</span><div><b>Treinos</b><br><span style="color:var(--muted);font-size:11px">Registre cargas, séries e PRs</span></div></div>
+      <div class="onboard-feature"><span class="oico">📊</span><div><b>Stats</b><br><span style="color:var(--muted);font-size:11px">Insights, gráficos e badges de conquista</span></div></div>
+    </div>
+    <button class="btn btn-primary" onclick="fecharOnboarding()">Vamos lá 💪</button>
+    <button class="btn btn-ghost" style="margin-top:6px;font-size:12px" onclick="fecharOnboarding()">Fechar</button>
   </div>
 </div>
 
@@ -1423,6 +1460,7 @@ function renderAuth(){
   const emailEl=document.getElementById('authEmail');
   const logout=document.getElementById('authLogoutBtn');
   if(!btn)return;
+  renderSyncBadge();
   const migrateBtn=document.getElementById('authMigrateBtn');
   if(authUser){
     const email=authUser.email||'Conta HPC';
@@ -1518,50 +1556,163 @@ function abrirMigracao(){
   document.getElementById('modalMigrate').classList.add('open');
 }
 function previewMigracao(){
-  const dias=Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length;
-  document.getElementById('migratePreviewDias').textContent=dias;
+  const diasSono=Object.keys(db.dias||{}).filter(k=>{const d=db.dias[k];return d.sono&&(d.sono.dormiu||d.sono.acordou);}).length;
+  let totalEntradas=0;
+  Object.values(db.dias||{}).forEach(d=>{totalEntradas+=Object.keys(d.habitos||{}).length;});
+  document.getElementById('migratePreviewDias').textContent=diasSono;
   document.getElementById('migratePreviewHabitos').textContent=(db.habitos||[]).length;
+  document.getElementById('migratePreviewEntradas').textContent=totalEntradas;
   document.getElementById('migratePreviewTreinos').textContent=(db.treinos||[]).length;
   document.getElementById('migratePreviewSessoes').textContent=(db.sessoes||[]).length;
-  document.getElementById('migratePreviewFeed').textContent=(db.feed||[]).length;
   document.getElementById('migrateStatus').textContent='Revise os dados abaixo. Confirme para subir ao Supabase.';
+  document.getElementById('migratePhases').style.display='none';
   const btn=document.getElementById('migrateConfirmBtn');if(btn)btn.style.display='block';
+  ['mp1','mp2','mp3','mp4','mp5','mp6'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='migrate-phase';});
 }
+function setPhase(id,state){const el=document.getElementById(id);if(el)el.className='migrate-phase '+state;}
 async function confirmarMigracao(){
   if(!authUser||!supabaseClient){
     document.getElementById('migrateStatus').textContent='Login necessário para migrar.';return;
   }
-  const setStatus=m=>document.getElementById('migrateStatus').textContent=m;
+  const setStatus=m=>{const el=document.getElementById('migrateStatus');if(el)el.textContent=m;};
+  document.getElementById('migratePhases').style.display='block';
+  document.getElementById('migrateConfirmBtn').style.display='none';
   const source=db.meta&&db.meta.realDataVersion?'real':'manual';
+  const uid=authUser.id;const erros=[];
 
-  setStatus('Migrando hábitos...');
-  const habitos=(db.habitos||[]).map(h=>({
-    user_id:authUser.id,local_id:h.id||null,
-    name:h.nome||'Sem nome',kind:h.tipo==='text'?'text':'check',
-    icon:h.ico||null,active:true,sort_order:0,source
+  // 1: Hábitos
+  setPhase('mp1','running');setStatus('1/6 · Migrando hábitos...');
+  const habitosPayload=(db.habitos||[]).map(h=>({
+    user_id:uid,local_id:h.id||null,name:h.nome||'Sem nome',
+    kind:h.tipo==='text'?'text':'check',icon:h.ico||null,active:true,sort_order:0,source
   }));
-  if(habitos.length>0){
-    const {error:eH}=await supabaseClient.from('habits').upsert(habitos,{onConflict:'user_id,local_id',ignoreDuplicates:true});
-    if(eH){setStatus('Erro ao migrar hábitos: '+eH.message);return;}
-  }
+  if(habitosPayload.length){
+    const {error:eH}=await supabaseClient.from('habits').upsert(habitosPayload,{onConflict:'user_id,local_id'});
+    if(eH){erros.push('hábitos: '+eH.message);setPhase('mp1','error');}else setPhase('mp1','done');
+  }else setPhase('mp1','done');
+  const {data:habitosDB}=await supabaseClient.from('habits').select('id,local_id').eq('user_id',uid);
+  const habitoUUID=Object.fromEntries((habitosDB||[]).filter(h=>h.local_id).map(h=>[h.local_id,h.id]));
 
-  setStatus('Migrando registros de sono...');
-  const logs=Object.entries(db.dias||{})
+  // 2: Daily logs
+  setPhase('mp2','running');setStatus('2/6 · Migrando registros de sono...');
+  const logsPayload=Object.entries(db.dias||{})
     .filter(([,d])=>d.sono&&(d.sono.dormiu||d.sono.acordou))
-    .map(([iso,d])=>({
-      user_id:authUser.id,log_date:iso,
-      slept_at:d.sono.dormiu||null,woke_at:d.sono.acordou||null,
-      sleep_minutes:d.sono.minutos||null,note:d.nota||null,
-      score:d.score||null,source
-    }));
-  if(logs.length>0){
-    const {error:eL}=await supabaseClient.from('daily_logs').upsert(logs,{onConflict:'user_id,log_date',ignoreDuplicates:true});
-    if(eL){setStatus('Erro ao migrar sono: '+eL.message);return;}
-  }
+    .map(([iso,d])=>({user_id:uid,log_date:iso,slept_at:d.sono.dormiu||null,woke_at:d.sono.acordou||null,
+      sleep_minutes:d.sono.minutos||null,note:d.nota||null,score:d.score||null,source}));
+  if(logsPayload.length){
+    const {error:eL}=await supabaseClient.from('daily_logs').upsert(logsPayload,{onConflict:'user_id,log_date'});
+    if(eL){erros.push('sono: '+eL.message);setPhase('mp2','error');}else setPhase('mp2','done');
+  }else setPhase('mp2','done');
+  const {data:logsDB}=await supabaseClient.from('daily_logs').select('id,log_date').eq('user_id',uid);
+  const logUUID=Object.fromEntries((logsDB||[]).map(l=>[l.log_date,l.id]));
 
-  setStatus('✓ '+habitos.length+' hábitos e '+logs.length+' registros de sono migrados. localStorage preservado.');
-  const btn=document.getElementById('migrateConfirmBtn');if(btn)btn.style.display='none';
-  toast('Migração fase 1 concluída ✓');
+  // 3: Entradas de hábitos
+  setPhase('mp3','running');setStatus('3/6 · Migrando entradas de hábitos...');
+  const entriesPayload=[];
+  Object.entries(db.dias||{}).forEach(([iso,dObj])=>{
+    const logId=logUUID[iso];
+    Object.entries(dObj.habitos||{}).forEach(([hid,entry])=>{
+      const habitId=habitoUUID[hid];if(!habitId)return;
+      entriesPayload.push({user_id:uid,daily_log_id:logId||null,habit_id:habitId,
+        entry_date:iso,done:!!entry.feito,detail:entry.detalhe||null,source:entry.source||source});
+    });
+  });
+  if(entriesPayload.length){
+    let ok=true;
+    for(let i=0;i<entriesPayload.length;i+=200){
+      const {error:eE}=await supabaseClient.from('daily_habit_entries').upsert(entriesPayload.slice(i,i+200),{onConflict:'user_id,habit_id,entry_date'});
+      if(eE){erros.push('entradas: '+eE.message);ok=false;break;}
+    }
+    setPhase('mp3',ok?'done':'error');
+  }else setPhase('mp3','done');
+
+  // 4: Programas + exercícios
+  setPhase('mp4','running');setStatus('4/6 · Migrando programas de treino...');
+  const programasPayload=(db.treinos||[]).map(t=>({
+    user_id:uid,local_id:t.id||null,name:t.nome||'Treino',source:t.source||source
+  }));
+  if(programasPayload.length){
+    const {error:eP}=await supabaseClient.from('workout_programs').upsert(programasPayload,{onConflict:'user_id,local_id'});
+    if(eP)erros.push('programas: '+eP.message);
+  }
+  const {data:programasDB}=await supabaseClient.from('workout_programs').select('id,local_id').eq('user_id',uid);
+  const programaUUID=Object.fromEntries((programasDB||[]).filter(p=>p.local_id).map(p=>[p.local_id,p.id]));
+  let exOk=true;
+  for(const t of (db.treinos||[])){
+    const progId=programaUUID[t.id];if(!progId)continue;
+    const {data:exDB}=await supabaseClient.from('workout_exercises').select('id').eq('user_id',uid).eq('program_id',progId).limit(1);
+    if(exDB&&exDB.length)continue;
+    const exPayload=(t.exercicios||[]).map((e,i)=>({user_id:uid,program_id:progId,name:e.nome||'Exercício',target_sets:e.series||3,sort_order:i}));
+    if(exPayload.length){const {error:eEx}=await supabaseClient.from('workout_exercises').insert(exPayload);if(eEx){erros.push('ex ('+t.nome+'): '+eEx.message);exOk=false;}}
+  }
+  setPhase('mp4',exOk&&!erros.some(e=>e.startsWith('programas'))?'done':'error');
+
+  // 5: Sessões
+  setPhase('mp5','running');setStatus('5/6 · Migrando sessões de treino...');
+  const sessoesPayload=(db.sessoes||[]).map(s=>({
+    user_id:uid,program_id:programaUUID[s.treinoId]||null,local_id:s.id||null,
+    name:s.nome||'Sessão',session_date:s.data,
+    started_at:s.inicio?new Date(s.inicio).toISOString():null,
+    ended_at:s.fim?new Date(s.fim).toISOString():null,
+    duration_ms:s.fim&&s.inicio?s.fim-s.inicio:null,prs:s.prs||[],source:s.source||source
+  }));
+  if(sessoesPayload.length){
+    const {error:eS}=await supabaseClient.from('workout_sessions').upsert(sessoesPayload,{onConflict:'user_id,local_id'});
+    if(eS){erros.push('sessões: '+eS.message);setPhase('mp5','error');}else setPhase('mp5','done');
+  }else setPhase('mp5','done');
+  const {data:sessoesDB}=await supabaseClient.from('workout_sessions').select('id,local_id').eq('user_id',uid);
+  const sessaoUUID=Object.fromEntries((sessoesDB||[]).filter(s=>s.local_id).map(s=>[s.local_id,s.id]));
+
+  // 6: Sets
+  setPhase('mp6','running');setStatus('6/6 · Migrando sets de treino...');
+  let setsOk=true;
+  for(const s of (db.sessoes||[])){
+    const sessId=sessaoUUID[s.id];if(!sessId)continue;
+    const {data:stDB}=await supabaseClient.from('workout_sets').select('id').eq('session_id',sessId).limit(1);
+    if(stDB&&stDB.length)continue;
+    const setsPayload=[];
+    (s.exercicios||[]).forEach(ex=>{(ex.sets||[]).forEach((st,idx)=>setsPayload.push({
+      user_id:uid,session_id:sessId,exercise_name:ex.nome,set_index:idx,
+      weight:st.peso||null,reps:st.reps||null,done:!!st.feito,is_pr:!!st.pr
+    }));});
+    if(setsPayload.length){const {error:eSt}=await supabaseClient.from('workout_sets').insert(setsPayload);if(eSt){erros.push('sets: '+eSt.message);setsOk=false;}}
+  }
+  setPhase('mp6',setsOk?'done':'error');
+
+  // Resultado
+  if(erros.length){
+    setStatus('⚠️ Concluído com avisos — '+erros.join('; ')+'. localStorage preservado.');
+  }else{
+    setStatus('✓ Migração completa! '+habitosPayload.length+' hábitos, '+logsPayload.length+' dias de sono, '+entriesPayload.length+' entradas, '+programasPayload.length+' programas, '+sessoesPayload.length+' sessões. localStorage preservado.');
+    try{localStorage.setItem('hpc_last_sync',JSON.stringify({at:new Date().toISOString(),userId:uid}));}catch(_){}
+    renderSyncBadge();
+    toast('Migração completa ✓');
+  }
+}
+
+/* ================= SYNC BADGE ================= */
+function renderSyncBadge(){
+  const dot=document.getElementById('syncDot');if(!dot)return;
+  try{
+    const raw=localStorage.getItem('hpc_last_sync');
+    dot.style.display=raw&&authUser?'inline-block':'none';
+    if(raw&&authUser){
+      const {at}=JSON.parse(raw);
+      dot.title='Sincronizado em '+new Date(at).toLocaleString('pt-BR');
+    }
+  }catch(_){dot.style.display='none';}
+}
+
+/* ================= ONBOARDING ================= */
+function fecharOnboarding(){
+  document.getElementById('modalOnboarding').classList.remove('open');
+  try{localStorage.setItem('hpc_onboarding_seen','1');}catch(_){}
+}
+function initOnboarding(){
+  try{
+    if(localStorage.getItem('hpc_onboarding_seen'))return;
+    if(db&&db.demo)document.getElementById('modalOnboarding').classList.add('open');
+  }catch(_){}
 }
 
 /* ================= DIAGNÓSTICO ================= */
@@ -1599,6 +1750,8 @@ window.addEventListener('load',initSupabase);
 if(db.meta&&db.meta.realDataVersion===window.HPC_REAL_DATA?.version)salvar();
 if(db.demo){document.getElementById('demoBanner').style.display='block';salvar();}
 renderHoje();
+renderSyncBadge();
+initOnboarding();
 
 /* ================= PWA ================= */
 if ('serviceWorker' in navigator) {
