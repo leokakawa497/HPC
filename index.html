@@ -2036,11 +2036,13 @@ function renderHoje(){
   if(sbText&&sbDot&&sbAction){
     if(authUser){
       sbText.textContent='Sincronizado';
-      sbDot.className='qdot green';
+      sbDot.className='qdot';
+      document.getElementById('syncBarStatus').style.color='var(--teal)';
       sbAction.textContent='Agora ›';
     }else{
       sbText.textContent='Modo local';
       sbDot.className='qdot muted';
+      document.getElementById('syncBarStatus').style.color='var(--muted)';
       sbAction.textContent='Entrar ›';
     }
   }
