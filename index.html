@@ -291,12 +291,12 @@ td.dcol{color:var(--muted);font-weight:600}
 nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-top:1px solid var(--border);display:flex;padding:7px 0 max(9px, env(safe-area-inset-bottom));z-index:50}
 nav button{flex:1;background:none;border:none;color:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0}
 nav button .ico{font-size:19px}
-nav button.active{color:var(--teal)}
+nav button.active{color:var(--text)}
 .tab{display:none}.tab.active{display:block}
 .demo-banner{max-width:520px;margin:8px auto 0;padding:0 16px}
-.demo-banner>div{background:var(--amber-dim);border:1px solid var(--amber);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px}
-.demo-banner b{color:var(--amber)}
-.demo-banner button{margin-left:auto;background:var(--amber);color:#332b00;border:none;font-weight:800;font-size:11px;border-radius:99px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.demo-banner>div{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.demo-banner b{color:var(--text)}
+.demo-banner button{margin-left:auto;background:var(--text);color:var(--card);border:none;font-weight:800;font-size:11px;border-radius:99px;padding:6px 12px;cursor:pointer;white-space:nowrap}
 
 /* feed social */
 .group-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
@@ -419,7 +419,7 @@ nav button.active{color:var(--teal)}
 /* ===== REDESIGN v2 ===== */
 /* Header redesign */
 header{padding:16px 16px 8px;justify-content:center;position:relative}
-.logo img{width:180px;height:auto;max-height:44px;object-fit:contain;filter:none}
+.logo img{width:205px;height:auto;max-height:50px;object-fit:contain;filter:none}
 .header-right{position:absolute;right:16px;top:18px;display:flex;gap:8px;align-items:center}
 .header-right .streak-pill{display:none}
 .bell-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:none;flex-shrink:0;position:relative;color:var(--text)}
@@ -466,13 +466,13 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 .hdots{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
 .hdot{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted)}
 .hdot.done{background:var(--text);border-color:var(--text);color:#fff}
-.qcard-link{font-size:11px;color:#5856D6;font-weight:700;margin-top:auto;padding-top:8px}
+.qcard-link{font-size:11.5px;color:var(--text);font-weight:650;margin-top:auto;padding-top:8px}
 
 /* Quick stats row */
 .qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 8px;margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:var(--shadow)}
 .qst{display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border);padding:4px 6px}
 .qst:last-child{border-right:none}
-.qst-ico{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.qst-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
 .qst-val{font-size:15px;font-weight:800;line-height:1.1}
 .qst-lbl{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-align:center}
 
@@ -858,19 +858,19 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <span class="qs-lbl">Quick Stats</span>
   <div class="qstats-row">
     <div class="qst">
-      <span class="qst-ico" style="background:rgba(255,149,0,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
       <span class="qst-val" id="qsKcal">—</span><span class="qst-lbl">Calories</span>
     </div>
     <div class="qst">
-      <span class="qst-ico" style="background:rgba(0,122,255,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 14.5 15"/><line x1="10" y1="2" x2="14" y2="2"/></svg></span>
       <span class="qst-val" id="qsMin">—</span><span class="qst-lbl">Active Min</span>
     </div>
     <div class="qst">
-      <span class="qst-ico" style="background:rgba(255,59,48,.1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
       <span class="qst-val" id="qsBpm">—</span><span class="qst-lbl">Resting HR</span>
     </div>
     <div class="qst">
-      <span class="qst-ico" style="background:rgba(88,86,214,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5 1.3-8.5-2.7-11.5-2-.5.4-1 .6-1 1.2C3 12 8 13 9 14c.5.5.5 1 .5 1.5v4.5c0 .5.5 1 1 1h6c.5 0 1-.5 1-1v-4c0-.5 0-1 .5-1.5C19.5 13 20 12 22 10c0-3.5-2-5-3-5z"/></svg></span>
+      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5 1.3-8.5-2.7-11.5-2-.5.4-1 .6-1 1.2C3 12 8 13 9 14c.5.5.5 1 .5 1.5v4.5c0 .5.5 1 1 1h6c.5 0 1-.5 1-1v-4c0-.5 0-1 .5-1.5C19.5 13 20 12 22 10c0-3.5-2-5-3-5z"/></svg></span>
       <span class="qst-val" id="qsSteps">—</span><span class="qst-lbl">Steps</span>
     </div>
   </div>
@@ -1719,8 +1719,8 @@ function renderQuickCards(){
   if(scoreDotEl&&scoreLabelEl&&scoreDescEl){
     let cls,lbl,desc;
     if(sc>=80){cls='';lbl='Excelente';desc='Você está no caminho certo hoje.';}
-    else if(sc>=60){cls='';lbl='Bom';desc='Bom progresso, continue assim!';}
-    else if(sc>=40){cls='amber';lbl='Regular';desc='Dá pra melhorar, vai lá!';}
+    else if(sc>=60){cls='';lbl='Bom';desc='Bom progresso hoje.';}
+    else if(sc>=40){cls='amber';lbl='Regular';desc='Ainda dá para evoluir hoje.';}
     else{cls='rose';lbl='Iniciando';desc='Registre sono e hábitos para pontuar.';}
     scoreDotEl.className='sdot'+(cls?' '+cls:'');
     scoreLabelEl.textContent=lbl;
