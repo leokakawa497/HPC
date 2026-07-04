@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v23"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v24"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -336,6 +336,47 @@ nav button.active{color:var(--teal)}
 .comment-form button{background:var(--teal);border:none;color:#fff;font-weight:800;border-radius:12px;padding:0 14px;font-size:16px;cursor:pointer;flex-shrink:0}
 .feed-login-note{text-align:center;color:var(--muted);font-size:13px;padding:24px 0;line-height:1.5}
 .feed-login-note b{color:var(--teal)}
+
+/* Community redesign */
+#t-grupo .page-title{padding:12px 0 8px;margin:0}
+#t-grupo .page-title h2{font-size:26px;font-weight:850;letter-spacing:0;line-height:1.08}
+#t-grupo .page-title .psub{font-size:14px;margin-top:4px}
+#t-grupo .sub-tabs{display:grid;grid-template-columns:repeat(4,max-content);gap:24px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--border);margin:8px -16px 0;padding:0 16px}
+#t-grupo .sub-tabs::-webkit-scrollbar{display:none}
+#t-grupo .sub-tab{background:none;border:none;border-radius:0;padding:13px 0 11px;font-size:15px;font-weight:650;color:var(--muted);white-space:nowrap;position:relative}
+#t-grupo .sub-tab.active{color:#000}
+#t-grupo .sub-tab.active:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:99px;background:#000}
+#t-grupo .post-composer{border-radius:18px;padding:16px;margin:14px 0 12px}
+#t-grupo .composer-ava{width:48px;height:48px;background:#000;color:#fff;border-color:#000;font-size:16px}
+#t-grupo .composer-input{font-size:15px;color:var(--muted)}
+#t-grupo .composer-btns{justify-content:space-between;padding-top:13px}
+#t-grupo .composer-btn{font-size:12.5px;min-height:34px;border-radius:12px}
+#t-grupo .feed-post,#t-grupo .post{border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+#t-grupo .fp-header,#t-grupo .post-head{gap:12px;margin-bottom:12px}
+#t-grupo .fp-avatar,#t-grupo .pava{width:44px;height:44px;border-radius:50%;background:#000;color:#fff;font-size:15px}
+#t-grupo .fp-author,#t-grupo .pn{font-size:15px;font-weight:850}
+#t-grupo .fp-sub,#t-grupo .pt{font-size:12px;color:var(--muted)}
+#t-grupo .fp-title,#t-grupo .post-body{font-size:15.5px;line-height:1.38;font-weight:650;margin:8px 0 12px}
+#t-grupo .fp-stats,#t-grupo .post-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:10px 0 12px}
+#t-grupo .fp-stat,#t-grupo .pstat{background:#fff;border:none;border-right:1px solid var(--border);border-radius:0;padding:10px 8px;text-align:center;color:var(--muted);font-size:11px}
+#t-grupo .fp-stat:last-child,#t-grupo .pstat:last-child{border-right:none}
+#t-grupo .fp-stat b,#t-grupo .pstat b{display:block;color:#000;font-size:14px;margin-top:2px}
+#t-grupo .fp-actions,#t-grupo .post-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--border);padding-top:12px}
+#t-grupo .fp-btn,#t-grupo .pact{justify-content:center;font-size:13px;color:var(--muted);font-weight:750;background:none;border:none}
+#t-grupo .group-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+#t-grupo .group-actions .btn{border-radius:14px}
+#t-grupo .group-card{border-radius:18px;padding:14px;box-shadow:var(--shadow);margin-bottom:10px}
+#t-grupo .gc-ico{width:48px;height:48px;border-radius:14px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center}
+#t-grupo .gc-name{font-size:16px;font-weight:850}
+#t-grupo .gc-meta{font-size:12px}
+#t-grupo .gc-code{background:var(--card2);border:1px solid var(--border);color:#000;border-radius:12px;padding:7px 10px}
+.community-score{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 16px;margin:14px 0 12px;box-shadow:var(--shadow)}
+.community-score .cs-top{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted)}
+.community-score .cs-rank{color:#000;font-size:12px;text-transform:none;letter-spacing:0}
+.community-score .cs-val{font-size:24px;font-weight:850;margin-top:9px}
+.community-score .cs-track{height:7px;border-radius:99px;background:var(--card2);overflow:hidden;margin-top:9px}
+.community-score .cs-fill{height:100%;background:var(--teal);border-radius:99px}
+.community-score .cs-note{font-size:12px;color:var(--muted);margin-top:8px}
 
 /* ===== REDESIGN v2 ===== */
 /* Header redesign */
@@ -690,8 +731,10 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   </div>
 
   <div class="sub-tabs">
-    <button class="sub-tab active" id="subTabFeed" onclick="switchGrupoTab('feed')">Feed</button>
-    <button class="sub-tab" id="subTabGrupos" onclick="switchGrupoTab('grupos')">Grupos</button>
+    <button class="sub-tab active" id="subTabFeed" onclick="switchGrupoTab('feed',this)">Feed</button>
+    <button class="sub-tab" onclick="switchGrupoTab('feed',this)">Following</button>
+    <button class="sub-tab" onclick="switchGrupoTab('feed',this)">Workouts</button>
+    <button class="sub-tab" id="subTabGrupos" onclick="switchGrupoTab('grupos',this)">Challenges</button>
   </div>
 
   <!-- Feed panel -->
@@ -718,6 +761,12 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- Grupos panel -->
   <div id="panelGrupos" style="display:none">
+    <div class="community-score">
+      <div class="cs-top"><span>Your progress</span><span class="cs-rank">Rank #6</span></div>
+      <div class="cs-val" id="communityXp">0 XP <span style="font-size:13px;color:var(--muted);font-weight:650">/ 15.000 XP</span></div>
+      <div class="cs-track"><div class="cs-fill" id="communityXpFill" style="width:0%"></div></div>
+      <div class="cs-note">Continue treinando para subir no ranking semanal.</div>
+    </div>
     <div class="group-actions">
       <button class="btn btn-primary" style="margin:0;flex:1;padding:11px;font-size:13px" onclick="abrirModalCriarGrupo()">+ Criar grupo</button>
       <button class="btn btn-ghost" style="margin:0;flex:1;padding:11px;font-size:13px;border:1px solid var(--border)" onclick="abrirModalEntrarGrupo()">Entrar com código</button>
@@ -1440,11 +1489,23 @@ function renderFeaturedWorkout(){
 }
 
 /* ================= GRUPO SUB-TABS ================= */
-function switchGrupoTab(tab){
-  document.getElementById('subTabFeed').classList.toggle('active',tab==='feed');
-  document.getElementById('subTabGrupos').classList.toggle('active',tab==='grupos');
+function switchGrupoTab(tab,btn){
+  document.querySelectorAll('#t-grupo .sub-tab').forEach(x=>x.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else document.getElementById(tab==='grupos'?'subTabGrupos':'subTabFeed').classList.add('active');
   document.getElementById('panelFeed').style.display=tab==='feed'?'':'none';
   document.getElementById('panelGrupos').style.display=tab==='grupos'?'':'none';
+  renderCommunityProgress();
+}
+
+function renderCommunityProgress(){
+  const val=document.getElementById('communityXp');
+  const fill=document.getElementById('communityXpFill');
+  if(!val||!fill)return;
+  const target=15000;
+  const xp=db.xp||0;
+  val.innerHTML=xp.toLocaleString('pt-BR')+' XP <span style="font-size:13px;color:var(--muted);font-weight:650">/ '+target.toLocaleString('pt-BR')+' XP</span>';
+  fill.style.width=Math.min(100,Math.round(xp/target*100))+'%';
 }
 
 /* ================= PROFILE ================= */
@@ -2138,7 +2199,7 @@ function go(t,btn){
   btn.classList.add('active');
   document.getElementById('fabNovo').classList.toggle('show',t==='treino');
   if(t==='treino')renderTreinos();
-  if(t==='grupo')carregarFeedSocial();
+  if(t==='grupo'){renderCommunityProgress();carregarFeedSocial();}
   if(t==='stats')renderStats();
   if(t==='profile')renderProfile();
   window.scrollTo(0,0);
@@ -3044,7 +3105,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v23',
+  cacheVersion:'hpc-cache-v24',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
