@@ -353,14 +353,14 @@ nav button.active{color:var(--teal)}
 #t-grupo .composer-btn{font-size:12.5px;min-height:34px;border-radius:12px}
 #t-grupo .feed-post,#t-grupo .post{border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
 #t-grupo .fp-header,#t-grupo .post-head{gap:12px;margin-bottom:12px}
-#t-grupo .fp-avatar,#t-grupo .pava{width:44px;height:44px;border-radius:50%;background:#000;color:#fff;font-size:15px}
+#t-grupo .fp-avatar,#t-grupo .pava{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#5856D6,#007AFF);color:#fff;font-size:15px}
 #t-grupo .fp-author,#t-grupo .pn{font-size:15px;font-weight:850}
 #t-grupo .fp-sub,#t-grupo .pt{font-size:12px;color:var(--muted)}
 #t-grupo .fp-title,#t-grupo .post-body{font-size:15.5px;line-height:1.38;font-weight:650;margin:8px 0 12px}
 #t-grupo .fp-stats,#t-grupo .post-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:10px 0 12px}
 #t-grupo .fp-stat,#t-grupo .pstat{background:#fff;border:none;border-right:1px solid var(--border);border-radius:0;padding:10px 8px;text-align:center;color:var(--muted);font-size:11px}
 #t-grupo .fp-stat:last-child,#t-grupo .pstat:last-child{border-right:none}
-#t-grupo .fp-stat b,#t-grupo .pstat b{display:block;color:#000;font-size:14px;margin-top:2px}
+#t-grupo .fp-stat b,#t-grupo .pstat b{display:block;color:var(--text);font-size:14px;margin-top:2px;font-weight:850}
 #t-grupo .fp-actions,#t-grupo .post-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid var(--border);padding-top:12px}
 #t-grupo .fp-btn,#t-grupo .pact{justify-content:center;font-size:13px;color:var(--muted);font-weight:750;background:none;border:none}
 #t-grupo .group-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
@@ -2387,7 +2387,14 @@ function renderFeed(){
     el.appendChild(div);
   });
 }
-function curtir(id){const p=db.feed.find(x=>x.id===id);p.liked=!p.liked;p.likes+=p.liked?1:-1;salvar();renderFeed();}
+function curtir(id){
+  const p=db.feed.find(x=>x.id===id);
+  if(!p)return;
+  p.liked=!p.liked;p.likes+=p.liked?1:-1;salvar();renderFeed();
+  // Also refresh the social feed panel if it's visible (no-auth local posts)
+  const sf=document.getElementById('feedSocialContent');
+  if(sf&&sf.style.display!=='none'&&(!authUser||!supabaseClient))carregarFeedSocial();
+}
 function comentar(id){
   const inp=document.getElementById('ci-'+id);
   const txt=inp.value.trim();if(!txt)return;
