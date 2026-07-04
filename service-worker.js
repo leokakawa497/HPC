@@ -5,7 +5,7 @@
   worker deletes older HPC caches so users do not stay stuck on old files.
   This does not touch localStorage, where the user's app data is stored.
 */
-const CACHE_VERSION = 'hpc-cache-v29';
+const CACHE_VERSION = 'hpc-cache-v30';
 const APP_SHELL = [
   './',
   './index.html',

@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v29"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v30"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -720,6 +720,29 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .hsi-week-pct{font-size:12px;font-weight:750;color:var(--muted)}
 .hsi-week-pct.good{color:var(--teal)}
 .hsi-chev{font-size:16px;color:var(--border);margin-left:4px}
+/* Profile: XP card */
+.xp-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-top:12px}
+.xpc-badge{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#5856D6,#007AFF);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.xpc-badge span:first-child{font-size:18px;font-weight:850;color:#fff;line-height:1}
+.xpc-badge span:last-child{font-size:8px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.5px;text-transform:uppercase}
+.xpc-right{flex:1;min-width:0}
+.xpc-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:7px}
+.xpc-xp{font-size:15px;font-weight:800}
+.xpc-lbl{font-size:11px;color:var(--muted);font-weight:600}
+.xpc-track{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;border:1px solid var(--border)}
+.xpc-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#5856D6,#007AFF);transition:width .4s}
+.xpc-sub{font-size:10.5px;color:var(--muted);margin-top:5px;font-weight:600}
+/* Profile: goal rings */
+.goal-rings{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:9px}
+.grcard{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;display:flex;align-items:center;gap:14px}
+.grc-ring{position:relative;width:60px;height:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.grc-ring svg{position:absolute;top:0;left:0;width:60px;height:60px}
+.grc-center{position:relative;z-index:1;text-align:center;line-height:1}
+.grc-val{font-size:13.5px;font-weight:850}
+.grc-pctlbl{font-size:9px;color:var(--muted);font-weight:600;margin-top:2px}
+.grc-info{flex:1;min-width:0}
+.grc-name{font-size:13px;font-weight:750}
+.grc-fraction{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
 /* Recovery Sleep modal */
 .sleep-modal-inner{padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
 .sm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
@@ -1047,7 +1070,9 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <button class="profile-edit" onclick="abrirAuth()">Editar</button>
   </div>
 
-  <div class="section-cap">Body Metrics</div>
+  <div id="profileXpCard"></div>
+
+  <div class="section-cap" style="margin-top:18px">Body Metrics</div>
   <div class="body-metrics">
     <div class="metric-item"><span class="metric-ico">⚡</span><span class="metric-val" id="profileXpMetric">0</span><span class="metric-lbl">XP</span></div>
     <div class="metric-item"><span class="metric-ico">🔥</span><span class="metric-val" id="profileStreakMetric">0</span><span class="metric-lbl">Streak</span></div>
@@ -1055,8 +1080,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <div class="metric-item"><span class="metric-ico">🏋️</span><span class="metric-val" id="profileTrainMetric">0</span><span class="metric-lbl">Treinos</span></div>
   </div>
 
-  <div class="section-cap">Weekly Goals</div>
-  <div class="weekly-goals" id="weeklyGoals"></div>
+  <div class="section-cap" style="margin-top:18px">Weekly Goals</div>
+  <div id="weeklyGoals"></div>
 
   <div class="section-cap">Conquistas</div>
   <div class="badges" id="badgesAreaProfile"></div>
@@ -1869,8 +1894,40 @@ function renderProfile(){
     ['Sono',sleepDays,7],
     ['Streak',Math.min(calcStreak(),7),7]
   ];
+  // XP level card
+  const nv=nivel(db.xp);
+  const xpInLvl=db.xp%500;
+  const xpPct=Math.round(xpInLvl/500*100);
+  const xpNext=500-xpInLvl;
+  const xpDisplay=db.xp>=1000?(db.xp/1000).toFixed(1)+'k':String(db.xp);
+  const xpcEl=document.getElementById('profileXpCard');
+  if(xpcEl)xpcEl.innerHTML='<div class="xp-card">'
+    +'<div class="xpc-badge"><span>'+nv+'</span><span>Nível</span></div>'
+    +'<div class="xpc-right">'
+    +'<div class="xpc-row"><span class="xpc-xp">'+xpDisplay+' XP</span><span class="xpc-lbl">Nível '+nv+' / Athlete</span></div>'
+    +'<div class="xpc-track"><div class="xpc-fill" style="width:'+xpPct+'%"></div></div>'
+    +'<div class="xpc-sub">Faltam '+xpNext+' XP para Nível '+(nv+1)+'</div>'
+    +'</div></div>';
+  // Goal rings
+  const goalDefs=[
+    {label:'Workouts',ico:'🏋️',val:workouts,max:5,col:'#5856D6'},
+    {label:'Dias ativos',ico:'⚡',val:activeDays,max:7,col:'#34C759'},
+    {label:'Noites sono',ico:'😴',val:sleepDays,max:7,col:'#007AFF'},
+    {label:'Streak',ico:'🔥',val:Math.min(calcStreak(),7),max:7,col:'#FF9500'}
+  ];
+  const circ=+(2*Math.PI*24).toFixed(2);
   const wg=document.getElementById('weeklyGoals');
-  if(wg)wg.innerHTML=goals.map(g=>'<div class="goal-card"><b>'+g[0]+'</b><div class="gv">'+g[1]+' / '+g[2]+'</div><div class="gtrack"><div class="gfill" style="width:'+Math.min(100,Math.round(g[1]/g[2]*100))+'%"></div></div></div>').join('');
+  if(wg)wg.innerHTML='<div class="goal-rings">'+goalDefs.map(g=>{
+    const pct=g.max>0?Math.min(g.val/g.max,1):0;
+    const fill=+(pct*circ).toFixed(2);
+    const col=pct>=1?'#34C759':pct>=.5?g.col:'#FF9500';
+    const ring='<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#E5E5EA" stroke-width="5"/>'
+      +'<circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="5" stroke-dasharray="'+fill+' '+circ+'" stroke-linecap="round" transform="rotate(-90 30 30)"/></svg>';
+    return'<div class="grcard"><div class="grc-ring">'+ring
+      +'<div class="grc-center"><div class="grc-val">'+g.val+'</div><div class="grc-pctlbl">'+Math.round(pct*100)+'%</div></div></div>'
+      +'<div class="grc-info"><div class="grc-name">'+g.ico+' '+g.label+'</div>'
+      +'<div class="grc-fraction">'+g.val+' / '+g.max+' esta semana</div></div></div>';
+  }).join('')+'</div>';
   // copy badges to profile
   const dst=document.getElementById('badgesAreaProfile');
   const src=document.getElementById('badgesArea');
@@ -3581,7 +3638,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v29',
+  cacheVersion:'hpc-cache-v30',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
