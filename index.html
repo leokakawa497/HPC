@@ -470,9 +470,9 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 
 /* Quick stats row */
 .qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 8px;margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:var(--shadow)}
-.qst{display:flex;flex-direction:column;align-items:center;gap:3px;border-right:1px solid var(--border);padding:2px 4px}
+.qst{display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border);padding:4px 6px}
 .qst:last-child{border-right:none}
-.qst-ico{font-size:18px}
+.qst-ico{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .qst-val{font-size:15px;font-weight:800;line-height:1.1}
 .qst-lbl{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-align:center}
 
@@ -508,7 +508,7 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 #t-hoje .hdots{margin-top:14px;gap:7px}
 #t-hoje .hdot{width:28px;height:28px;background:#fff}
 #t-hoje .qstats-row{border-radius:18px;padding:16px 8px;margin-top:14px}
-#t-hoje .qst-ico{font-size:20px;filter:grayscale(1)}
+#t-hoje .qst-ico{width:32px;height:32px;border-radius:11px}
 #t-hoje .qst-val{font-size:17px}
 #t-hoje .qst-lbl{font-size:10px;line-height:1.2}
 #t-hoje .featured-workout{grid-template-columns:43% 1fr;min-height:158px;border-radius:18px;margin-top:14px}
@@ -779,7 +779,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <div class="logo"><img src="./assets/hpc-wordmark.svg" alt="High Performance Club"></div>
   <div class="header-right">
     <div class="streak-pill" id="streakPill">🔥 0 dias</div>
-    <button class="bell-btn" onclick="abrirAuth()" title="Conta">🔔<span class="notif-dot" id="notifDot"></span></button>
+    <button class="bell-btn" onclick="abrirAuth()" title="Conta"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notif-dot" id="notifDot"></span></button>
   </div>
   <div style="display:none">
     <button id="authBtn" class="auth-pill" onclick="abrirAuth()">Entrar<span class="sync-dot" id="syncDot" style="display:none"></span></button>
@@ -809,9 +809,14 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <div class="score-card">
     <div class="sc-ico" style="background:transparent;padding:0;overflow:visible">
       <svg width="62" height="62" viewBox="0 0 62 62" style="transform:rotate(-90deg)">
-        <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5856D6"/><stop offset="100%" stop-color="#007AFF"/></linearGradient></defs>
-        <circle cx="31" cy="31" r="26" fill="none" stroke="#E5E5EA" stroke-width="5.5"/>
-        <circle id="scoreRing" cx="31" cy="31" r="26" fill="none" stroke="url(#scoreGrad)" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
+        <defs>
+          <linearGradient id="scoreGradGreen" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#30D158"/><stop offset="100%" stop-color="#34C759"/></linearGradient>
+          <linearGradient id="scoreGradAmber" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF9500"/><stop offset="100%" stop-color="#FFCC00"/></linearGradient>
+          <linearGradient id="scoreGradBlue" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5856D6"/><stop offset="100%" stop-color="#007AFF"/></linearGradient>
+          <linearGradient id="scoreGradRed" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF3B30"/><stop offset="100%" stop-color="#FF6961"/></linearGradient>
+        </defs>
+        <circle cx="31" cy="31" r="25" fill="none" stroke="var(--card2)" stroke-width="7"/>
+        <circle id="scoreRing" cx="31" cy="31" r="25" fill="none" stroke="url(#scoreGradBlue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1"/>
       </svg>
     </div>
     <div class="sc-main">
@@ -857,10 +862,22 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- Quick stats row -->
   <div class="qstats-row">
-    <div class="qst"><span class="qst-ico">⚡</span><span class="qst-val" id="qsXP">0</span><span class="qst-lbl">XP Total</span></div>
-    <div class="qst"><span class="qst-ico">😴</span><span class="qst-val" id="qsSono">—</span><span class="qst-lbl">Sono hoje</span></div>
-    <div class="qst"><span class="qst-ico">🎯</span><span class="qst-val" id="qsAtiv">0</span><span class="qst-lbl">Atividades</span></div>
-    <div class="qst"><span class="qst-ico">🔥</span><span class="qst-val" id="qsStreak">0</span><span class="qst-lbl">Dias seguidos</span></div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(88,86,214,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+      <span class="qst-val" id="qsXP">0</span><span class="qst-lbl">XP Total</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(0,122,255,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg></span>
+      <span class="qst-val" id="qsSono">—</span><span class="qst-lbl">Sono hoje</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(52,199,89,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+      <span class="qst-val" id="qsAtiv">0</span><span class="qst-lbl">Atividades</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(255,149,0,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
+      <span class="qst-val" id="qsStreak">0</span><span class="qst-lbl">Dias seguidos</span>
+    </div>
   </div>
 
   <div class="featured-workout" id="featuredWorkout" style="display:none"></div>
@@ -1657,6 +1674,22 @@ function renderGreeting(){
   }
   const el=document.getElementById('greetingText');
   if(el)el.textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+nome+' 👋';
+  // Dynamic subtitle
+  const subEl=document.getElementById('greetingSub');
+  if(subEl){
+    const streak=calcStreak();
+    const dia=getDia(hojeISO());
+    const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
+    const treinouHoje=db.sessoes.some(s=>s.data===hojeISO());
+    let sub='Vamos construir algo ótimo hoje.';
+    if(streak>=7)sub='🔥 '+streak+' dias seguidos! Lenda em construção.';
+    else if(streak>=3)sub='🔥 '+streak+' dias seguidos! Continue assim.';
+    else if(treinouHoje)sub='💪 Treino feito! Missão do dia cumprida.';
+    else if(mins!==null&&mins>=480)sub='😴 Você dormiu bem. Ótimo dia para treinar!';
+    else if(h<12)sub='Vamos começar o dia com tudo. 💪';
+    else if(h>=21)sub='Descanse bem. Amanhã é outro dia.';
+    subEl.textContent=sub;
+  }
 }
 
 /* ================= QUICK CARDS ================= */
@@ -1959,7 +1992,12 @@ function renderHoje(){
   document.getElementById('scoreVal').textContent=sc;
   document.getElementById('ringProg').style.strokeDashoffset=295-(295*sc/100);
   const scoreRingEl=document.getElementById('scoreRing');
-  if(scoreRingEl)scoreRingEl.style.strokeDashoffset=(163.4*(1-sc/100)).toFixed(1);
+  if(scoreRingEl){
+    const circ=157.1;
+    scoreRingEl.style.strokeDashoffset=(circ*(1-sc/100)).toFixed(1);
+    const grad=sc>=85?'scoreGradGreen':sc>=70?'scoreGradBlue':sc>=50?'scoreGradAmber':'scoreGradRed';
+    scoreRingEl.setAttribute('stroke','url(#'+grad+')');
+  }
 
   // hero stats
   const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
