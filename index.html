@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v30"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v31"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -334,8 +334,8 @@ nav button.active{color:var(--teal)}
 .comment-form input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:12px;color:var(--text);padding:10px 12px;font-size:14px}
 .comment-form input:focus{outline:none;border-color:var(--teal)}
 .comment-form button{background:var(--teal);border:none;color:#fff;font-weight:800;border-radius:12px;padding:0 14px;font-size:16px;cursor:pointer;flex-shrink:0}
-.feed-login-note{text-align:center;color:var(--muted);font-size:13px;padding:24px 0;line-height:1.5}
-.feed-login-note b{color:var(--teal)}
+.feed-login-note{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-size:12.5px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;line-height:1.4}
+.feed-login-note b{color:var(--violet);cursor:pointer}
 
 /* Community redesign */
 #t-grupo .page-title{padding:12px 0 8px;margin:0}
@@ -921,7 +921,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <!-- Feed panel -->
   <div id="panelFeed">
     <div id="feedLoginNote" class="feed-login-note" style="display:none">
-      Faça login para criar grupos e ver o feed de atividades.<br><b>Entrar →</b> no topo da tela.
+      <span style="font-size:18px">🔒</span>
+      <span>Feed social requer login. <b onclick="abrirAuth()">Entrar →</b></span>
     </div>
     <div id="feedSocialContent">
       <!-- Post composer -->
@@ -3429,8 +3430,38 @@ function renderFeedPosts(posts){
 
 async function carregarFeedSocial(){
   if(!authUser||!supabaseClient){
-    document.getElementById('feedLoginNote').style.display='block';
-    document.getElementById('feedSocialContent').style.display='none';
+    document.getElementById('feedLoginNote').style.display='flex';
+    document.getElementById('feedSocialContent').style.display='block';
+    document.getElementById('postComposer').style.display='none';
+    const el=document.getElementById('feedArea');
+    let posts=db.feed.slice(0,10);
+    if(!posts.length&&db.sessoes.length){
+      posts=db.sessoes.slice(-6).reverse().map(s=>{
+        const ts=new Date(s.data+'T09:00:00').getTime();
+        const hasPR=s.prs&&s.prs.length;
+        return{id:s.id||uid(),tipo:hasPR?'pr':'treino',ts,
+          titulo:hasPR?'Novo PR em '+s.nome+' 🏆':'Finalizou '+s.nome+' 💪',
+          stats:[{v:String(s.exercicios?s.exercicios.length:'-'),l:'Exercícios'}].concat(hasPR?[{v:'★'+s.prs.length,l:'PR'}]:[]),
+          likes:Math.floor(Math.random()*8)+1,liked:false,comentarios:[],foto:null};
+      });
+    }
+    if(!posts.length){el.innerHTML='<div class="feed-empty">Finalize um treino para ver seu feed 🚀</div>';return;}
+    el.innerHTML='';
+    posts.forEach(p=>{
+      const div=document.createElement('div');div.className='post';
+      const dt=new Date(p.ts);
+      const postIso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+      const quando=formatDateBR(postIso);
+      const badge=p.tipo==='pr'?'<span class="post-badge pr">🏆 PR</span>':'<span class="post-badge tr">TREINO</span>';
+      const isLocal=db.feed.find(x=>x.id===p.id);
+      div.innerHTML='<div class="post-head"><div class="pava">L</div><div><div class="pn">Leonardo</div><div class="pt">'+quando+'</div></div>'+badge+'</div>'+
+        '<div class="post-body">'+esc(p.titulo)+'</div>'+
+        (p.stats&&p.stats.length?'<div class="post-stats">'+p.stats.map(s=>'<div class="pstat"><b>'+esc(s.v)+'</b><span>'+esc(s.l)+'</span></div>').join('')+'</div>':'')+
+        '<div class="post-actions"><button class="pact'+(p.liked?' liked':'')+'" '+(isLocal?'onclick="curtir(\''+p.id+'\')"':'')+'>❤️ '+p.likes+'</button>'+
+        '<button class="pact" '+(isLocal?'onclick="focoComentario(\''+p.id+'\')"':'')+'>💬 '+p.comentarios.length+'</button></div>'+
+        (isLocal?p.comentarios.map(c=>'<div class="pcomment"><b>Leonardo</b> '+esc(c)+'</div>').join('')+'<div class="comment-input"><input id="ci-'+p.id+'" placeholder="Comentar..." maxlength="120"><button onclick="comentar(\''+p.id+'\')">›</button></div>':'');
+      el.appendChild(div);
+    });
     return;
   }
   document.getElementById('feedLoginNote').style.display='none';
@@ -3638,7 +3669,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v30',
+  cacheVersion:'hpc-cache-v31',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
