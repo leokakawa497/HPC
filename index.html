@@ -490,24 +490,26 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 /* Home final direction */
 #t-hoje main{padding-top:0}
 #t-hoje .greeting{padding:18px 0 10px}
-#t-hoje .greeting h1{font-size:27px;font-weight:850;letter-spacing:0}
-#t-hoje .greeting .gsub{font-size:14.5px}
-#t-hoje .datenav{margin-top:6px;margin-bottom:2px;border-radius:18px;padding:7px 9px}
-#t-hoje .score-card{min-height:118px;border-radius:18px;padding:18px;gap:18px;margin-top:14px}
-#t-hoje .score-card .sc-ico{width:62px;height:62px;background:transparent;font-size:26px}
+#t-hoje .greeting h1{font-size:26px;font-weight:850;letter-spacing:-.3px}
+#t-hoje .greeting .gsub{font-size:14px;color:var(--muted)}
+#t-hoje .datenav{display:none}
+#t-hoje .score-card{min-height:108px;border-radius:18px;padding:18px;gap:18px;margin-top:14px}
+#t-hoje .score-card .sc-ico{width:54px;height:54px;background:var(--card2);border-radius:16px}
 #t-hoje .score-card .sc-lbl{color:var(--muted);font-size:10px;letter-spacing:1.6px}
-#t-hoje .score-card .sc-num{font-size:50px;letter-spacing:0}
+#t-hoje .score-card .sc-num{font-size:48px;letter-spacing:-.5px}
 #t-hoje .score-card .sc-num sub{font-size:17px}
 #t-hoje .score-card .sc-status{font-size:14px}
 #t-hoje .score-card .sc-desc{font-size:13px;max-width:150px}
 #t-hoje .quick-grid{gap:12px;margin-top:14px}
-#t-hoje .qcard{min-height:188px;border-radius:18px;padding:16px 15px}
-#t-hoje .qcard-hdr{color:var(--muted);font-size:10px}
+#t-hoje .qcard{min-height:178px;border-radius:18px;padding:16px 15px}
+#t-hoje .qcard-hdr{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:1.4px}
 #t-hoje .qcard-big{font-size:32px}
 #t-hoje .qcard-bars{height:36px;margin-top:12px}
-#t-hoje .hdots{margin-top:14px;gap:7px}
-#t-hoje .hdot{width:28px;height:28px;background:#fff}
-#t-hoje .qstats-row{border-radius:18px;padding:16px 8px;margin-top:14px}
+#t-hoje .hdots{margin-top:14px;gap:6px}
+#t-hoje .hdot{width:30px;height:30px;background:transparent}
+#t-hoje .hdot.done{background:#1C1C1E;border-color:#1C1C1E;color:#fff}
+#t-hoje .qs-lbl{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:14px 0 8px;display:block}
+#t-hoje .qstats-row{border-radius:18px;padding:16px 8px;margin-top:0}
 #t-hoje .qst-ico{width:32px;height:32px;border-radius:11px}
 #t-hoje .qst-val{font-size:17px}
 #t-hoje .qst-lbl{font-size:10px;line-height:1.2}
@@ -517,7 +519,7 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 #t-hoje .fw-body{padding:17px 15px}
 #t-hoje .fw-title{font-size:21px}
 #t-hoje .fw-meta{font-size:12.5px}
-#t-hoje .fw-btn{min-height:38px;border-radius:12px}
+#t-hoje .fw-btn{min-height:42px;border-radius:12px;background:#1C1C1E;box-shadow:none;font-size:14px}
 #t-hoje .sync-bar{border-radius:18px;margin-top:12px;padding:13px 15px}
 
 /* Training redesign */
@@ -807,17 +809,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- Score card -->
   <div class="score-card">
-    <div class="sc-ico" style="background:transparent;padding:0;overflow:visible">
-      <svg width="62" height="62" viewBox="0 0 62 62" style="transform:rotate(-90deg)">
-        <defs>
-          <linearGradient id="scoreGradGreen" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#30D158"/><stop offset="100%" stop-color="#34C759"/></linearGradient>
-          <linearGradient id="scoreGradAmber" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF9500"/><stop offset="100%" stop-color="#FFCC00"/></linearGradient>
-          <linearGradient id="scoreGradBlue" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5856D6"/><stop offset="100%" stop-color="#007AFF"/></linearGradient>
-          <linearGradient id="scoreGradRed" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#FF3B30"/><stop offset="100%" stop-color="#FF6961"/></linearGradient>
-        </defs>
-        <circle cx="31" cy="31" r="25" fill="none" stroke="var(--card2)" stroke-width="7"/>
-        <circle id="scoreRing" cx="31" cy="31" r="25" fill="none" stroke="url(#scoreGradBlue)" stroke-width="7" stroke-linecap="round" stroke-dasharray="157.1" stroke-dashoffset="157.1"/>
-      </svg>
+    <div class="sc-ico">
+      <svg width="26" height="22" viewBox="0 0 26 22" fill="none" stroke="var(--text)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="24 2 15 11 9.5 5.5 2 13"/><polyline points="17 2 24 2 24 9"/></svg>
     </div>
     <div class="sc-main">
       <div class="sc-lbl">Daily Score</div>
@@ -845,14 +838,15 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <!-- 2-col quick grid -->
   <div class="quick-grid">
     <div class="qcard" onclick="abrirSleepModal()">
-      <div class="qcard-hdr">🌙 Sono</div>
+      <div class="qcard-hdr">Sleep (Last Night)</div>
       <div class="qcard-big" id="qSleepBig">—</div>
       <div class="qcard-st"><span class="qdot muted" id="qSleepDot"></span><span id="qSleepLabel">—</span></div>
       <div class="qcard-bars" id="qSleepBars"></div>
+      <div class="qcard-time" id="qSleepTime"></div>
       <div class="qcard-link">Ver recovery ›</div>
     </div>
     <div class="qcard" onclick="document.getElementById('habitChips').scrollIntoView({behavior:'smooth'})">
-      <div class="qcard-hdr">✓ Hábitos</div>
+      <div class="qcard-hdr">Habits</div>
       <div class="qcard-big" id="qHabBig">—</div>
       <div class="qcard-st"><span class="qdot muted" id="qHabDot"></span><span id="qHabLabel">—</span></div>
       <div class="hdots" id="qHabDots"></div>
@@ -861,22 +855,23 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   </div>
 
   <!-- Quick stats row -->
+  <span class="qs-lbl">Quick Stats</span>
   <div class="qstats-row">
     <div class="qst">
-      <span class="qst-ico" style="background:rgba(88,86,214,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-      <span class="qst-val" id="qsXP">0</span><span class="qst-lbl">XP Total</span>
-    </div>
-    <div class="qst">
-      <span class="qst-ico" style="background:rgba(0,122,255,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg></span>
-      <span class="qst-val" id="qsSono">—</span><span class="qst-lbl">Sono hoje</span>
-    </div>
-    <div class="qst">
-      <span class="qst-ico" style="background:rgba(52,199,89,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-      <span class="qst-val" id="qsAtiv">0</span><span class="qst-lbl">Atividades</span>
-    </div>
-    <div class="qst">
       <span class="qst-ico" style="background:rgba(255,149,0,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
-      <span class="qst-val" id="qsStreak">0</span><span class="qst-lbl">Dias seguidos</span>
+      <span class="qst-val" id="qsKcal">—</span><span class="qst-lbl">Calories</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(0,122,255,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      <span class="qst-val" id="qsMin">—</span><span class="qst-lbl">Active Min</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(255,59,48,.1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF3B30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+      <span class="qst-val" id="qsBpm">—</span><span class="qst-lbl">Resting HR</span>
+    </div>
+    <div class="qst">
+      <span class="qst-ico" style="background:rgba(88,86,214,.12)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5 1.3-8.5-2.7-11.5-2-.5.4-1 .6-1 1.2C3 12 8 13 9 14c.5.5.5 1 .5 1.5v4.5c0 .5.5 1 1 1h6c.5 0 1-.5 1-1v-4c0-.5 0-1 .5-1.5C19.5 13 20 12 22 10c0-3.5-2-5-3-5z"/></svg></span>
+      <span class="qst-val" id="qsSteps">—</span><span class="qst-lbl">Steps</span>
     </div>
   </div>
 
@@ -1672,8 +1667,9 @@ function renderGreeting(){
     nome=meta.display_name||meta.full_name||(authUser.email||'').split('@')[0]||'';
     if(nome)nome=', '+nome.split(' ')[0];
   }
+  if(!nome&&db.demo)nome=', Leonardo';
   const el=document.getElementById('greetingText');
-  if(el)el.textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+nome+' 👋';
+  if(el)el.textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+(nome||'');
   // Dynamic subtitle
   const subEl=document.getElementById('greetingSub');
   if(subEl){
@@ -1681,12 +1677,12 @@ function renderGreeting(){
     const dia=getDia(hojeISO());
     const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
     const treinouHoje=db.sessoes.some(s=>s.data===hojeISO());
-    let sub='Vamos construir algo ótimo hoje.';
-    if(streak>=7)sub='🔥 '+streak+' dias seguidos! Lenda em construção.';
-    else if(streak>=3)sub='🔥 '+streak+' dias seguidos! Continue assim.';
-    else if(treinouHoje)sub='💪 Treino feito! Missão do dia cumprida.';
-    else if(mins!==null&&mins>=480)sub='😴 Você dormiu bem. Ótimo dia para treinar!';
-    else if(h<12)sub='Vamos começar o dia com tudo. 💪';
+    let sub='Vamos continuar construindo.';
+    if(streak>=7)sub=streak+' dias seguidos. Continue construindo.';
+    else if(streak>=3)sub=streak+' dias seguidos. Ótimo ritmo!';
+    else if(treinouHoje)sub='Treino concluído. Missão do dia cumprida.';
+    else if(mins!==null&&mins>=480)sub='Boa noite de sono. Ótimo dia para treinar.';
+    else if(h<12)sub='Vamos construir algo incrível hoje.';
     else if(h>=21)sub='Descanse bem. Amanhã é outro dia.';
     subEl.textContent=sub;
   }
@@ -1760,21 +1756,27 @@ function renderQuickCards(){
       let dots='';
       db.habitos.slice(0,6).forEach(h=>{
         const done=dia.habitos[h.id]&&dia.habitos[h.id].feito;
-        dots+='<div class="hdot'+(done?' done':'')+'">'+( done?'✓':h.ico)+'</div>';
+        dots+='<div class="hdot'+(done?' done':'')+'">'+( done?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
       });
       qHabDots.innerHTML=dots;
     }
   }
 
-  // Quick stats
-  const xpEl=document.getElementById('qsXP');
-  const sonoEl=document.getElementById('qsSono');
-  const ativEl=document.getElementById('qsAtiv');
-  const streakEl=document.getElementById('qsStreak');
-  if(xpEl)xpEl.textContent=db.xp>=1000?(db.xp/1000).toFixed(1)+'k':db.xp;
-  if(sonoEl)sonoEl.textContent=mins!==null?fmtMins(mins):'—';
-  if(ativEl)ativEl.textContent=feitos+'/'+total;
-  if(streakEl)streakEl.textContent=calcStreak();
+  // Quick stats (kcal / active min / resting HR / steps)
+  const sessoesHoje=(db.sessoes||[]).filter(s=>s.data===diaAtual);
+  const activeMin=sessoesHoje.reduce((acc,s)=>{
+    if(s.fim&&s.inicio)return acc+Math.max(0,Math.round((s.fim-s.inicio)/60000));
+    return acc;
+  },0);
+  const kcal=activeMin>0?Math.round(activeMin*8):0;
+  const kcalEl=document.getElementById('qsKcal');
+  const minEl=document.getElementById('qsMin');
+  const bpmEl=document.getElementById('qsBpm');
+  const stepsEl=document.getElementById('qsSteps');
+  if(kcalEl)kcalEl.textContent=kcal>0?(kcal>=1000?(kcal/1000).toFixed(1)+'k':kcal):'—';
+  if(minEl)minEl.textContent=activeMin>0?activeMin:'—';
+  if(bpmEl)bpmEl.textContent='—';
+  if(stepsEl)stepsEl.textContent='—';
 }
 
 function renderFeaturedWorkout(){
@@ -1800,10 +1802,10 @@ function renderFeaturedWorkout(){
   el.innerHTML=
     '<div class="fw-media" aria-hidden="true"></div>'+
     '<div class="fw-body">'+
-      '<div class="fw-eyebrow">Treino sugerido</div>'+
+      '<div class="fw-eyebrow">Featured Workout</div>'+
       '<div class="fw-title">'+esc(treino.nome)+'</div>'+
-      '<div class="fw-meta">'+(qtdEx||'Sem')+' exercícios · '+duracao+' min<br>'+esc(ultimoTexto)+'</div>'+
-      '<button type="button" class="fw-btn">Iniciar treino <span>›</span></button>'+
+      '<div class="fw-meta">'+(qtdEx||'Sem')+' exercícios · '+duracao+' min</div>'+
+      '<button type="button" class="fw-btn">Start Workout <span>›</span></button>'+
     '</div>';
   el.onclick=()=>iniciarOuEditar(treino);
 }
@@ -2034,10 +2036,8 @@ function renderHoje(){
   }
   document.getElementById('sleepWeek').innerHTML=bars;
 
-  // PR banner (último PR de hoje)
-  const prsHoje=db.sessoes.filter(s=>s.data===diaAtual).flatMap(s=>s.prs||[]);
-  document.getElementById('prBannerSlot').innerHTML=prsHoje.length?
-    '<div class="pr-banner"><div class="pico">🏆</div><div><b>NOVO RECORDE!</b><p>'+esc(prsHoje[prsHoje.length-1])+' 💪</p></div></div>':'';
+  // PR banner suppressed — PRs shown in Group feed instead
+  document.getElementById('prBannerSlot').innerHTML='';
 
   // sync bar status
   const sbText=document.getElementById('syncBarText');
