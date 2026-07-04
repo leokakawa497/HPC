@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v25"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v26"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -377,6 +377,44 @@ nav button.active{color:var(--teal)}
 .community-score .cs-track{height:7px;border-radius:99px;background:var(--card2);overflow:hidden;margin-top:9px}
 .community-score .cs-fill{height:100%;background:var(--teal);border-radius:99px}
 .community-score .cs-note{font-size:12px;color:var(--muted);margin-top:8px}
+
+/* Stats redesign */
+#t-stats .page-title{padding:12px 0 8px;margin:0}
+#t-stats .page-title h2{font-size:26px;font-weight:850;letter-spacing:0;line-height:1.08}
+#t-stats .page-title .psub{font-size:14px;margin-top:4px}
+#t-stats .month-nav{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:10px 12px;margin:12px 0 14px}
+#t-stats .month-nav button{width:38px;height:38px;border-radius:12px;background:transparent;border:none;font-size:24px;color:#000}
+#t-stats .month-nav .mlabel{font-size:15px;font-weight:850;text-transform:capitalize}
+#t-stats .insight-grid{gap:12px;margin-bottom:14px}
+#t-stats .ig-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:15px 16px;min-height:142px;position:relative;overflow:hidden}
+#t-stats .ig-lbl{font-size:10px;font-weight:850;letter-spacing:1.35px;text-transform:uppercase;color:#1C1C1E;line-height:1.25;min-height:26px}
+#t-stats .ig-val{display:flex;align-items:baseline;gap:2px;margin-top:10px}
+#t-stats .ig-val span:first-child{font-size:39px;font-weight:850;letter-spacing:0;line-height:.95}
+#t-stats .ig-unit{font-size:17px;color:#000;font-weight:750}
+#t-stats .ig-st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:8px}
+#t-stats .ig-sub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:7px}
+#t-stats .ai-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin:14px 0}
+#t-stats .ai-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase;color:#000}
+#t-stats .ai-badge{font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:5px 10px;font-weight:700}
+#t-stats .ai-row{padding:14px 16px;gap:12px}
+#t-stats .ai-row .ai-ico{width:38px;height:38px;border-radius:50%;background:var(--teal-dim)}
+#t-stats .ai-row .ai-text b{font-size:14px}
+#t-stats .ai-row .ai-text span{font-size:12.5px}
+#t-stats .chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:15px 16px;margin-bottom:12px}
+#t-stats .chart-card .ct{font-size:11px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase;color:#000;margin-bottom:10px}
+#t-stats .bars{height:112px;align-items:end;gap:11px}
+#t-stats .bcol i{border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--violet),rgba(88,86,214,.25))}
+#t-stats .bcol i.y{background:linear-gradient(180deg,var(--amber),rgba(255,149,0,.22))}
+#t-stats .bcol i.r{background:linear-gradient(180deg,var(--rose),rgba(255,59,48,.18))}
+#t-stats .bcol .bl{font-size:9.5px;margin-top:7px;color:var(--muted);max-width:52px;overflow:hidden;text-overflow:ellipsis}
+#t-stats .badges{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:13px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#t-stats .badge{background:transparent;border:none;padding:8px 4px;text-align:center}
+#t-stats .badge .bico{font-size:24px}
+#t-stats .badge .bn{font-size:10.5px;font-weight:750;line-height:1.15;margin-top:4px}
+#t-stats .hist-scroll{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:0;overflow:auto}
+#t-stats table{border-collapse:collapse;background:transparent}
+#t-stats th{background:var(--card2);font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+#t-stats td,#t-stats th{border-color:var(--border);padding:9px 10px}
 
 /* ===== REDESIGN v2 ===== */
 /* Header redesign */
@@ -3105,7 +3143,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v25',
+  cacheVersion:'hpc-cache-v26',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
