@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v28"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v29"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -389,10 +389,11 @@ nav button.active{color:var(--teal)}
 #t-stats .ig-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:15px 16px;min-height:142px;position:relative;overflow:hidden}
 #t-stats .ig-lbl{font-size:10px;font-weight:850;letter-spacing:1.35px;text-transform:uppercase;color:#1C1C1E;line-height:1.25;min-height:26px}
 #t-stats .ig-val{display:flex;align-items:baseline;gap:2px;margin-top:10px}
-#t-stats .ig-val span:first-child{font-size:39px;font-weight:850;letter-spacing:0;line-height:.95}
-#t-stats .ig-unit{font-size:17px;color:#000;font-weight:750}
-#t-stats .ig-st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:8px}
-#t-stats .ig-sub{font-size:12px;color:var(--muted);line-height:1.35;margin-top:7px}
+#t-stats .ig-val span:first-child{font-size:30px;font-weight:850;letter-spacing:0;line-height:.95}
+#t-stats .ig-unit{font-size:14px;color:var(--muted);font-weight:750}
+#t-stats .ig-st{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:6px}
+#t-stats .ig-sub{font-size:11px;color:var(--muted);line-height:1.35;margin-top:4px}
+#t-stats .ig-donut-row{display:flex;align-items:center;gap:10px;margin-top:8px}
 #t-stats .ai-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin:14px 0}
 #t-stats .ai-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:850;letter-spacing:1.3px;text-transform:uppercase;color:#000}
 #t-stats .ai-badge{font-size:11px;letter-spacing:0;text-transform:none;color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:5px 10px;font-weight:700}
@@ -418,8 +419,8 @@ nav button.active{color:var(--teal)}
 
 /* ===== REDESIGN v2 ===== */
 /* Header redesign */
-header{padding:18px 16px 8px;justify-content:center;position:relative}
-.logo img{width:158px;height:auto;max-height:54px;object-fit:contain}
+header{padding:16px 16px 8px;justify-content:center;position:relative}
+.logo img{width:180px;height:auto;max-height:44px;object-fit:contain;filter:none}
 .header-right{position:absolute;right:16px;top:18px;display:flex;gap:8px;align-items:center}
 .header-right .streak-pill{display:none}
 .bell-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:none;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:none;flex-shrink:0;position:relative;color:var(--text)}
@@ -653,8 +654,9 @@ header{padding:18px 16px 8px;justify-content:center;position:relative}
 #t-profile .settings-row{min-height:49px}
 #t-profile .section-cap{font-size:10px;color:#000;margin-top:18px}
 
-/* Nav icons (text-based outline style) */
-nav button .ico{font-size:20px;line-height:1}
+/* Nav icons SVG */
+nav button .ico{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+nav button .ico svg{width:22px;height:22px;display:block;fill:currentColor}
 nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
 /* ===== LEADERBOARD ===== */
@@ -718,12 +720,39 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .hsi-week-pct{font-size:12px;font-weight:750;color:var(--muted)}
 .hsi-week-pct.good{color:var(--teal)}
 .hsi-chev{font-size:16px;color:var(--border);margin-left:4px}
+/* Recovery Sleep modal */
+.sleep-modal-inner{padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
+.sm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sm-title{font-size:17px;font-weight:850;letter-spacing:-.3px}
+.sm-close{width:32px;height:32px;border-radius:10px;background:var(--card2);border:1px solid var(--border);font-size:14px;cursor:pointer;color:var(--text)}
+.sm-gauge-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.sm-score-num{font-size:50px;font-weight:850;line-height:1;letter-spacing:-2px}
+.sm-score-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.sm-score-status{font-size:14px;font-weight:750;margin-top:6px}
+.sm-sleep-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px}
+.sm-sleep-dur{font-size:20px;font-weight:800}
+.sm-sleep-times{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+.sm-edit-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text)}
+.sm-sec{font-size:9.5px;font-weight:850;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 9px}
+.sm-stage{display:grid;grid-template-columns:52px 1fr 52px;align-items:center;gap:8px;margin-bottom:7px}
+.sm-sname{font-size:11.5px;font-weight:700}
+.sm-sbar-bg{height:7px;background:var(--card2);border-radius:99px;overflow:hidden}
+.sm-sbar{height:7px;border-radius:99px}
+.sm-sdur{font-size:11px;font-weight:700;color:var(--muted);text-align:right}
+.sm-trend{display:flex;gap:4px;align-items:flex-end;height:44px;margin-bottom:4px}
+.sm-trend-b{flex:1;border-radius:4px 4px 0 0;min-height:4px}
+.sm-trend-lbl{display:flex;gap:4px;margin-bottom:16px}
+.sm-trend-lbl span{flex:1;text-align:center;font-size:8.5px;color:var(--muted);font-weight:600}
+.sm-rec{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;background:var(--card2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px}
+.sm-rec-ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--card)}
+.sm-rec-b{font-size:13px;font-weight:700;display:block;line-height:1.2}
+.sm-rec-s{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo"><img src="./assets/hpc-logo.png" alt="High Performance Club"></div>
+  <div class="logo"><img src="./assets/hpc-wordmark.svg" alt="High Performance Club"></div>
   <div class="header-right">
     <div class="streak-pill" id="streakPill">🔥 0 dias</div>
     <button class="bell-btn" onclick="abrirAuth()" title="Conta">🔔<span class="notif-dot" id="notifDot"></span></button>
@@ -780,12 +809,12 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- 2-col quick grid -->
   <div class="quick-grid">
-    <div class="qcard" onclick="document.getElementById('inpDormiu').focus()">
+    <div class="qcard" onclick="abrirSleepModal()">
       <div class="qcard-hdr">🌙 Sono</div>
       <div class="qcard-big" id="qSleepBig">—</div>
       <div class="qcard-st"><span class="qdot muted" id="qSleepDot"></span><span id="qSleepLabel">—</span></div>
       <div class="qcard-bars" id="qSleepBars"></div>
-      <div class="qcard-time" id="qSleepTime">—</div>
+      <div class="qcard-link">Ver recovery ›</div>
     </div>
     <div class="qcard" onclick="document.getElementById('habitChips').scrollIntoView({behavior:'smooth'})">
       <div class="qcard-hdr">✓ Hábitos</div>
@@ -1081,12 +1110,33 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <button class="fab" id="fabNovo" onclick="abrirNovoTreino()">+</button>
 
 <nav>
-  <button class="active" onclick="go('hoje',this)"><span class="ico">🏠</span>Home</button>
-  <button onclick="go('treino',this)"><span class="ico">🏋️</span>Train</button>
-  <button onclick="go('grupo',this)"><span class="ico">👥</span>Group</button>
-  <button onclick="go('stats',this)"><span class="ico">📊</span>Stats</button>
-  <button onclick="go('profile',this)"><span class="ico">👤</span>Profile</button>
+  <button class="active" onclick="go('hoje',this)">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>Home
+  </button>
+  <button onclick="go('treino',this)">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg></span>Train
+  </button>
+  <button onclick="go('grupo',this)">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>Group
+  </button>
+  <button onclick="go('stats',this)">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zm5.6-4.2h2.8V19h-2.8zm5.6 8h2.8V19h-2.8z"/></svg></span>Stats
+  </button>
+  <button onclick="go('profile',this)">
+    <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>Profile
+  </button>
 </nav>
+
+<!-- Recovery & Sleep modal -->
+<div class="modal-bg" id="sleepModal">
+  <div class="modal sleep-modal-inner">
+    <div class="sm-hdr">
+      <div class="sm-title">Recovery &amp; Sleep</div>
+      <button class="sm-close" onclick="fecharModal('sleepModal')">✕</button>
+    </div>
+    <div id="smBody"></div>
+  </div>
+</div>
 
 <!-- modal novo/editar treino -->
 <div class="modal-bg" id="modalTreino">
@@ -2317,6 +2367,13 @@ function renderStats(){
   });
   const prsMes=db.sessoes.filter(s=>s.data.startsWith(prefix)).flatMap(s=>s.prs||[]);
   const sessoesMes=db.sessoes.filter(s=>s.data.startsWith(prefix)).length;
+  // per-day sleep array for sparkline
+  const nDiasMes=new Date(y,m,0).getDate();
+  const dailySleepArr=[];
+  for(let dayN=1;dayN<=nDiasMes;dayN++){const iso=prefix+'-'+String(dayN).padStart(2,'0');const dy=db.dias[iso];dailySleepArr.push(dy?calcSono(dy.sono.dormiu,dy.sono.acordou):null);}
+  // weekly session counts for bar chart
+  const weekSess=[0,0,0,0,0];
+  db.sessoes.filter(s=>s.data.startsWith(prefix)).forEach(s=>{const dayN=parseInt(s.data.slice(8));weekSess[Math.floor((dayN-1)/7)]++;});
 
   // insight
   let frase='';
@@ -2326,16 +2383,39 @@ function renderStats(){
   if(prsMes.length)frase+=' e bateu <b>'+prsMes.length+' PR'+(prsMes.length>1?'s':'')+'</b> na academia';
   if(frase)frase+='. ';
   if(diasAtivos)frase+='Foram <b>'+diasAtivos+' dias ativos</b> no mês.';
-  // New insight grid (2x2)
+  // New insight grid (2x2) with mini charts
   const sleepConsistency=c>0?Math.round((verdes/c)*100):0;
   const habitComp=diasMes.length>0?Math.round((diasAtivos/diasMes.length)*100):0;
+  // --- sleep sparkline ---
+  const svals=dailySleepArr.map(v=>v||0);
+  const smx=Math.max(...svals.filter(v=>v>0),600);
+  let sleepChart='';
+  if(svals.some(v=>v>0)){
+    const validIdx=svals.map((v,i)=>v>0?i:-1).filter(i=>i>=0);
+    const spts=validIdx.map(i=>{const x=Math.round(i/(svals.length-1||1)*96);const yy=26-Math.round(svals[i]/smx*22)-2;return x+','+yy;}).join(' ');
+    const sty=26-Math.round(480/smx*22)-2;
+    sleepChart='<svg viewBox="0 0 96 26" preserveAspectRatio="none" style="width:100%;height:26px;margin-top:8px;display:block"><line x1="0" y1="'+sty+'" x2="96" y2="'+sty+'" stroke="#D1D1D6" stroke-width="0.8" stroke-dasharray="3,2"/><polyline points="'+spts+'" fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  // --- donut for habit completion ---
+  const donutCol=habitComp>=70?'#34C759':habitComp>=50?'#FF9500':'#FF3B30';
+  const donutCirc=+(2*Math.PI*14).toFixed(2);
+  const donutFill=+(habitComp/100*donutCirc).toFixed(2);
+  const donutSvg='<svg viewBox="0 0 36 36" style="width:40px;height:40px;flex-shrink:0"><circle cx="18" cy="18" r="14" fill="none" stroke="#E5E5EA" stroke-width="4.5"/><circle cx="18" cy="18" r="14" fill="none" stroke="'+donutCol+'" stroke-width="4.5" stroke-dasharray="'+donutFill+' '+donutCirc+'" stroke-linecap="round" transform="rotate(-90 18 18)"/></svg>';
+  // --- weekly session bars ---
+  const wmax=Math.max(...weekSess,1);
+  const wbars=weekSess.slice(0,5).map((v,i)=>{const rh=v?Math.max(Math.round(v/wmax*22),4):3;const ry=24-rh;return'<rect x="'+(i*13)+'" y="'+ry+'" width="9" height="'+rh+'" rx="2" fill="'+(v>0?'#5856D6':'#E5E5EA')+'"/>';}).join('');
+  const weekBarsChart='<svg viewBox="0 0 61 24" style="width:61px;height:24px;margin-top:8px;display:block">'+wbars+'</svg>';
+  // --- star for PRs ---
+  const prCount=prsMes.length;
+  const starPath='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
+  const prStar='<svg viewBox="0 0 24 24" style="width:28px;height:28px;margin-top:6px;display:block"><path d="'+starPath+'" fill="'+(prCount>0?'#FF9500':'#E5E5EA')+'"/></svg>';
   const ig=document.getElementById('insightGrid');
   if(ig){
     ig.innerHTML=
-      '<div class="ig-card"><div class="ig-lbl">Sleep Consistency</div><div class="ig-val"><span>'+sleepConsistency+'</span><span class="ig-unit">%</span></div><div class="ig-st"><span class="qdot'+(sleepConsistency>=70?'':sleepConsistency>=50?' amber':' rose')+'"></span><span>'+(sleepConsistency>=70?'Bom':sleepConsistency>=50?'Regular':'Melhorar')+'</span></div><div class="ig-sub">Noites ≥8h no mês</div></div>'+
-      '<div class="ig-card"><div class="ig-lbl">Habit Completion</div><div class="ig-val"><span>'+habitComp+'</span><span class="ig-unit">%</span></div><div class="ig-st"><span class="qdot'+(habitComp>=70?'':habitComp>=50?' amber':' rose')+'"></span><span>'+(habitComp>=70?'No ritmo':habitComp>=50?'Regular':'Melhorar')+'</span></div><div class="ig-sub">Dias ativos no mês</div></div>'+
-      '<div class="ig-card"><div class="ig-lbl">Training Frequency</div><div class="ig-val"><span>'+sessoesMes+'</span></div><div class="ig-st"><span class="qdot'+(sessoesMes>=12?'':sessoesMes>=6?' amber':' rose')+'"></span><span>Sessões</span></div><div class="ig-sub">Este mês</div></div>'+
-      '<div class="ig-card"><div class="ig-lbl">PR Highlights</div><div class="ig-val"><span>'+prsMes.length+'</span></div><div class="ig-st"><span class="qdot'+(prsMes.length>0?'':' muted')+'"></span><span>Novos PRs</span></div><div class="ig-sub">Este mês</div></div>';
+      '<div class="ig-card"><div class="ig-lbl">Sleep Consistency</div><div class="ig-val"><span>'+sleepConsistency+'</span><span class="ig-unit">%</span></div>'+sleepChart+'<div class="ig-st"><span class="qdot'+(sleepConsistency>=70?'':sleepConsistency>=50?' amber':' rose')+'"></span><span>'+(sleepConsistency>=70?'Bom':sleepConsistency>=50?'Regular':'Melhorar')+'</span></div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">Habit Completion</div><div class="ig-donut-row">'+donutSvg+'<div><div class="ig-val"><span>'+habitComp+'</span><span class="ig-unit">%</span></div><div class="ig-st"><span class="qdot'+(habitComp>=70?'':habitComp>=50?' amber':' rose')+'"></span><span>'+(habitComp>=70?'No ritmo':habitComp>=50?'Regular':'Melhorar')+'</span></div></div></div><div class="ig-sub">Dias ativos</div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">Training Frequency</div><div class="ig-val"><span>'+sessoesMes+'</span><span class="ig-unit"> sess</span></div>'+weekBarsChart+'<div class="ig-st"><span class="qdot'+(sessoesMes>=12?'':sessoesMes>=6?' amber':' rose')+'"></span><span>Este mês</span></div></div>'+
+      '<div class="ig-card"><div class="ig-lbl">PR Highlights</div><div class="ig-val"><span>'+prCount+'</span></div>'+prStar+'<div class="ig-sub">'+(prCount>0?esc(prsMes[0].split(':')[0]):'Nenhum este mês')+'</div><div class="ig-st"><span class="qdot'+(prCount>0?'':' muted')+'"></span><span>Novos PRs</span></div></div>';
   }
   const aic=document.getElementById('aiInsightCard');
   if(aic&&frase){
@@ -2510,6 +2590,98 @@ function go(t,btn){
 }
 function fecharModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function abrirSleepModal(){
+  const iso=diaAtual;
+  const dia=db.dias[iso];
+  const totalMin=dia?calcSono(dia.sono.dormiu,dia.sono.acordou):null;
+  const dormiu=dia?.sono?.dormiu||'';
+  const acordou=dia?.sono?.acordou||'';
+  const score=totalMin?Math.max(20,Math.min(100,Math.round(totalMin/5.4))):0;
+  const scoreCol=score>=85?'#34C759':score>=70?'#30B0C7':score>=50?'#FF9500':'#FF3B30';
+  const scoreLbl=score>=85?'Excelente':score>=70?'Bom':score>=50?'Regular':'Fraco';
+  // Gauge SVG (half-circle, r=50, center 60,65, total arc=157.08)
+  const arcLen=157.08;
+  const filled=totalMin?+(score/100*arcLen).toFixed(1):0;
+  const dashOff=+(arcLen-filled).toFixed(1);
+  const gaugeSvg='<svg viewBox="0 0 120 72" style="width:130px;height:78px">'
+    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#E5E5EA" stroke-width="9" stroke-linecap="round"/>'
+    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="'+scoreCol+'" stroke-width="9" stroke-linecap="round"'
+    +' stroke-dasharray="'+arcLen+'" stroke-dashoffset="'+dashOff+'"/>'
+    +'<text x="60" y="63" text-anchor="middle" font-size="22" font-weight="800" fill="'+scoreCol+'">'+score+'</text>'
+    +'</svg>';
+  // Sleep stages (estimated based on sleep science ratios)
+  const stages=totalMin?[
+    {name:'Deep',pct:.20,col:'#5856D6'},
+    {name:'REM',pct:.23,col:'#007AFF'},
+    {name:'Light',pct:.52,col:'#34C759'},
+    {name:'Awake',pct:.05,col:'#FF9500'}
+  ]:[];
+  const stagesHtml=stages.map(s=>{
+    const mins=Math.round(totalMin*s.pct);
+    const h=Math.floor(mins/60),mm=mins%60;
+    const dur=h>0?h+'h'+(mm>0?' '+mm+'m':''):mm+'m';
+    return'<div class="sm-stage"><div class="sm-sname">'+s.name+'</div>'
+      +'<div class="sm-sbar-bg"><div class="sm-sbar" style="width:'+Math.round(s.pct*130)+'%;background:'+s.col+'"></div></div>'
+      +'<div class="sm-sdur">'+dur+'</div></div>';
+  }).join('');
+  // Weekly trend
+  const dayMs=24*60*60*1000;
+  const todayMs=new Date(iso).getTime();
+  const weekLabels=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const weekMins=[],weekDays=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(todayMs-i*dayMs);
+    const diso=d.toISOString().slice(0,10);
+    const dd=db.dias[diso];
+    weekMins.push(dd?calcSono(dd.sono.dormiu,dd.sono.acordou)||0:0);
+    weekDays.push(weekLabels[d.getDay()]);
+  }
+  const wmax=Math.max(...weekMins,480);
+  const trendBars=weekMins.map((v,i)=>{
+    const h=Math.max(v?Math.round(v/wmax*40):4,4);
+    const col=v>=480?'#34C759':v>=420?'#FF9500':v>0?'#FF3B30':'#E5E5EA';
+    const isToday=(i===6);
+    return'<div class="sm-trend-b" style="height:'+h+'px;background:'+col+';'+(isToday?'border:2px solid #1C1C1E;border-bottom:none;':'')+'"></div>';
+  }).join('');
+  const trendLbls=weekDays.map((l,i)=>'<span style="'+(i===6?'font-weight:800;color:var(--text)':'')+'">'+l+'</span>').join('');
+  // Recommendations
+  const recs=[];
+  if(!totalMin){
+    recs.push({ico:'😴',title:'Registre seu sono',text:'Adicione os horários de dormir e acordar para ver seu Recovery Score.'});
+  }else if(score>=85){
+    recs.push({ico:'⭐',title:'Sono excelente!',text:'Seu corpo está se recuperando bem. Continue com essa consistência.'});
+    recs.push({ico:'💪',title:'Pronto para treinar',text:'Com esse Recovery Score você está apto para treinos de alta intensidade.'});
+  }else if(score>=70){
+    recs.push({ico:'✅',title:'Sono bom',text:'Tente adicionar 30min a mais de sono para otimizar ainda mais sua recuperação.'});
+    recs.push({ico:'📵',title:'Evite telas',text:'Reduza o uso de telas 1h antes de dormir para melhorar a qualidade do sono.'});
+  }else if(score>=50){
+    recs.push({ico:'⚠️',title:'Sono regular',text:'Tente dormir 7–9 horas e mantenha horários consistentes durante a semana.'});
+    recs.push({ico:'☕',title:'Cafeína',text:'Evite cafeína depois das 14h para não prejudicar a qualidade do sono.'});
+  }else{
+    recs.push({ico:'🚨',title:'Sono insuficiente',text:'Você dormiu pouco. Priorize o sono para recuperação máxima e performance.'});
+    recs.push({ico:'🌙',title:'Rotina de sono',text:'Estabeleça um horário fixo para dormir, inclusive nos fins de semana.'});
+  }
+  recs.push({ico:'🌡️',title:'Temperatura ideal',text:'Mantenha o quarto entre 18–20°C para otimizar a qualidade do sono.'});
+  const recsHtml=recs.map(r=>'<div class="sm-rec"><div class="sm-rec-ico">'+r.ico+'</div>'
+    +'<div><b class="sm-rec-b">'+r.title+'</b><span class="sm-rec-s">'+r.text+'</span></div></div>').join('');
+  const sleepStr=totalMin?fmtMins(totalMin):'—';
+  const timesStr=dormiu&&acordou?dormiu+' – '+acordou:'Não registrado';
+  document.getElementById('smBody').innerHTML=
+    '<div class="sm-gauge-row">'+gaugeSvg
+    +'<div><div class="sm-score-num" style="color:'+scoreCol+'">'+score+'</div>'
+    +'<div class="sm-score-lbl">Recovery Score</div>'
+    +'<div class="sm-score-status" style="color:'+scoreCol+'">'+scoreLbl+'</div></div></div>'
+    +'<div class="sm-sleep-row"><div><div class="sm-sleep-dur">'+sleepStr+'</div>'
+    +'<div class="sm-sleep-times">'+timesStr+'</div></div>'
+    +'<button class="sm-edit-btn" onclick="fecharModal(\'sleepModal\');setTimeout(()=>document.getElementById(\'inpDormiu\').focus(),200)">Editar</button></div>'
+    +(totalMin?'<div class="sm-sec">Sleep Stages (estimado)</div>'+stagesHtml:'')
+    +'<div class="sm-sec">Últimos 7 dias</div>'
+    +'<div class="sm-trend">'+trendBars+'</div>'
+    +'<div class="sm-trend-lbl">'+trendLbls+'</div>'
+    +'<div class="sm-sec">Recomendações</div>'+recsHtml;
+  document.getElementById('sleepModal').classList.add('open');
+}
 
 function setAuthStatus(msg){const el=document.getElementById('authStatus');if(el)el.textContent=msg;}
 function renderAuth(){
@@ -3409,7 +3581,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v28',
+  cacheVersion:'hpc-cache-v29',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,

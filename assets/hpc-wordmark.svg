@@ -1,0 +1,33 @@
+<svg width="220" height="44" viewBox="0 0 220 44" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <!-- HPC bold italic wordmark -->
+  <text x="2" y="38"
+    font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif"
+    font-weight="900"
+    font-style="italic"
+    font-size="40"
+    fill="#1C1C1E"
+    letter-spacing="-2">HPC</text>
+
+  <!-- Divider -->
+  <line x1="102" y1="7" x2="102" y2="38" stroke="#D1D1D6" stroke-width="0.8"/>
+
+  <!-- HIGH PERFORMANCE CLUB stacked -->
+  <text x="110" y="17"
+    font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif"
+    font-weight="800"
+    font-size="7"
+    fill="#1C1C1E"
+    letter-spacing="2.2">HIGH</text>
+  <text x="110" y="28"
+    font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif"
+    font-weight="800"
+    font-size="7"
+    fill="#1C1C1E"
+    letter-spacing="1.2">PERFORMANCE</text>
+  <text x="110" y="39"
+    font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif"
+    font-weight="800"
+    font-size="7"
+    fill="#1C1C1E"
+    letter-spacing="2.2">CLUB</text>
+</svg>
