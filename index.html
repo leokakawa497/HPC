@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v26"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v27"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -623,6 +623,36 @@ header{padding:18px 16px 8px;justify-content:center;position:relative}
 .settings-row .sr-chev{color:var(--border);font-size:16px}
 .section-cap{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:20px 0 8px}
 
+/* Profile redesign */
+#t-profile .profile-card{border-radius:18px;padding:16px;margin-top:12px;align-items:center}
+#t-profile .profile-ava{width:74px;height:74px;font-size:28px;background:#000}
+#t-profile .profile-info .pname{font-size:25px;font-weight:850;line-height:1.05}
+#t-profile .profile-info .psince{font-size:13px}
+#t-profile .profile-badge{border-radius:10px;background:#fff;color:#000}
+#t-profile .profile-edit{border-radius:12px;background:#fff}
+.body-metrics{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px 8px;display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px}
+.metric-item{display:flex;flex-direction:column;align-items:center;gap:3px;border-right:1px solid var(--border);padding:4px}
+.metric-item:last-child{border-right:none}
+.metric-ico{font-size:19px;filter:grayscale(1)}
+.metric-val{font-size:17px;font-weight:850}
+.metric-lbl{font-size:10px;color:var(--muted);text-align:center;line-height:1.15}
+.weekly-goals{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:9px}
+.goal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px 8px;text-align:center;min-width:0}
+.goal-card b{display:block;font-size:12px;margin-bottom:8px}
+.goal-card .gv{font-size:18px;font-weight:850}
+.goal-card .gtrack{height:7px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:9px}
+.goal-card .gfill{height:100%;background:var(--teal);border-radius:99px}
+#t-profile .badges{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:13px 10px;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#t-profile .badge{background:transparent;border:none;padding:8px 2px;text-align:center}
+#t-profile .badge .bico{font-size:23px}
+#t-profile .badge .bn{font-size:10px;font-weight:750;line-height:1.15;margin-top:4px}
+.preferred-sports{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.sport-chip{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:10px 6px;text-align:center;font-size:10.5px;font-weight:700;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.sport-chip span{font-size:20px;filter:grayscale(1)}
+#t-profile .settings-section{border-radius:18px}
+#t-profile .settings-row{min-height:49px}
+#t-profile .section-cap{font-size:10px;color:#000;margin-top:18px}
+
 /* Nav icons (text-based outline style) */
 nav button .ico{font-size:20px;line-height:1}
 nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
@@ -872,8 +902,28 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <button class="profile-edit" onclick="abrirAuth()">Editar</button>
   </div>
 
+  <div class="section-cap">Body Metrics</div>
+  <div class="body-metrics">
+    <div class="metric-item"><span class="metric-ico">⚡</span><span class="metric-val" id="profileXpMetric">0</span><span class="metric-lbl">XP</span></div>
+    <div class="metric-item"><span class="metric-ico">🔥</span><span class="metric-val" id="profileStreakMetric">0</span><span class="metric-lbl">Streak</span></div>
+    <div class="metric-item"><span class="metric-ico">😴</span><span class="metric-val" id="profileSleepMetric">—</span><span class="metric-lbl">Sono</span></div>
+    <div class="metric-item"><span class="metric-ico">🏋️</span><span class="metric-val" id="profileTrainMetric">0</span><span class="metric-lbl">Treinos</span></div>
+  </div>
+
+  <div class="section-cap">Weekly Goals</div>
+  <div class="weekly-goals" id="weeklyGoals"></div>
+
   <div class="section-cap">Conquistas</div>
   <div class="badges" id="badgesAreaProfile"></div>
+
+  <div class="section-cap">Preferred Sports</div>
+  <div class="preferred-sports">
+    <div class="sport-chip"><span>🏋️</span>Strength</div>
+    <div class="sport-chip"><span>🏃</span>Running</div>
+    <div class="sport-chip"><span>🥋</span>BJJ</div>
+    <div class="sport-chip"><span>🧘</span>Mobility</div>
+    <div class="sport-chip"><span>＋</span>Add</div>
+  </div>
 
   <div class="section-cap" style="margin-top:20px">Conta &amp; Sync</div>
   <div class="settings-section">
@@ -1550,12 +1600,39 @@ function renderCommunityProgress(){
 function renderProfile(){
   const ava=document.getElementById('profileAva');
   const nm=document.getElementById('profileName');
+  const since=document.getElementById('profileSince');
   if(authUser&&ava&&nm){
     const meta=authUser.user_metadata||{};
     const name=meta.display_name||meta.full_name||(authUser.email||'').split('@')[0]||'L';
     ava.textContent=name[0].toUpperCase();
     nm.textContent=name;
+    if(since)since.textContent='Logado como '+(authUser.email||'HPC Athlete');
   }
+  const hoje=getDia(hojeISO());
+  const mins=calcSono(hoje.sono.dormiu,hoje.sono.acordou);
+  const xpMetric=document.getElementById('profileXpMetric');
+  const streakMetric=document.getElementById('profileStreakMetric');
+  const sleepMetric=document.getElementById('profileSleepMetric');
+  const trainMetric=document.getElementById('profileTrainMetric');
+  if(xpMetric)xpMetric.textContent=db.xp>=1000?(db.xp/1000).toFixed(1)+'k':db.xp;
+  if(streakMetric)streakMetric.textContent=calcStreak();
+  if(sleepMetric)sleepMetric.textContent=mins!==null?fmtMins(mins):'—';
+  if(trainMetric)trainMetric.textContent=db.sessoes.length;
+
+  const weekStart=parseISODate(hojeISO());
+  weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+  const weekIsos=Array.from({length:7},(_,i)=>{const d=new Date(weekStart);d.setDate(d.getDate()+i);return d.toISOString().slice(0,10);});
+  const workouts=db.sessoes.filter(s=>weekIsos.includes(s.data)).length;
+  const activeDays=weekIsos.filter(iso=>{const d=db.dias[iso];return d&&Object.values(d.habitos||{}).some(st=>st.feito);}).length;
+  const sleepDays=weekIsos.filter(iso=>{const d=db.dias[iso];const m=d?calcSono(d.sono.dormiu,d.sono.acordou):null;return m!==null&&m>=420;}).length;
+  const goals=[
+    ['Workouts',workouts,5],
+    ['Ativos',activeDays,7],
+    ['Sono',sleepDays,7],
+    ['Streak',Math.min(calcStreak(),7),7]
+  ];
+  const wg=document.getElementById('weeklyGoals');
+  if(wg)wg.innerHTML=goals.map(g=>'<div class="goal-card"><b>'+g[0]+'</b><div class="gv">'+g[1]+' / '+g[2]+'</div><div class="gtrack"><div class="gfill" style="width:'+Math.min(100,Math.round(g[1]/g[2]*100))+'%"></div></div></div>').join('');
   // copy badges to profile
   const dst=document.getElementById('badgesAreaProfile');
   const src=document.getElementById('badgesArea');
@@ -3143,7 +3220,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v26',
+  cacheVersion:'hpc-cache-v27',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
