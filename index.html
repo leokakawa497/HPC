@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v27"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v28"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -656,6 +656,68 @@ header{padding:18px 16px 8px;justify-content:center;position:relative}
 /* Nav icons (text-based outline style) */
 nav button .ico{font-size:20px;line-height:1}
 nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
+
+/* ===== LEADERBOARD ===== */
+.lb-podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:16px 0 8px}
+.lb-person{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:110px}
+.lb-person.second{order:1}.lb-person.first{order:2}.lb-person.third{order:3}
+.lb-ava{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:850;color:#fff;position:relative;background:linear-gradient(135deg,#555,#333)}
+.lb-person.first .lb-ava{width:74px;height:74px;font-size:22px;background:linear-gradient(135deg,var(--amber),#ff8c00)}
+.lb-person.second .lb-ava,.lb-person.third .lb-ava{width:56px;height:56px;font-size:17px}
+.lb-rank-badge{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);min-width:22px;height:22px;border-radius:99px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:850;border:2px solid var(--bg);color:#fff}
+.lb-person.first .lb-rank-badge{background:var(--amber)}
+.lb-person.second .lb-rank-badge{background:#8E8E93}
+.lb-person.third .lb-rank-badge{background:#CD7C32}
+.lb-block{width:100%;border-radius:10px 10px 0 0;margin-top:4px}
+.lb-person.first .lb-block{height:52px;background:rgba(255,149,0,.12);border:1px solid rgba(255,149,0,.3)}
+.lb-person.second .lb-block{height:36px;background:var(--card2);border:1px solid var(--border)}
+.lb-person.third .lb-block{height:24px;background:var(--card2);border:1px solid var(--border)}
+.lb-name{font-size:12px;font-weight:750;text-align:center;margin-top:2px}
+.lb-xp{font-size:11px;color:var(--muted);text-align:center;font-weight:600}
+.xp-progress-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;margin:12px 0;box-shadow:var(--shadow)}
+.xp-progress-card .xp-top{display:flex;align-items:center;justify-content:space-between;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.xp-rank{color:#000;font-size:12px;font-weight:800;text-transform:none;letter-spacing:0}
+.xp-val{font-size:22px;font-weight:850;margin-bottom:3px}
+.xp-track{height:8px;border-radius:99px;background:var(--card2);overflow:hidden;margin:9px 0 6px}
+.xp-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--violet));transition:width .6s cubic-bezier(.2,.8,.3,1)}
+.xp-note{font-size:12px;color:var(--muted)}
+.challenge-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.challenge-card .ch-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.challenge-card .ch-ico{width:46px;height:46px;border-radius:14px;background:#000;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.challenge-card .ch-label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.challenge-card .ch-name{font-size:15px;font-weight:850}
+.challenge-card .ch-count{margin-left:auto;font-weight:850;font-size:15px}
+.challenge-card .ch-track{height:6px;border-radius:99px;background:var(--card2);overflow:hidden;margin-bottom:10px}
+.challenge-card .ch-fill{height:100%;border-radius:99px;background:var(--teal)}
+.challenge-card .ch-footer{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted)}
+.challenge-card .ch-link{color:var(--teal);font-weight:750}
+.lb-groups-section{margin-bottom:12px}
+.lb-group-row{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 15px;margin-bottom:9px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.lb-group-row .lgr-ico{width:44px;height:44px;border-radius:12px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:850;flex-shrink:0}
+.lb-group-row .lgr-info{flex:1;min-width:0}
+.lb-group-row .lgr-name{font-size:15px;font-weight:850}
+.lb-group-row .lgr-meta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;margin-top:2px}
+.lgr-active{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.lb-group-row .lgr-rank{font-weight:850;font-size:14px}
+.lb-group-row .lgr-rank span{font-size:10px;color:var(--muted);font-weight:600;display:block;text-align:right}
+
+/* ===== HABIT STREAKS ===== */
+.habit-streak-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.hsi-ico{width:38px;height:38px;border-radius:11px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hsi-body{flex:1;min-width:0}
+.hsi-name{font-weight:800;font-size:13.5px;margin-bottom:7px}
+.hsi-dots-row{display:flex;align-items:center;gap:4px}
+.hsi-day-col{display:flex;flex-direction:column;align-items:center;gap:3px}
+.hsi-day-lbl{font-size:8.5px;color:var(--muted);font-weight:600}
+.hsi-dot{width:10px;height:10px;border-radius:50%;background:var(--border)}
+.hsi-dot.done{background:var(--teal)}
+.hsi-dot.empty{background:var(--card2);border:1px solid var(--border)}
+.hsi-stats{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.hsi-streak-num{font-size:18px;font-weight:850;line-height:1}
+.hsi-streak-lbl{font-size:9px;color:var(--muted);font-weight:600;text-align:right}
+.hsi-week-pct{font-size:12px;font-weight:750;color:var(--muted)}
+.hsi-week-pct.good{color:var(--teal)}
+.hsi-chev{font-size:16px;color:var(--border);margin-left:4px}
 </style>
 </head>
 <body>
@@ -800,9 +862,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <div class="sub-tabs">
     <button class="sub-tab active" id="subTabFeed" onclick="switchGrupoTab('feed',this)">Feed</button>
-    <button class="sub-tab" onclick="switchGrupoTab('feed',this)">Following</button>
-    <button class="sub-tab" onclick="switchGrupoTab('feed',this)">Workouts</button>
-    <button class="sub-tab" id="subTabGrupos" onclick="switchGrupoTab('grupos',this)">Challenges</button>
+    <button class="sub-tab" id="subTabLeaderboard" onclick="switchGrupoTab('leaderboard',this)">Leaderboard</button>
+    <button class="sub-tab" id="subTabGrupos" onclick="switchGrupoTab('grupos',this)">Groups</button>
   </div>
 
   <!-- Feed panel -->
@@ -825,6 +886,58 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       </div>
       <div id="feedArea"><div class="feed-empty">Carregando…</div></div>
     </div>
+  </div>
+
+  <!-- Leaderboard panel -->
+  <div id="panelLeaderboard" style="display:none">
+    <div class="section-cap" style="margin-top:14px">Weekly Leaderboard <button class="more" style="float:right;background:none;border:none;font-size:11px;color:var(--teal);font-weight:700;cursor:pointer">View all</button></div>
+    <div class="lb-podium">
+      <div class="lb-person second">
+        <div class="lb-ava">J<span class="lb-rank-badge">2</span></div>
+        <div class="lb-block"></div>
+        <div class="lb-name">Jake R.</div>
+        <div class="lb-xp">12.450 XP</div>
+      </div>
+      <div class="lb-person first">
+        <div class="lb-ava">M<span class="lb-rank-badge">1</span></div>
+        <div class="lb-block"></div>
+        <div class="lb-name">Maya L.</div>
+        <div class="lb-xp">15.820 XP</div>
+      </div>
+      <div class="lb-person third">
+        <div class="lb-ava">J<span class="lb-rank-badge">3</span></div>
+        <div class="lb-block"></div>
+        <div class="lb-name">Jordan K.</div>
+        <div class="lb-xp">10.230 XP</div>
+      </div>
+    </div>
+
+    <div class="xp-progress-card">
+      <div class="xp-top"><span>Your Progress</span><span class="xp-rank" id="lbRankLabel">Rank #6</span></div>
+      <div class="xp-val" id="lbXpVal">0 XP</div>
+      <div class="xp-track"><div class="xp-fill" id="lbXpFill" style="width:0%"></div></div>
+      <div class="xp-note" id="lbXpNote">Continue treinando para subir no ranking.</div>
+    </div>
+
+    <div class="challenge-card">
+      <div class="ch-head">
+        <div class="ch-ico">⚡</div>
+        <div>
+          <div class="ch-label">Group Challenge</div>
+          <div class="ch-name">Stronger Together</div>
+        </div>
+        <div class="ch-count" id="challengeCount">0 / 25</div>
+      </div>
+      <div class="ch-track"><div class="ch-fill" id="challengeFill" style="width:0%"></div></div>
+      <div class="ch-footer">
+        <span id="challengeDaysLeft">Workouts this week</span>
+        <span class="ch-link">View challenge ›</span>
+      </div>
+    </div>
+
+    <div class="section-cap">Your Groups</div>
+    <div id="gruposAreaLeaderboard"><div class="feed-empty">Faça login para ver seus grupos.</div></div>
+    <button class="btn btn-ghost" style="margin:4px 0 16px;font-size:13px;border:1px solid var(--border)" onclick="abrirModalCriarGrupo()">+ Create or join a group ›</button>
   </div>
 
   <!-- Grupos panel -->
@@ -870,6 +983,9 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <div class="stat-grid" id="statGrid" style="display:none"></div>
 
   <div id="chartsArea"></div>
+
+  <div class="section-title">📈 Habit Streaks</div>
+  <div id="habitStreaksArea"></div>
 
   <div class="section-title">🎖️ Conquistas</div>
   <div class="badges" id="badgesArea"></div>
@@ -1580,10 +1696,82 @@ function renderFeaturedWorkout(){
 function switchGrupoTab(tab,btn){
   document.querySelectorAll('#t-grupo .sub-tab').forEach(x=>x.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  else document.getElementById(tab==='grupos'?'subTabGrupos':'subTabFeed').classList.add('active');
+  else{
+    const id=tab==='grupos'?'subTabGrupos':tab==='leaderboard'?'subTabLeaderboard':'subTabFeed';
+    document.getElementById(id).classList.add('active');
+  }
   document.getElementById('panelFeed').style.display=tab==='feed'?'':'none';
+  document.getElementById('panelLeaderboard').style.display=tab==='leaderboard'?'':'none';
   document.getElementById('panelGrupos').style.display=tab==='grupos'?'':'none';
-  renderCommunityProgress();
+  if(tab==='feed'){renderCommunityProgress();carregarFeedSocial();}
+  if(tab==='leaderboard')renderLeaderboard();
+  if(tab==='grupos')renderCommunityProgress();
+}
+
+function renderLeaderboard(){
+  const target=15000;
+  const xp=db.xp||0;
+  const pct=Math.min(100,Math.round(xp/target*100));
+  const valEl=document.getElementById('lbXpVal');
+  const fillEl=document.getElementById('lbXpFill');
+  const noteEl=document.getElementById('lbXpNote');
+  if(valEl)valEl.innerHTML=(xp>=1000?(xp/1000).toFixed(1)+'k':xp)+' XP <span style="font-size:13px;color:var(--muted);font-weight:650">/ '+(target/1000)+'k XP</span>';
+  if(fillEl)fillEl.style.width=pct+'%';
+  if(noteEl)noteEl.textContent=pct>=80?'Você está no topo! 🔥':pct>=40?'Continue treinando para subir no ranking.':'Registre treinos para acumular XP.';
+  // challenge: sessões desta semana
+  const weekStart=parseISODate(hojeISO());weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+  const weekIsos=Array.from({length:7},(_,i)=>{const d=new Date(weekStart);d.setDate(d.getDate()+i);return d.toISOString().slice(0,10);});
+  const weekWorkouts=db.sessoes.filter(s=>weekIsos.includes(s.data)).length;
+  const chCount=document.getElementById('challengeCount');
+  const chFill=document.getElementById('challengeFill');
+  if(chCount)chCount.textContent=weekWorkouts+' / 25';
+  if(chFill)chFill.style.width=Math.min(100,Math.round(weekWorkouts/25*100))+'%';
+  // groups preview in leaderboard panel
+  const area=document.getElementById('gruposAreaLeaderboard');
+  if(!area)return;
+  if(!authUser){area.innerHTML='<div class="feed-empty">Faça login para ver seus grupos.</div>';return;}
+  if(!_meusGrupos||!_meusGrupos.length){area.innerHTML='<div class="feed-empty">Você ainda não pertence a nenhum grupo.</div>';return;}
+  area.innerHTML=_meusGrupos.map((g,i)=>{
+    const initials=(g.nome||'?').split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase()||'?';
+    return '<div class="lb-group-row"><div class="lgr-ico">'+esc(initials)+'</div>'+
+      '<div class="lgr-info"><div class="lgr-name">'+esc(g.nome)+'</div>'+
+      '<div class="lgr-meta"><span class="lgr-active"></span>Active now</div></div>'+
+      '<div class="lgr-rank">#'+(i+1)+'<span>Group Rank</span></div></div>';
+  }).join('');
+}
+
+function renderHabitStreaks(){
+  const el=document.getElementById('habitStreaksArea');
+  if(!el)return;
+  const DAY_LABELS=['D','S','T','Q','Q','S','S'];
+  const hoje=parseISODate(hojeISO());
+  const last7=Array.from({length:7},(_,i)=>{const d=new Date(hoje);d.setDate(d.getDate()-(6-i));return d.toISOString().slice(0,10);});
+  if(!db.habitos.length){el.innerHTML='<div class="empty">Adicione hábitos para ver os streaks 📈</div>';return;}
+  el.innerHTML=db.habitos.map(h=>{
+    // streak from today backwards
+    let streak=0;
+    for(let i=0;i<365;i++){
+      const d=new Date(hoje);d.setDate(d.getDate()-i);
+      const iso=d.toISOString().slice(0,10);
+      const dia=db.dias[iso];
+      if(dia&&dia.habitos[h.id]&&dia.habitos[h.id].feito)streak++;
+      else if(i>0)break;
+    }
+    const weekDone=last7.filter(iso=>{const d=db.dias[iso];return d&&d.habitos[h.id]&&d.habitos[h.id].feito;}).length;
+    const pct=Math.round(weekDone/7*100);
+    const dots=last7.map(iso=>{
+      const d=db.dias[iso];
+      const done=d&&d.habitos[h.id]&&d.habitos[h.id].feito;
+      const lbl=DAY_LABELS[parseISODate(iso).getDay()];
+      return '<div class="hsi-day-col"><span class="hsi-day-lbl">'+lbl+'</span><div class="hsi-dot'+(done?' done':' empty')+'"></div></div>';
+    }).join('');
+    return '<div class="habit-streak-item">'+
+      '<div class="hsi-ico">'+h.ico+'</div>'+
+      '<div class="hsi-body"><div class="hsi-name">'+esc(h.nome)+'</div><div class="hsi-dots-row">'+dots+'</div></div>'+
+      '<div class="hsi-stats"><div class="hsi-streak-num">'+streak+'</div><div class="hsi-streak-lbl">day streak</div>'+
+      '<div class="hsi-week-pct'+(pct>=70?' good':'')+'">'+pct+'%<br><span style="font-size:9px;color:var(--muted)">this week</span></div></div>'+
+      '<span class="hsi-chev">›</span></div>';
+  }).join('');
 }
 
 function renderCommunityProgress(){
@@ -2203,6 +2391,7 @@ function renderStats(){
     return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+b.ico+'</div><div class="bn">'+b.nome+'</div></div>';
   }).join('');
 
+  renderHabitStreaks();
   renderHistTable();
   renderCfg();
 }
@@ -3220,7 +3409,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v27',
+  cacheVersion:'hpc-cache-v28',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
