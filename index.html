@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v54"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v55"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -427,6 +427,14 @@ nav button.active{color:var(--text)}
 #t-stats .cfg-add input,#t-stats .cfg-add select{border:1px solid var(--border);background:var(--card2);border-radius:12px;padding:10px;font:inherit;color:var(--text);min-width:0}
 #t-stats .cfg-add button{border:none;background:#050505;color:#fff;border-radius:12px;font-weight:850;font-size:18px}
 #t-stats .btn-ghost{border-radius:16px;background:var(--card);box-shadow:var(--shadow);color:var(--text)}
+.habit-summary{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin:12px 0 14px}
+.habit-summary>div{padding:15px 8px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;border-right:1px solid var(--border)}
+.habit-summary>div:last-child{border-right:none}
+.habit-summary .hs-lbl{font-size:8.5px;font-weight:850;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);text-align:center}
+.habit-summary b{font-size:30px;font-weight:850;letter-spacing:-.5px;line-height:1;margin-top:3px}
+.habit-summary b small{font-size:14px;font-weight:800;color:var(--muted);margin-left:1px}
+.habit-summary .hs-sub{font-size:10px;color:var(--muted);font-weight:600}
+.add-habit-btn{width:100%;min-height:48px;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow);font-size:13.5px;font-weight:800;color:var(--text);cursor:pointer;margin-top:2px}
 #t-stats .stats-more{margin:12px 0 8px}
 #t-stats .stats-more summary{list-style:none;cursor:pointer;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow);padding:13px 15px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between}
 #t-stats .stats-more summary::-webkit-details-marker{display:none}
@@ -583,7 +591,14 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 #t-log .chip .cn{font-size:13px;font-weight:750}
 #t-log .chip .cd{font-size:11px}
 #t-log .chip.done .cd{color:var(--teal)}
-#t-log .chip.add{justify-content:center;font-weight:800}
+#t-log .chip.add{justify-content:center;font-weight:800;font-size:12.5px}
+#t-log .chip .cbody{flex:1;min-width:0}
+#t-log .cmeta{font-size:11.5px;color:var(--muted);font-weight:650;white-space:nowrap}
+#t-log .ccheck{width:22px;height:22px;border-radius:50%;border:1.8px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#t-log .ccheck.on{background:var(--teal);border-color:var(--teal)}
+#t-log .datelabel{display:flex;align-items:center;justify-content:center;gap:9px}
+#t-log .dl-txt{text-align:center}
+#t-log .dn-caret{color:var(--muted);font-size:13px;line-height:1}
 .dl-activity-list{border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;background:var(--card)}
 .dl-activity-row{display:grid;grid-template-columns:30px 1fr auto 18px;gap:10px;align-items:center;min-height:47px;padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer}
 .dl-activity-row:last-child{border-bottom:none}
@@ -608,7 +623,7 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 .prog .pt{font-size:18px;font-weight:850;line-height:1.12}
 .prog .ps{font-size:12.5px;color:var(--muted);margin-top:2px}
 .prog .plast{font-size:11.5px;color:var(--muted);margin-top:8px;font-weight:650}
-.prog .pmeta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;border-top:1px solid var(--border);padding-top:9px}
+.prog .pmeta{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;margin-top:10px;border-top:1px solid var(--border);padding-top:9px}
 .prog .pmeta span{font-size:10px;color:var(--muted);display:block}
 .prog .pmeta b{font-size:12px;color:var(--text);display:block;margin-top:2px}
 .prog .pchev{font-size:22px;color:var(--muted)}
@@ -637,7 +652,11 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 .set.addset{min-height:62px}
 .mini-chart{height:48px;margin-top:13px}
 .live-focus{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;margin:12px 0}
+.live-focus .lf-top{display:flex;align-items:center;justify-content:space-between}
 .live-focus .lf-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:850}
+.live-tag{display:inline-block;font-size:10.5px;font-weight:750;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;vertical-align:middle;margin-left:6px;letter-spacing:0}
+.rest-timer .rt-mid{flex:1;margin-left:12px}
+.workout-progress .wp-sub{font-size:12.5px;font-weight:750;color:var(--text);margin-top:7px;text-transform:none;letter-spacing:0}
 .live-focus .lf-title{font-size:28px;font-weight:850;line-height:1.05;margin-top:8px}
 .live-focus .lf-meta{font-size:13px;color:var(--muted);margin-top:6px}
 .live-focus .lf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:18px}
@@ -797,7 +816,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .hsi-day-lbl{font-size:8.5px;color:var(--muted);font-weight:600}
 .hsi-dot{width:10px;height:10px;border-radius:50%;background:var(--border)}
 .hsi-dot.done{background:var(--teal)}
-.hsi-dot.empty{background:var(--card2);border:1px solid var(--border)}
+.hsi-dot.off{background:var(--card2);border:1px solid var(--border)}
 .hsi-stats{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
 .hsi-streak-num{font-size:18px;font-weight:850;line-height:1}
 .hsi-streak-lbl{font-size:9px;color:var(--muted);font-weight:600;text-align:right}
@@ -978,21 +997,21 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <div class="datenav">
     <button onclick="mudarDia(-1)">‹</button>
-    <div class="datelabel"><div class="d1" id="dl1"></div><div class="d2" id="dl2"></div></div>
+    <div class="datelabel"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text)"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><div class="dl-txt"><div class="d1" id="dl1"></div><div class="d2" id="dl2"></div></div><span class="dn-caret">⌄</span></div>
     <button onclick="mudarDia(1)" id="btnNext">›</button>
   </div>
 
   <div class="section-title" style="margin-top:16px"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Sono</span><span style="font-size:10px;font-weight:500;text-transform:none;letter-spacing:0;color:var(--muted)">— registrar horários</span></div>
   <div class="sleep-card">
     <div class="sleep-top">
-      <div class="sleep-badge" id="sleepBadge"><b id="sleepVal">—</b><span>Total</span></div>
+      <div class="sleep-badge" id="sleepBadge"><b id="sleepVal">—</b><span>Total Sleep</span></div>
       <div class="dl-quality">
         <div class="qrow"><span class="qdot muted" id="dlSleepQualityDot"></span><b id="dlSleepQuality">—</b></div>
-        <span id="dlSleepQualitySub">Qualidade</span>
+        <span id="dlSleepQualitySub">Quality</span>
       </div>
       <div class="sleep-times">
-        <div class="stime"><div class="sl">Dormiu</div><input type="time" id="inpDormiu" onchange="salvarSono()"></div>
-        <div class="stime"><div class="sl">Acordou</div><input type="time" id="inpAcordou" onchange="salvarSono()"></div>
+        <div class="stime"><div class="sl">Bedtime</div><input type="time" id="inpDormiu" onchange="salvarSono()"></div>
+        <div class="stime"><div class="sl">Wake Time</div><input type="time" id="inpAcordou" onchange="salvarSono()"></div>
       </div>
       <div class="sleep-week" id="sleepWeek"></div>
     </div>
@@ -1008,7 +1027,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <div class="section-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Observações</span></div>
   <div class="note-card"><textarea id="inpNota" placeholder="Alguma nota sobre o dia..." onchange="salvarNota()"></textarea></div>
 
-  <button class="dl-save" onclick="salvarDailyLog()">Salvar registro</button>
+  <button class="dl-save" onclick="salvarDailyLog()">Save Log</button>
 </main>
 </div>
 
@@ -1020,10 +1039,10 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <p>Escolha um programa ou monte o seu.</p>
   </div>
   <div class="train-filters" aria-label="Tipos de treino">
-    <span class="train-chip active">🏋️ Strength</span>
-    <span class="train-chip">❤️ Conditioning</span>
-    <span class="train-chip">🥋 BJJ</span>
-    <span class="train-chip">🪷 Recovery</span>
+    <span class="train-chip active"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Strength</span>
+    <span class="train-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Conditioning</span>
+    <span class="train-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>BJJ</span>
+    <span class="train-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 3-2 6 0 9 2-3 2-6 0-9z"/><path d="M4.5 8c-.3 5 2.5 8.6 7.5 9-1-4.5-3.6-7.6-7.5-9z"/><path d="M19.5 8c.3 5-2.5 8.6-7.5 9 1-4.5 3.6-7.6 7.5-9z"/></svg>Recovery</span>
   </div>
   <div class="prog-scroll" id="progScroll"></div>
   <div id="sessaoArea"></div>
@@ -1047,20 +1066,20 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <!-- Feed panel -->
   <div id="panelFeed">
     <div id="feedLoginNote" class="feed-login-note" style="display:none">
-      <span style="font-size:18px">🔒</span>
+      <span style="display:inline-flex;color:var(--muted)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
       <span>Feed social requer login. <b onclick="abrirAuth()">Entrar →</b></span>
     </div>
     <div id="feedSocialContent">
       <!-- Post composer -->
       <div class="post-composer" id="postComposer" style="display:none">
         <div class="composer-top">
-          <div class="composer-ava" id="composerAva">👤</div>
+          <div class="composer-ava" id="composerAva">L</div>
           <div class="composer-input" onclick="abrirModalNovoPost()">Compartilhe seu treino ou conquista…</div>
         </div>
         <div class="composer-btns">
-          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'photo'})">📷 Foto</button>
-          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'activity'})">💪 Treino</button>
-          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'achievement'})">🏆 Conquista</button>
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'photo'})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> Foto</button>
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'activity'})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Treino</button>
+          <button class="composer-btn" onclick="abrirModalNovoPost({kind:'achievement'})"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/><path d="M7 5H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4"/></svg> Conquista</button>
         </div>
       </div>
       <div id="feedArea"><div class="feed-empty">Carregando…</div></div>
@@ -1100,7 +1119,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
     <div class="challenge-card">
       <div class="ch-head">
-        <div class="ch-ico">⚡</div>
+        <div class="ch-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <div>
           <div class="ch-label">Group Challenge</div>
           <div class="ch-name">Stronger Together</div>
@@ -1131,7 +1150,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <button class="btn btn-primary" style="margin:0;flex:1;padding:11px;font-size:13px" onclick="abrirModalCriarGrupo()">+ Criar grupo</button>
       <button class="btn btn-ghost" style="margin:0;flex:1;padding:11px;font-size:13px;border:1px solid var(--border)" onclick="abrirModalEntrarGrupo()">Entrar com código</button>
     </div>
-    <div class="section-title" style="margin-top:14px">👥 Meus grupos</div>
+    <div class="section-title" style="margin-top:14px">Meus grupos</div>
     <div id="gruposArea"><div class="feed-empty">Carregando…</div></div>
   </div>
 </main>
@@ -1141,11 +1160,22 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <div class="tab" id="t-stats">
 <main>
   <div class="page-title" style="margin-top:6px">
-    <h2>Monthly Insights</h2>
-    <p class="psub">Acompanhe seu progresso.</p>
+    <h2>Habits</h2>
+    <p class="psub">Small daily actions. Massive results.</p>
   </div>
 
-  <div class="month-nav" style="margin-top:12px">
+  <!-- Habit summary (populated by JS) -->
+  <div class="habit-summary">
+    <div><span class="hs-lbl">Weekly Score</span><b><span id="hsScore">—</span><small>%</small></b><span class="hs-sub" id="hsScoreSub">—</span></div>
+    <div><span class="hs-lbl">Current Streak</span><b id="hsCurStreak">—</b><span class="hs-sub">days</span></div>
+    <div><span class="hs-lbl">Longest Streak</span><b id="hsLongStreak">—</b><span class="hs-sub">days</span></div>
+  </div>
+
+  <div id="habitStreaksArea"></div>
+  <button class="add-habit-btn" onclick="abrirCfg()">+ Add Habit</button>
+
+  <div class="section-title" style="margin-top:20px">Monthly Insights</div>
+  <div class="month-nav" style="margin-top:10px">
     <button onclick="mudarMes(-1)">‹</button>
     <div class="mlabel"><span class="cal-ico">▣</span><span id="mesLabel"></span><span class="month-caret">⌄</span></div>
     <button onclick="mudarMes(1)">›</button>
@@ -1164,9 +1194,6 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <details class="stats-more">
     <summary>Ver detalhes mensais</summary>
     <div id="chartsArea"></div>
-
-    <div class="section-title">Habit Streaks</div>
-    <div id="habitStreaksArea"></div>
 
     <div class="section-title">Conquistas</div>
     <div class="badges" id="badgesArea"></div>
@@ -1195,7 +1222,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <div class="profile-info">
       <div class="pname" id="profileName">Leonardo</div>
       <div class="psince" id="profileSince">HPC Athlete</div>
-      <div class="profile-badge">🏆 HPC Athlete</div>
+      <div class="profile-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/><path d="M7 5H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4"/></svg>HPC Athlete</div>
     </div>
     <button class="profile-edit" onclick="abrirAuth()">Editar</button>
   </div>
@@ -1218,17 +1245,17 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <div class="section-cap">Preferred Sports</div>
   <div class="preferred-sports">
-    <div class="sport-chip"><span>🏋️</span>Strength</div>
-    <div class="sport-chip"><span>🏃</span>Running</div>
-    <div class="sport-chip"><span>🥋</span>BJJ</div>
-    <div class="sport-chip"><span>🧘</span>Mobility</div>
+    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>Strength</div>
+    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Running</div>
+    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>BJJ</div>
+    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 3-2 6 0 9 2-3 2-6 0-9z"/><path d="M4.5 8c-.3 5 2.5 8.6 7.5 9-1-4.5-3.6-7.6-7.5-9z"/><path d="M19.5 8c.3 5-2.5 8.6-7.5 9 1-4.5 3.6-7.6 7.5-9z"/></svg></span>Mobility</div>
     <div class="sport-chip"><span>＋</span>Add</div>
   </div>
 
   <div class="section-cap" style="margin-top:20px">Conta &amp; Sync</div>
   <div class="settings-section">
     <div class="settings-row" onclick="abrirAuth()">
-      <span class="sr-ico">👤</span><span class="sr-lbl">Configurações da conta</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="sr-lbl">Configurações da conta</span><span class="sr-chev">›</span>
     </div>
     <div class="settings-row" id="syncSettingsRow" onclick="abrirAuth()">
       <span class="sr-ico">⟳</span><span class="sr-lbl">HPC Sync</span>
@@ -1236,27 +1263,27 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <span class="sr-chev">›</span>
     </div>
     <div class="settings-row" onclick="abrirAuth()">
-      <span class="sr-ico">☁️</span><span class="sr-lbl">Carregar dados da nuvem</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span><span class="sr-lbl">Carregar dados da nuvem</span><span class="sr-chev">›</span>
     </div>
     <div class="settings-row" onclick="fecharModal&&abrirMigracao&&(fecharModal('modalAuth'),abrirMigracao())">
-      <span class="sr-ico">⬆️</span><span class="sr-lbl">Migrar para nuvem</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span><span class="sr-lbl">Migrar para nuvem</span><span class="sr-chev">›</span>
     </div>
   </div>
 
   <div class="section-cap">Dados</div>
   <div class="settings-section">
     <div class="settings-row" onclick="exportarDados()">
-      <span class="sr-ico">⬇️</span><span class="sr-lbl">Exportar backup</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></span><span class="sr-lbl">Exportar backup</span><span class="sr-chev">›</span>
     </div>
     <div class="settings-row" onclick="importarDados()">
-      <span class="sr-ico">⬆️</span><span class="sr-lbl">Importar backup</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span><span class="sr-lbl">Importar backup</span><span class="sr-chev">›</span>
     </div>
   </div>
 
   <div class="section-cap">Suporte</div>
   <div class="settings-section">
     <div class="settings-row" onclick="toast('HPC v1.0 — High Performance Club')">
-      <span class="sr-ico">ℹ️</span><span class="sr-lbl">Sobre o HPC</span><span class="sr-val" id="appVersionLabel">v1.0</span><span class="sr-chev">›</span>
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="sr-lbl">Sobre o HPC</span><span class="sr-val" id="appVersionLabel">v1.0</span><span class="sr-chev">›</span>
     </div>
   </div>
 </main>
@@ -1316,7 +1343,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <div><label>Peso (kg)</label><input type="number" id="msPeso" inputmode="decimal" step="0.5" min="0"></div>
       <div><label>Reps</label><input type="number" id="msReps" inputmode="numeric" min="0"></div>
     </div>
-    <button class="btn btn-primary" onclick="confirmarSet()">✓ Concluir série</button>
+    <button class="btn btn-primary" onclick="confirmarSet()">Concluir série</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalSet')">Cancelar</button>
   </div>
 </div>
@@ -1354,7 +1381,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <div class="modal-bg" id="modalMigrate">
   <div class="modal">
     <h3>Migrar dados para a nuvem</h3>
-    <div class="migrate-warning">⚠️ Esta operação copia dados do localStorage para o Supabase. O localStorage <b>não será apagado</b>.</div>
+    <div class="migrate-warning">Esta operação copia dados do localStorage para o Supabase. O localStorage <b>não será apagado</b>.</div>
     <div class="migrate-status" id="migrateStatus">Calculando dados locais...</div>
     <div class="migrate-preview">
       <div class="migrate-row"><span class="mk">Hábitos configurados</span><span class="mv" id="migratePreviewHabitos">—</span></div>
@@ -1381,17 +1408,17 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <div class="modal-bg" id="modalOnboarding">
   <div class="modal">
     <div style="text-align:center;padding:8px 0 4px">
-      <div style="font-size:52px">🏆</div>
+      <div style="display:flex;justify-content:center;color:var(--text)"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/><path d="M7 5H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4"/></svg></div>
       <h3 style="margin-top:10px">Bem-vindo ao HPC</h3>
       <p style="font-size:13px;color:var(--muted);line-height:1.55;margin-top:6px">Seu app de performance pessoal. Dados de exemplo estão carregados — explore à vontade.</p>
     </div>
     <div style="margin:16px 0;background:var(--card2);border-radius:14px;padding:4px 14px">
-      <div class="onboard-feature"><span class="oico">😴</span><div><b>Sono</b><br><span style="color:var(--muted);font-size:11px">Registre horários e monitore qualidade</span></div></div>
-      <div class="onboard-feature"><span class="oico">✅</span><div><b>Hábitos</b><br><span style="color:var(--muted);font-size:11px">Marque atividades diárias e veja streaks</span></div></div>
-      <div class="onboard-feature"><span class="oico">💪</span><div><b>Treinos</b><br><span style="color:var(--muted);font-size:11px">Registre cargas, séries e PRs</span></div></div>
-      <div class="onboard-feature"><span class="oico">📊</span><div><b>Stats</b><br><span style="color:var(--muted);font-size:11px">Insights, gráficos e badges de conquista</span></div></div>
+      <div class="onboard-feature"><span class="oico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><div><b>Sono</b><br><span style="color:var(--muted);font-size:11px">Registre horários e monitore qualidade</span></div></div>
+      <div class="onboard-feature"><span class="oico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span><div><b>Hábitos</b><br><span style="color:var(--muted);font-size:11px">Marque atividades diárias e veja streaks</span></div></div>
+      <div class="onboard-feature"><span class="oico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span><div><b>Treinos</b><br><span style="color:var(--muted);font-size:11px">Registre cargas, séries e PRs</span></div></div>
+      <div class="onboard-feature"><span class="oico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/></svg></span><div><b>Stats</b><br><span style="color:var(--muted);font-size:11px">Insights, gráficos e badges de conquista</span></div></div>
     </div>
-    <button class="btn btn-primary" onclick="fecharOnboarding()">Vamos lá 💪</button>
+    <button class="btn btn-primary" onclick="fecharOnboarding()">Vamos lá</button>
     <button class="btn btn-ghost" style="margin-top:6px;font-size:12px" onclick="fecharOnboarding()">Fechar</button>
   </div>
 </div>
@@ -1472,11 +1499,11 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <!-- celebração -->
 <div class="celebrate" id="celebrate">
   <div id="confettiHost"></div>
-  <div class="cico" id="celIco">🏆</div>
+  <div class="cico" id="celIco"></div>
   <h2 id="celTitle">NOVO RECORDE!</h2>
   <p id="celMsg"></p>
-  <button class="btn btn-amber" onclick="fecharCelebrate()">Continuar 💪</button>
-  <button class="btn btn-ghost" id="celShareBtn" style="display:none;margin-top:8px;color:var(--teal)" onclick="fecharCelebrate();abrirModalNovoPost(window._celShareOpts||{})">Compartilhar no feed 📣</button>
+  <button class="btn btn-amber" onclick="fecharCelebrate()">Continuar</button>
+  <button class="btn btn-ghost" id="celShareBtn" style="display:none;margin-top:8px;color:var(--teal)" onclick="fecharCelebrate();abrirModalNovoPost(window._celShareOpts||{})">Compartilhar no feed</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1510,15 +1537,41 @@ function habitIcon(h,size){
   if(n.includes('medita')||n.includes('respira'))return s('<circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/>');
   return s('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/>');
 }
+/* Mono line-icon set for UI chrome (badges, modals, recs) — no emojis */
+const MI_PATHS={
+  trophy:'<path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/><path d="M7 5H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  dumbbell:'<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/>',
+  zap:'<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+  wave:'<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  star:'<polygon points="12 17.27 18.18 21 16.54 13.97 22 9.24 14.81 8.63 12 2 9.19 8.63 2 9.24 7.46 13.97 5.82 21"/>',
+  medal:'<circle cx="12" cy="9" r="6"/><path d="m9 14.5-1.5 7 4.5-2.7 4.5 2.7-1.5-7"/>',
+  check:'<polyline points="20 6 9 17 4 12"/>',
+  checkCircle:'<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+  chart:'<line x1="6" y1="20" x2="6" y2="14"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="10"/>',
+  camera:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
+  user:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  cloud:'<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+  heart:'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
+  lotus:'<path d="M12 3c-2 3-2 6 0 9 2-3 2-6 0-9z"/><path d="M4.5 8c-.3 5 2.5 8.6 7.5 9-1-4.5-3.6-7.6-7.5-9z"/><path d="M19.5 8c.3 5-2.5 8.6-7.5 9 1-4.5 3.6-7.6 7.5-9z"/>',
+  run:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+  warning:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+};
+function mi(name,sz){sz=sz||18;return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(MI_PATHS[name]||MI_PATHS.target)+'</svg>';}
 const BADGES=[
-  {id:'pr1',ico:'🏆',nome:'Primeiro PR',teste:d=>d.prs.length>=1},
-  {id:'streak7',ico:'🔥',nome:'7 dias seguidos',teste:d=>d.streak>=7},
-  {id:'sono8x7',ico:'😴',nome:'7 noites 8h+',teste:d=>d.noites8>=7},
-  {id:'bjj10',ico:'🥋',nome:'10x BJJ',teste:d=>(d.habCount.bjj||0)>=10},
-  {id:'treinos25',ico:'💪',nome:'25 treinos',teste:d=>d.sessoes>=25},
-  {id:'treinos100',ico:'💯',nome:'100 treinos',teste:d=>d.sessoes>=100},
-  {id:'streak30',ico:'⚡',nome:'30 dias 🔥',teste:d=>d.streak>=30},
-  {id:'sup10',ico:'🌊',nome:'10x SUP',teste:d=>(d.habCount.sup_||d.habCount.sup||0)>=10}
+  {id:'pr1',ico:'trophy',nome:'Primeiro PR',teste:d=>d.prs.length>=1},
+  {id:'streak7',ico:'flame',nome:'7 dias seguidos',teste:d=>d.streak>=7},
+  {id:'sono8x7',ico:'moon',nome:'7 noites 8h+',teste:d=>d.noites8>=7},
+  {id:'bjj10',ico:'shield',nome:'10x BJJ',teste:d=>(d.habCount.bjj||0)>=10},
+  {id:'treinos25',ico:'dumbbell',nome:'25 treinos',teste:d=>d.sessoes>=25},
+  {id:'treinos100',ico:'medal',nome:'100 treinos',teste:d=>d.sessoes>=100},
+  {id:'streak30',ico:'zap',nome:'30 dias',teste:d=>d.streak>=30},
+  {id:'sup10',ico:'wave',nome:'10x SUP',teste:d=>(d.habCount.sup_||d.habCount.sup||0)>=10}
 ];
 const XP_POR={habito:20,sono:10,sessao:100,pr:50};
 
@@ -1641,12 +1694,12 @@ function gerarDemo(){
   /* --- feed --- */
   const agora=Date.now();
   d.feed=[
-    {id:'f1',tipo:'pr',source:'demo',ts:agora-20*60000,titulo:'Amassou o Treino A — Peito + Tríceps. Novo recorde no supino! 🏆',
-      stats:[{v:'52min',l:'Duração'},{v:'3',l:'Exercícios'},{v:'82,5kg',l:'PR Supino'}],likes:8,liked:true,comentarios:['Semana que vem vou pro 85 😤'],foto:null},
-    {id:'f2',tipo:'badge',source:'demo',ts:agora-26*3600000,titulo:'Desbloqueou a conquista "7 dias seguidos" 🔥',stats:[],likes:4,liked:false,comentarios:[],foto:null},
-    {id:'f3',tipo:'treino',source:'demo',ts:agora-3*86400000,titulo:'Finalizou o Treino B — Costas + Bíceps 💪',
+    {id:'f1',tipo:'pr',source:'demo',ts:agora-20*60000,titulo:'Amassou o Treino A — Peito + Tríceps. Novo recorde no supino!',
+      stats:[{v:'52min',l:'Duração'},{v:'3',l:'Exercícios'},{v:'82,5kg',l:'PR Supino'}],likes:8,liked:true,comentarios:['Semana que vem vou pro 85'],foto:null},
+    {id:'f2',tipo:'badge',source:'demo',ts:agora-26*3600000,titulo:'Desbloqueou a conquista "7 dias seguidos"',stats:[],likes:4,liked:false,comentarios:[],foto:null},
+    {id:'f3',tipo:'treino',source:'demo',ts:agora-3*86400000,titulo:'Finalizou o Treino B — Costas + Bíceps',
       stats:[{v:'48min',l:'Duração'},{v:'5',l:'Exercícios'}],likes:5,liked:false,comentarios:[],foto:null},
-    {id:'f4',tipo:'treino',source:'demo',ts:agora-5*86400000,titulo:'Finalizou o Treino C — Ombro + Legs 💪',
+    {id:'f4',tipo:'treino',source:'demo',ts:agora-5*86400000,titulo:'Finalizou o Treino C — Ombro + Legs',
       stats:[{v:'55min',l:'Duração'},{v:'4',l:'Exercícios'}],likes:3,liked:false,comentarios:[],foto:null}
   ];
 
@@ -1661,6 +1714,9 @@ function migrar(d){
   d.meta=d.meta||{};
   d.habitos=d.habitos||JSON.parse(JSON.stringify(HABITOS_PADRAO));
   d.habitos.forEach(h=>{if(!h.ico)h.ico='✅';});
+  // strip emojis from old demo feed content (UI is emoji-free now)
+  const deEmoji=s=>String(s||'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/\s{2,}/g,' ').trim();
+  d.feed.forEach(p=>{if(p.source==='demo'){p.titulo=deEmoji(p.titulo);if(Array.isArray(p.comentarios))p.comentarios=p.comentarios.map(deEmoji);}});
   if(d.demo){
     Object.values(d.dias||{}).forEach(dia=>{
       if(!dia.source)dia.source='demo';
@@ -1997,7 +2053,7 @@ function renderLeaderboard(){
   const noteEl=document.getElementById('lbXpNote');
   if(valEl)valEl.innerHTML=(xp>=1000?(xp/1000).toFixed(1)+'k':xp)+' XP <span style="font-size:13px;color:var(--muted);font-weight:650">/ '+(target/1000)+'k XP</span>';
   if(fillEl)fillEl.style.width=pct+'%';
-  if(noteEl)noteEl.textContent=pct>=80?'Você está no topo! 🔥':pct>=40?'Continue treinando para subir no ranking.':'Registre treinos para acumular XP.';
+  if(noteEl)noteEl.textContent=pct>=80?'Você está no topo!':pct>=40?'Continue treinando para subir no ranking.':'Registre treinos para acumular XP.';
   // challenge: sessões desta semana
   const weekStart=parseISODate(hojeISO());weekStart.setDate(weekStart.getDate()-weekStart.getDay());
   const weekIsos=Array.from({length:7},(_,i)=>{const d=new Date(weekStart);d.setDate(d.getDate()+i);return d.toISOString().slice(0,10);});
@@ -2026,7 +2082,8 @@ function renderHabitStreaks(){
   const DAY_LABELS=['D','S','T','Q','Q','S','S'];
   const hoje=parseISODate(hojeISO());
   const last7=Array.from({length:7},(_,i)=>{const d=new Date(hoje);d.setDate(d.getDate()-(6-i));return d.toISOString().slice(0,10);});
-  if(!db.habitos.length){el.innerHTML='<div class="empty">Adicione hábitos para ver os streaks 📈</div>';return;}
+  renderHabitSummary(last7);
+  if(!db.habitos.length){el.innerHTML='<div class="empty">Adicione hábitos para ver os streaks</div>';return;}
   el.innerHTML=db.habitos.map(h=>{
     // streak from today backwards
     let streak=0;
@@ -2043,7 +2100,7 @@ function renderHabitStreaks(){
       const d=db.dias[iso];
       const done=d&&d.habitos[h.id]&&d.habitos[h.id].feito;
       const lbl=DAY_LABELS[parseISODate(iso).getDay()];
-      return '<div class="hsi-day-col"><span class="hsi-day-lbl">'+lbl+'</span><div class="hsi-dot'+(done?' done':' empty')+'"></div></div>';
+      return '<div class="hsi-day-col"><span class="hsi-day-lbl">'+lbl+'</span><div class="hsi-dot'+(done?' done':' off')+'"></div></div>';
     }).join('');
     return '<div class="habit-streak-item">'+
       '<div class="hsi-ico">'+habitIcon(h,18)+'</div>'+
@@ -2052,6 +2109,28 @@ function renderHabitStreaks(){
       '<div class="hsi-week-pct'+(pct>=70?' good':'')+'">'+pct+'%<br><span style="font-size:9px;color:var(--muted)">this week</span></div></div>'+
       '<span class="hsi-chev">›</span></div>';
   }).join('');
+}
+
+function renderHabitSummary(last7){
+  const scoreEl=document.getElementById('hsScore');
+  if(!scoreEl)return;
+  const total=db.habitos.length;
+  const diaFeitos=iso=>{const d=db.dias[iso];return d?db.habitos.filter(h=>d.habitos[h.id]&&d.habitos[h.id].feito).length:0;};
+  const activeDays=last7.filter(iso=>diaFeitos(iso)>0).length;
+  const weeklyScore=total?Math.round(last7.reduce((a,iso)=>a+diaFeitos(iso)/total,0)/7*100):0;
+  // longest run of consecutive days with at least one habit done
+  let longest=0,run=0,prev=null;
+  Object.keys(db.dias).sort().forEach(iso=>{
+    if(diaFeitos(iso)>0){
+      if(prev){const d=parseISODate(prev);d.setDate(d.getDate()+1);run=(d.toISOString().slice(0,10)===iso)?run+1:1;}
+      else run=1;
+      prev=iso;longest=Math.max(longest,run);
+    }
+  });
+  scoreEl.textContent=weeklyScore;
+  document.getElementById('hsScoreSub').textContent=activeDays+' of 7 days';
+  document.getElementById('hsCurStreak').textContent=calcStreak();
+  document.getElementById('hsLongStreak').textContent=Math.max(longest,calcStreak());
 }
 
 function renderCommunityProgress(){
@@ -2135,7 +2214,7 @@ function renderProfile(){
   }).join('')+'</div>';
   // render badges directly so profile doesn't depend on stats tab having been visited
   const dst=document.getElementById('badgesAreaProfile');
-  if(dst){const bd=dadosBadges();dst.innerHTML=BADGES.map(b=>{const has=db.badges[b.id]||b.teste(bd);return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+b.ico+'</div><div class="bn">'+b.nome+'</div></div>';}).join('');}
+  if(dst){const bd=dadosBadges();dst.innerHTML=BADGES.map(b=>{const has=db.badges[b.id]||b.teste(bd);return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+mi(b.ico,22)+'</div><div class="bn">'+b.nome+'</div></div>';}).join('');}
 }
 
 /* ================= HOJE ================= */
@@ -2258,12 +2337,11 @@ function renderChips(){
   el.innerHTML='';
   db.habitos.forEach(h=>{
     const st=dia.habitos[h.id]||{feito:false,detalhe:''};
-    const stk=streakHabito(h.id);
     const div=document.createElement('div');
     div.className='chip'+(st.feito?' done':'');
-    div.innerHTML='<span class="cico">'+(st.feito?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':habitIcon(h))+'</span><div class="cbody"><div class="cn">'+esc(h.nome)+'</div><div class="cd">'+
-      (st.feito?(st.detalhe?esc(st.detalhe):'Feito'):'Toque p/ marcar')+'</div></div>'+
-      (stk>=2?'<span class="cstreak"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+stk+'</span>':'');
+    div.innerHTML='<span class="cico">'+habitIcon(h)+'</span><div class="cbody"><div class="cn">'+esc(h.nome)+'</div></div>'+
+      (st.feito&&st.detalhe?'<span class="cmeta">'+esc(st.detalhe)+'</span>':'')+
+      '<span class="ccheck'+(st.feito?' on':'')+'">'+(st.feito?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</span>';
     div.onclick=()=>toggleHabito(h);
     el.appendChild(div);
     if(h.tipo==='text'&&st.feito&&detalheAberto===h.id){
@@ -2284,8 +2362,8 @@ function renderChips(){
     }
   });
   const add=document.createElement('div');
-  add.className='chip add';add.textContent='+ Adicionar';
-  add.onclick=()=>{go('stats',document.querySelectorAll('nav button')[3]);setTimeout(()=>document.getElementById('cfgAnchor').scrollIntoView({behavior:'smooth'}),100);};
+  add.className='chip add';add.innerHTML='View all habits <span style="margin-left:4px;color:var(--muted)">›</span>';
+  add.onclick=abrirCfg;
   el.appendChild(add);
 }
 function toggleHabito(h){
@@ -2359,15 +2437,28 @@ function renderTreinos(){
     const div=document.createElement('div');
     div.className='prog';
     const sigla=(t.nome||'T').replace(/^Treino\s+/i,'').trim().slice(0,2).toUpperCase()||'T';
-    const grupos=(t.exercicios||[]).slice(0,3).map(e=>(e.nome||'').split(' ')[0]).filter(Boolean).join(', ')||'Full body';
+    const nomeGrupos=(t.nome||'').includes('—')?(t.nome.split('—')[1]||'').trim().replace(/\s*\+\s*/g,', '):'';
+    const grupos=nomeGrupos||Array.from(new Set((t.exercicios||[]).map(e=>(e.nome||'').split(' ')[0]).filter(Boolean))).slice(0,3).join(', ')||'Full Body';
     const duracao=Math.max(30,Math.min(90,Math.round((t.exercicios.length||4)*10)));
-    const cor='#050505';
+    const nm=(t.nome||'').toLowerCase();
+    const focus=/perna|leg|agacha|lower|glut/.test(nm)?'Lower Body Focus'
+      :/costas.*(bíceps|biceps)|pull/.test(nm)?'Pull Focus'
+      :/peito|supino|push|tríceps|triceps/.test(nm)?'Upper Body Focus'
+      :/ombro|shoulder/.test(nm)?'Push & Pull Focus'
+      :/full|todo/.test(nm)?'Total Body Strength'
+      :/recovery|mobil|alonga/.test(nm)?'Mobility & Active Recovery'
+      :'Strength Focus';
     const isHoje=ultima&&ultima.data===hojeISO();
-    if(isHoje)div.style.borderColor=cor;
-    div.innerHTML='<div class="pico" style="background:'+cor+'">'+esc(sigla)+'</div><div class="pbody">'+
+    if(isHoje)div.style.borderColor='#050505';
+    const mIco=p=>'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:3px">'+p+'</svg>';
+    div.innerHTML='<div class="pico">'+esc(sigla)+'</div><div class="pbody">'+
       '<div class="pt">'+esc(t.nome)+(isHoje?'<span style="font-size:9px;font-weight:800;color:var(--teal);background:var(--teal-dim);border-radius:99px;padding:2px 7px;margin-left:8px;vertical-align:middle">HOJE</span>':'')+'</div>'+
-      '<div class="ps">'+esc(grupos)+'</div>'+
-      '<div class="pmeta"><div><span>Exercícios</span><b>'+t.exercicios.length+'</b></div><div><span>Duração</span><b>'+duracao+' min</b></div><div><span>Último</span><b>'+(ultima?formatShortDateBR(ultima.data):'—')+'</b></div>'+(vezesTotal?'<div style="display:none"><span>Vezes</span><b>'+vezesTotal+'x</b></div>':'')+'</div>'+
+      '<div class="ps">'+focus+'</div>'+
+      '<div class="pmeta">'+
+        '<div><span>'+mIco('<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/>')+'Muscle Groups</span><b>'+esc(grupos)+'</b></div>'+
+        '<div><span>'+mIco('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>')+'Exercises</span><b>'+t.exercicios.length+'</b></div>'+
+        '<div><span>'+mIco('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>')+'Duration</span><b>'+duracao+' min</b></div>'+
+      '</div>'+
       '</div><div class="pchev">›</div>';
     div.onclick=()=>iniciarOuEditar(t);
     el.appendChild(div);
@@ -2425,22 +2516,24 @@ function historicoCargas(nomeEx){
 function renderSessao(){
   const area=document.getElementById('sessaoArea');
   if(!sessaoAtiva){
-    area.innerHTML=db.treinos.length?'<div class="empty">Toque em um treino acima para iniciar uma sessão 💪</div>':
+    area.innerHTML=db.treinos.length?'<div class="empty">Toque em um treino acima para iniciar uma sessão</div>':
       '<div class="empty">Crie seu primeiro treino no botão <b>+ Novo treino</b>.<br>Ex: Treino A — Peito + Tríceps</div>';
     return;
   }
   const totalSets=sessaoAtiva.exercicios.reduce((a,e)=>a+e.sets.length,0);
   const doneSets=sessaoAtiva.exercicios.reduce((a,e)=>a+e.sets.filter(s=>s.feito).length,0);
   const progress=totalSets?Math.round(doneSets/totalSets*100):0;
-  let html='<div class="live-head"><div><div class="live-kicker">Live Training</div><h2>'+esc(sessaoAtiva.nome)+'</h2><div class="live-meta">'+doneSets+' de '+totalSets+' séries concluídas</div></div><button class="live-end" onclick="finalizarSessao()">End Workout</button></div>';
+  let html='<div class="live-head"><div><div class="live-kicker">Live Training</div><h2>'+esc(sessaoAtiva.nome)+' <span class="live-tag">Strength</span></h2><div class="live-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:3px"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span id="liveElapsed">00:00</span> · '+doneSets+' de '+totalSets+' séries</div></div><button class="live-end" onclick="finalizarSessao()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:4px"><rect x="4" y="4" width="16" height="16" rx="3"/></svg>End Workout</button></div>';
   const currentEx=sessaoAtiva.exercicios.find(e=>e.sets.some(s=>!s.feito))||sessaoAtiva.exercicios[0];
+  let focusEi=-1,focusSi=-1;
   if(currentEx){
     const currentIdx=sessaoAtiva.exercicios.indexOf(currentEx);
     const nextSetIndex=Math.max(0,currentEx.sets.findIndex(s=>!s.feito));
     const currentSet=currentEx.sets[nextSetIndex]||currentEx.sets[currentEx.sets.length-1]||{peso:0,reps:0};
     const setDone=currentEx.sets.filter(s=>s.feito).length;
-    html+='<div class="live-focus" onclick="abrirSet('+currentIdx+','+Math.max(0,nextSetIndex)+')">'+
-      '<div class="lf-label">Current Exercise</div>'+
+    focusEi=currentIdx;focusSi=nextSetIndex;
+    html+='<div class="live-focus" onclick="abrirSet('+currentIdx+','+nextSetIndex+')">'+
+      '<div class="lf-top"><div class="lf-label">Current Exercise</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>'+
       '<div class="lf-title">'+esc(currentEx.nome)+'</div>'+
       '<div class="lf-meta">Toque para registrar a próxima série</div>'+
       '<div class="lf-grid">'+
@@ -2449,8 +2542,9 @@ function renderSessao(){
         '<div class="lf-stat"><span>Weight</span><b>'+currentSet.peso+'<small style="font-size:13px;color:var(--muted)">kg</small></b></div>'+
       '</div></div>';
   }
-  html+='<div class="rest-timer" id="restBox" style="display:none"><div><b id="restVal">01:30</b><br><span>Rest timer</span></div><button class="rt-btn" onclick="pararRest()">Skip Rest</button></div>';
-  html+='<div class="workout-progress"><div class="wp-top"><span>Workout progress</span><span>'+progress+'%</span></div><div class="wp-track"><div class="wp-fill" style="width:'+progress+'%"></div></div></div>';
+  html+='<div class="rest-timer" id="restBox" style="display:none"><svg class="rt-ring" viewBox="0 0 60 60" width="52" height="52"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--border)" stroke-width="5"/><circle id="restRingProg" cx="30" cy="30" r="25" fill="none" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" stroke-dasharray="157.08 157.08" stroke-dashoffset="0" transform="rotate(-90 30 30)"/></svg><div class="rt-mid"><b id="restVal">01:30</b><br><span>Rest Timer · 1:30 target</span></div><button class="rt-btn" onclick="pararRest()">Skip Rest</button></div>';
+  const doneExCount=sessaoAtiva.exercicios.filter(e=>e.sets.length&&e.sets.every(s=>s.feito)).length;
+  html+='<div class="workout-progress"><div class="wp-top"><span>Workout Progress</span><span>'+progress+'%</span></div><div class="wp-sub">'+doneExCount+' of '+sessaoAtiva.exercicios.length+' exercises</div><div class="wp-track"><div class="wp-fill" style="width:'+progress+'%"></div></div></div>';
   sessaoAtiva.exercicios.forEach((ex,ei)=>{
     const ult=ultimaCarga(ex.nome);
     const maxFeito=Math.max(0,...ex.sets.filter(s=>s.feito).map(s=>s.peso));
@@ -2475,9 +2569,20 @@ function renderSessao(){
     }
     html+='</div>';
   });
-  html+='<button class="btn btn-primary" onclick="finalizarSessao()">✓ Finalizar treino</button>';
+  if(focusEi>=0)html+='<button class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px" onclick="abrirSet('+focusEi+','+focusSi+')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Complete Set</button>';
   html+='<button class="btn btn-ghost" onclick="cancelarSessao()">Descartar sessão</button>';
   area.innerHTML=html;
+  if(window._liveElapsedInt)clearInterval(window._liveElapsedInt);
+  if(sessaoAtiva&&sessaoAtiva.inicio){
+    const upd=()=>{
+      const el=document.getElementById('liveElapsed');
+      if(!el){clearInterval(window._liveElapsedInt);return;}
+      const s=Math.max(0,Math.floor((Date.now()-sessaoAtiva.inicio)/1000));
+      el.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    };
+    upd();
+    window._liveElapsedInt=setInterval(upd,1000);
+  }
 }
 function abrirSet(ei,si){
   setEditando={ei,si};
@@ -2499,7 +2604,7 @@ function confirmarSet(){
     const msg=nomeEx+': '+s.peso+'kg — antes '+rec+'kg';
     sessaoAtiva.prs.push(msg);
     ganharXP(XP_POR.pr);
-    celebrar('🏆','NOVO RECORDE!',msg+'. Monstro! 💪');
+    celebrar(mi('trophy',44),'NOVO RECORDE!',msg+'. Continue assim.');
   }else if(s.peso>rec&&rec===0){
     s.pr=false; // primeira vez não conta como PR celebrado
   }
@@ -2515,15 +2620,19 @@ function addSet(ei){
 }
 function iniciarRest(){
   pararRest();
-  let t=90;
+  const TOTAL=90,CIRC=157.08;
+  let t=TOTAL;
   const box=document.getElementById('restBox');if(!box)return;
   box.style.display='flex';
   const val=document.getElementById('restVal');
+  const ring=document.getElementById('restRingProg');
   val.textContent='01:30';
+  if(ring)ring.style.strokeDashoffset=0;
   restInterval=setInterval(()=>{
     t--;
     val.textContent=String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
-    if(t<=0){pararRest();toast('⏱️ Descanso acabou — próxima série!');}
+    if(ring)ring.style.strokeDashoffset=((TOTAL-t)/TOTAL*CIRC).toFixed(1);
+    if(t<=0){pararRest();toast('Descanso acabou — próxima série!');}
   },1000);
 }
 function pararRest(){
@@ -2549,7 +2658,7 @@ function finalizarSessao(){
   // feed post
   const dur=Math.round((sessaoAtiva.fim-sessaoAtiva.inicio)/60000);
   db.feed.unshift({id:uid(),tipo:sessaoAtiva.prs.length?'pr':'treino',ts:Date.now(),
-    titulo:sessaoAtiva.prs.length?'Amassou o '+sessaoAtiva.nome+' — novo recorde! 🏆':'Finalizou o '+sessaoAtiva.nome+' 💪',
+    titulo:sessaoAtiva.prs.length?'Amassou o '+sessaoAtiva.nome+' — novo recorde!':'Finalizou o '+sessaoAtiva.nome,
     stats:[{v:dur+'min',l:'Duração'},{v:String(sessaoAtiva.exercicios.length),l:'Exercícios'}].concat(
       sessaoAtiva.prs.length?[{v:'★',l:'PR'}]:[]),
     likes:0,liked:false,comentarios:[],foto:null});
@@ -2565,7 +2674,7 @@ function finalizarSessao(){
   window._celShareOpts={title:s.nome,kind:'activity',stats:shareStats};
   const shareBtn=document.getElementById('celShareBtn');
   if(shareBtn)shareBtn.style.display=authUser&&_meusGrupos.length?'block':'none';
-  if(!s.prs.length)celebrar('💪','Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
+  if(!s.prs.length)celebrar(mi('checkCircle',44),'Treino concluído!','+'+XP_POR.sessao+' XP. '+feitos+' séries registradas.');
 }
 function cancelarSessao(){
   if(confirm('Descartar esta sessão? Nada será salvo.')){pararRest();sessaoAtiva=null;renderSessao();}
@@ -2623,7 +2732,7 @@ function excluirTreino(){
 /* ================= FEED ================= */
 function renderFeed(){
   const el=document.getElementById('feedArea');
-  if(!db.feed.length){el.innerHTML='<div class="empty">Seu feed está vazio.<br>Finalize um treino ou desbloqueie uma conquista para aparecer aqui 🚀</div>';return;}
+  if(!db.feed.length){el.innerHTML='<div class="empty">Seu feed está vazio.<br>Finalize um treino ou desbloqueie uma conquista para aparecer aqui</div>';return;}
   el.innerHTML='';
   db.feed.slice(0,30).forEach(p=>{
     const div=document.createElement('div');
@@ -2631,7 +2740,7 @@ function renderFeed(){
     const dt=new Date(p.ts);
     const postIso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
     const quando=formatDateBR(postIso)+' · '+String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
-    const badge=p.tipo==='pr'?'<span class="post-badge pr">🏆 NOVO PR</span>':p.tipo==='badge'?'<span class="post-badge bg">🎖️ BADGE</span>':'<span class="post-badge tr">TREINO</span>';
+    const badge=p.tipo==='pr'?'<span class="post-badge pr">NOVO PR</span>':p.tipo==='badge'?'<span class="post-badge bg">BADGE</span>':'<span class="post-badge tr">TREINO</span>';
     div.innerHTML='<div class="post-head"><div class="pava">L</div><div><div class="pn">Leonardo</div><div class="pt">'+quando+'</div></div>'+badge+'</div>'+
       '<div class="post-body">'+esc(p.titulo)+'</div>'+
       (p.foto?'<div class="post-photo"><img src="'+p.foto+'" alt="foto do treino"></div>':'')+
@@ -2699,14 +2808,14 @@ function verificarBadges(){
   BADGES.forEach(b=>{
     if(!db.badges[b.id]&&b.teste(d)){
       db.badges[b.id]=Date.now();
-      db.feed.unshift({id:uid(),tipo:'badge',ts:Date.now(),titulo:'Desbloqueou a conquista "'+b.nome+'" '+b.ico,stats:[],likes:0,liked:false,comentarios:[],foto:null});
+      db.feed.unshift({id:uid(),tipo:'badge',ts:Date.now(),titulo:'Desbloqueou a conquista "'+b.nome+'"',stats:[],likes:0,liked:false,comentarios:[],foto:null});
       salvar();
-      celebrar(b.ico,'Conquista desbloqueada!','"'+b.nome+'" — continue assim! 🔥');
+      celebrar(mi(b.ico,44),'Conquista desbloqueada!','"'+b.nome+'" — continue assim!');
     }
   });
 }
 function celebrar(ico,titulo,msg){
-  document.getElementById('celIco').textContent=ico;
+  document.getElementById('celIco').innerHTML=ico;
   document.getElementById('celTitle').textContent=titulo;
   document.getElementById('celMsg').textContent=msg;
   const host=document.getElementById('confettiHost');
@@ -2845,7 +2954,7 @@ function renderStats(){
   const dd=dadosBadges();
   document.getElementById('badgesArea').innerHTML=BADGES.map(b=>{
     const has=db.badges[b.id]||b.teste(dd);
-    return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+b.ico+'</div><div class="bn">'+b.nome+'</div></div>';
+    return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+mi(b.ico,22)+'</div><div class="bn">'+b.nome+'</div></div>';
   }).join('');
 
   renderHabitStreaks();
@@ -2925,7 +3034,12 @@ function addHabito(){
   inp.value='';salvar();renderCfg();renderHoje();
   toast('Atividade adicionada ✓');
 }
-function abrirCfg(){go('stats',document.querySelectorAll('nav button')[3]);setTimeout(()=>document.getElementById('cfgAnchor').scrollIntoView({behavior:'smooth'}),100);}
+function abrirCfg(){
+  go('stats',document.querySelectorAll('nav button')[3]);
+  const more=document.querySelector('#t-stats .stats-more');
+  if(more)more.open=true;
+  setTimeout(()=>document.getElementById('cfgAnchor').scrollIntoView({behavior:'smooth'}),100);
+}
 
 /* --- export --- */
 function exportarDados(){
@@ -2969,7 +3083,7 @@ function go(t,btn){
   ativarTab('t-'+t);
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('fabNovo').classList.toggle('show',t==='treino');
+  document.getElementById('fabNovo').classList.remove('show');
   if(t==='treino')renderTreinos();
   if(t==='grupo'){renderCommunityProgress();carregarFeedSocial();}
   if(t==='stats')renderStats();
@@ -3068,22 +3182,22 @@ function abrirSleepModal(){
   // Recommendations
   const recs=[];
   if(!totalMin){
-    recs.push({ico:'😴',title:'Registre seu sono',text:'Adicione os horários de dormir e acordar para ver seu Recovery Score.'});
+    recs.push({ico:'moon',title:'Registre seu sono',text:'Adicione os horários de dormir e acordar para ver seu Recovery Score.'});
   }else if(score>=85){
-    recs.push({ico:'⭐',title:'Sono excelente!',text:'Seu corpo está se recuperando bem. Continue com essa consistência.'});
-    recs.push({ico:'💪',title:'Pronto para treinar',text:'Com esse Recovery Score você está apto para treinos de alta intensidade.'});
+    recs.push({ico:'star',title:'Sono excelente!',text:'Seu corpo está se recuperando bem. Continue com essa consistência.'});
+    recs.push({ico:'dumbbell',title:'Pronto para treinar',text:'Com esse Recovery Score você está apto para treinos de alta intensidade.'});
   }else if(score>=70){
-    recs.push({ico:'✅',title:'Sono bom',text:'Tente adicionar 30min a mais de sono para otimizar ainda mais sua recuperação.'});
-    recs.push({ico:'📵',title:'Evite telas',text:'Reduza o uso de telas 1h antes de dormir para melhorar a qualidade do sono.'});
+    recs.push({ico:'checkCircle',title:'Sono bom',text:'Tente adicionar 30min a mais de sono para otimizar ainda mais sua recuperação.'});
+    recs.push({ico:'moon',title:'Evite telas',text:'Reduza o uso de telas 1h antes de dormir para melhorar a qualidade do sono.'});
   }else if(score>=50){
-    recs.push({ico:'⚠️',title:'Sono regular',text:'Tente dormir 7–9 horas e mantenha horários consistentes durante a semana.'});
-    recs.push({ico:'☕',title:'Cafeína',text:'Evite cafeína depois das 14h para não prejudicar a qualidade do sono.'});
+    recs.push({ico:'warning',title:'Sono regular',text:'Tente dormir 7–9 horas e mantenha horários consistentes durante a semana.'});
+    recs.push({ico:'zap',title:'Cafeína',text:'Evite cafeína depois das 14h para não prejudicar a qualidade do sono.'});
   }else{
-    recs.push({ico:'🚨',title:'Sono insuficiente',text:'Você dormiu pouco. Priorize o sono para recuperação máxima e performance.'});
-    recs.push({ico:'🌙',title:'Rotina de sono',text:'Estabeleça um horário fixo para dormir, inclusive nos fins de semana.'});
+    recs.push({ico:'warning',title:'Sono insuficiente',text:'Você dormiu pouco. Priorize o sono para recuperação máxima e performance.'});
+    recs.push({ico:'moon',title:'Rotina de sono',text:'Estabeleça um horário fixo para dormir, inclusive nos fins de semana.'});
   }
-  recs.push({ico:'🌡️',title:'Temperatura ideal',text:'Mantenha o quarto entre 18–20°C para otimizar a qualidade do sono.'});
-  const recsHtml=recs.map(r=>'<div class="sm-rec"><div class="sm-rec-ico">'+r.ico+'</div>'
+  recs.push({ico:'target',title:'Temperatura ideal',text:'Mantenha o quarto entre 18–20°C para otimizar a qualidade do sono.'});
+  const recsHtml=recs.map(r=>'<div class="sm-rec"><div class="sm-rec-ico">'+mi(r.ico,15)+'</div>'
     +'<div><b class="sm-rec-b">'+r.title+'</b><span class="sm-rec-s">'+r.text+'</span></div></div>').join('');
   const sleepStr=totalMin?fmtMins(totalMin):'—';
   const timesStr=dormiu&&acordou?dormiu+' – '+acordou:'Não registrado';
@@ -3352,7 +3466,7 @@ async function confirmarMigracao(){
 
   // Resultado
   if(erros.length){
-    setStatus('⚠️ Concluído com avisos — '+erros.join('; ')+'. localStorage preservado.');
+    setStatus('Concluído com avisos — '+erros.join('; ')+'. localStorage preservado.');
   }else{
     setStatus('✓ Migração completa! '+habitosPayload.length+' hábitos, '+logsPayload.length+' dias de sono, '+entriesPayload.length+' entradas, '+programasPayload.length+' programas, '+sessoesPayload.length+' sessões. localStorage preservado.');
     try{localStorage.setItem('hpc_last_sync',JSON.stringify({at:new Date().toISOString(),userId:uid}));}catch(_){}
@@ -3746,12 +3860,12 @@ function renderGrupos(grupos){
   }
   el.innerHTML=grupos.map(g=>`
     <div class="group-card">
-      <div class="gc-ico">👥</div>
+      <div class="gc-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <div class="gc-info">
         <div class="gc-name">${g.name}</div>
         <div class="gc-meta">${g._memberCount||0} membro${(g._memberCount||0)!==1?'s':''} · ${g.role||'membro'}</div>
       </div>
-      ${g.invite_code?`<div class="gc-code" title="Copiar código" onclick="copiarCodigo('${g.invite_code}')">🔗 ${g.invite_code}</div>`:''}
+      ${g.invite_code?`<div class="gc-code" title="Copiar código" onclick="copiarCodigo('${g.invite_code}')">${g.invite_code}</div>`:''}
     </div>`).join('');
 }
 
@@ -3805,19 +3919,19 @@ async function carregarFeedSocial(){
         const ts=new Date(s.data+'T09:00:00').getTime();
         const hasPR=s.prs&&s.prs.length;
         return{id:s.id||uid(),tipo:hasPR?'pr':'treino',ts,
-          titulo:hasPR?'Novo PR em '+s.nome+' 🏆':'Finalizou '+s.nome+' 💪',
+          titulo:hasPR?'Novo PR em '+s.nome:'Finalizou '+s.nome,
           stats:[{v:String(s.exercicios?s.exercicios.length:'-'),l:'Exercícios'}].concat(hasPR?[{v:'★'+s.prs.length,l:'PR'}]:[]),
           likes:Math.floor(Math.random()*8)+1,liked:false,comentarios:[],foto:null};
       });
     }
-    if(!posts.length){el.innerHTML='<div class="feed-empty">Finalize um treino para ver seu feed 🚀</div>';return;}
+    if(!posts.length){el.innerHTML='<div class="feed-empty">Finalize um treino para ver seu feed</div>';return;}
     el.innerHTML='';
     posts.forEach(p=>{
       const div=document.createElement('div');div.className='post';
       const dt=new Date(p.ts);
       const postIso=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
       const quando=formatDateBR(postIso);
-      const badge=p.tipo==='pr'?'<span class="post-badge pr">🏆 PR</span>':'<span class="post-badge tr">TREINO</span>';
+      const badge=p.tipo==='pr'?'<span class="post-badge pr">PR</span>':'<span class="post-badge tr">TREINO</span>';
       const isLocal=db.feed.find(x=>x.id===p.id);
       div.innerHTML='<div class="post-head"><div class="pava">L</div><div><div class="pn">Leonardo</div><div class="pt">'+quando+'</div></div>'+badge+'</div>'+
         '<div class="post-body">'+esc(p.titulo)+'</div>'+
@@ -3986,8 +4100,8 @@ async function toggleLike(postId,btn){
   btn.classList.toggle('liked');
   const ico=btn.querySelector('.fbi');
   const count=parseInt(btn.textContent.trim().replace(/\D/g,''))||0;
-  if(isLiked){ico.textContent='🤍';btn.innerHTML=`<span class="fbi">🤍</span> ${Math.max(0,count-1)}`;}
-  else{ico.textContent='❤️';btn.innerHTML=`<span class="fbi">❤️</span> ${count+1}`;}
+  if(isLiked){ico.textContent='♡';btn.innerHTML=`<span class="fbi">♡</span> ${Math.max(0,count-1)}`;}
+  else{ico.textContent='♥';btn.innerHTML=`<span class="fbi">♥</span> ${count+1}`;}
 }
 
 async function abrirComentarios(postId,postTitle){
@@ -4035,7 +4149,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v54',
+  cacheVersion:'hpc-cache-v55',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
