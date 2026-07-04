@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v31"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v32"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -494,7 +494,7 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 #t-hoje .greeting .gsub{font-size:14.5px}
 #t-hoje .datenav{margin-top:6px;margin-bottom:2px;border-radius:18px;padding:7px 9px}
 #t-hoje .score-card{min-height:118px;border-radius:18px;padding:18px;gap:18px;margin-top:14px}
-#t-hoje .score-card .sc-ico{width:62px;height:62px;background:#F1F1F3;color:#000;font-size:26px}
+#t-hoje .score-card .sc-ico{width:62px;height:62px;background:transparent;font-size:26px}
 #t-hoje .score-card .sc-lbl{color:#1C1C1E;font-size:10px;letter-spacing:1.6px}
 #t-hoje .score-card .sc-num{font-size:50px;letter-spacing:0}
 #t-hoje .score-card .sc-num sub{font-size:17px}
@@ -543,14 +543,15 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 .live-head h2{font-size:24px;font-weight:850;line-height:1.1}
 .live-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;font-weight:850;color:var(--muted);margin-bottom:4px}
 .live-meta{font-size:13px;color:var(--muted);margin-top:6px}
-.live-end{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800;color:var(--text);white-space:nowrap}
-.rest-timer{background:var(--card);border-color:var(--border);box-shadow:var(--shadow);border-radius:18px;padding:15px 16px}
-.rest-timer b{color:var(--text);font-size:30px}
-.rest-timer .rt-btn{background:#000;border-radius:12px}
+.live-end{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.25);border-radius:12px;padding:9px 14px;font-size:12px;font-weight:800;color:#FF3B30;white-space:nowrap;cursor:pointer}
+.rest-timer{background:var(--card);border-color:var(--violet);border-width:1.5px;box-shadow:var(--shadow);border-radius:18px;padding:15px 16px}
+.rest-timer b{color:var(--violet);font-size:30px}
+.rest-timer .rt-btn{background:var(--violet);border-radius:12px}
 .workout-progress{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin:12px 0;box-shadow:var(--shadow)}
 .workout-progress .wp-top{display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.1px}
 .workout-progress .wp-track{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:10px}
-.workout-progress .wp-fill{height:100%;background:#000;border-radius:99px}
+.workout-progress .wp-fill{height:100%;background:linear-gradient(90deg,#5856D6,#007AFF);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.ex-num{font-size:10px;font-weight:850;color:var(--violet);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px;opacity:.7}
 .exercise{border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
 .ex-head{align-items:flex-start;margin-bottom:13px}
 .ex-head b{font-size:22px;font-weight:850;line-height:1.05}
@@ -806,7 +807,13 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- Score card -->
   <div class="score-card">
-    <div class="sc-ico">📈</div>
+    <div class="sc-ico" style="background:transparent;padding:0;overflow:visible">
+      <svg width="62" height="62" viewBox="0 0 62 62" style="transform:rotate(-90deg)">
+        <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#5856D6"/><stop offset="100%" stop-color="#007AFF"/></linearGradient></defs>
+        <circle cx="31" cy="31" r="26" fill="none" stroke="#E5E5EA" stroke-width="5.5"/>
+        <circle id="scoreRing" cx="31" cy="31" r="26" fill="none" stroke="url(#scoreGrad)" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
+      </svg>
+    </div>
     <div class="sc-main">
       <div class="sc-lbl">Daily Score</div>
       <div class="sc-num"><span id="scoreVal">0</span><sub>/100</sub></div>
@@ -1951,6 +1958,8 @@ function renderHoje(){
   const sc=scoreDoDia(diaAtual);
   document.getElementById('scoreVal').textContent=sc;
   document.getElementById('ringProg').style.strokeDashoffset=295-(295*sc/100);
+  const scoreRingEl=document.getElementById('scoreRing');
+  if(scoreRingEl)scoreRingEl.style.strokeDashoffset=(163.4*(1-sc/100)).toFixed(1);
 
   // hero stats
   const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
@@ -2062,17 +2071,23 @@ const CORES_PROG=['var(--teal)','var(--amber)','var(--rose)','var(--violet)'];
 function renderTreinos(){
   const el=document.getElementById('progScroll');
   el.innerHTML='';
+  const paleta=['#5856D6','#FF9500','#FF3B30','#34C759','#007AFF','#FF2D55'];
   db.treinos.forEach((t,i)=>{
-    const ultima=db.sessoes.filter(s=>s.treinoId===t.id).sort((a,b)=>b.data.localeCompare(a.data))[0];
+    const sessoesTreino=db.sessoes.filter(s=>s.treinoId===t.id).sort((a,b)=>b.data.localeCompare(a.data));
+    const ultima=sessoesTreino[0];
+    const vezesTotal=sessoesTreino.length;
     const div=document.createElement('div');
     div.className='prog';
     const sigla=(t.nome||'T').replace(/^Treino\s+/i,'').trim().slice(0,2).toUpperCase()||'T';
     const grupos=(t.exercicios||[]).slice(0,3).map(e=>(e.nome||'').split(' ')[0]).filter(Boolean).join(', ')||'Full body';
     const duracao=Math.max(30,Math.min(90,Math.round((t.exercicios.length||4)*10)));
-    div.innerHTML='<div class="pico">'+esc(sigla)+'</div><div class="pbody">'+
-      '<div class="pt">'+esc(t.nome)+'</div>'+
+    const cor=paleta[i%paleta.length];
+    const isHoje=ultima&&ultima.data===hojeISO();
+    if(isHoje)div.style.borderColor=cor;
+    div.innerHTML='<div class="pico" style="background:'+cor+'">'+esc(sigla)+'</div><div class="pbody">'+
+      '<div class="pt">'+esc(t.nome)+(isHoje?'<span style="font-size:9px;font-weight:700;color:'+cor+';background:'+cor+'22;border-radius:99px;padding:2px 7px;margin-left:8px;vertical-align:middle">HOJE</span>':'')+'</div>'+
       '<div class="ps">'+esc(grupos)+'</div>'+
-      '<div class="pmeta"><div><span>Exercícios</span><b>'+t.exercicios.length+'</b></div><div><span>Duração</span><b>'+duracao+' min</b></div><div><span>Último</span><b>'+(ultima?formatShortDateBR(ultima.data):'—')+'</b></div></div>'+
+      '<div class="pmeta"><div><span>Exercícios</span><b>'+t.exercicios.length+'</b></div><div><span>Duração</span><b>'+duracao+' min</b></div><div><span>Último</span><b>'+(ultima?formatShortDateBR(ultima.data):'—')+'</b></div>'+(vezesTotal?'<div style="display:none"><span>Vezes</span><b>'+vezesTotal+'x</b></div>':'')+'</div>'+
       '</div><div class="pchev">›</div>';
     div.onclick=()=>iniciarOuEditar(t);
     el.appendChild(div);
@@ -2149,7 +2164,8 @@ function renderSessao(){
       vs=dif>0?'vs última: <em>+'+dif+'kg ▲</em>':dif<0?'vs última: <em class="dn">'+dif+'kg ▼</em>':'vs última: igual =';
     }else if(ult!==null)vs='última: '+ult+'kg';
     const doneEx=ex.sets.filter(s=>s.feito).length;
-    html+='<div class="exercise"><div class="ex-head"><div><span class="live-kicker">Current exercise</span><b>'+esc(ex.nome)+'</b></div><span class="vs">'+(vs||doneEx+' / '+ex.sets.length+' sets')+'</span></div><div class="sets">';
+    const exLabel=String(ei+1).padStart(2,'0')+' / '+String(sessaoAtiva.exercicios.length).padStart(2,'0');
+    html+='<div class="exercise"><div class="ex-num">Exercício '+exLabel+'</div><div class="ex-head"><div><b>'+esc(ex.nome)+'</b></div><span class="vs">'+(vs||doneEx+' / '+ex.sets.length+' sets')+'</span></div><div class="sets">';
     ex.sets.forEach((s,si)=>{
       html+='<div class="set'+(s.pr?' pr':s.feito?' done':'')+'" onclick="abrirSet('+ei+','+si+')">'+
         '<div class="sw">'+(s.feito?s.peso+'kg':(s.peso?s.peso+'kg':'—'))+'</div><div class="sr">'+s.reps+' reps</div>'+
@@ -3669,7 +3685,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v31',
+  cacheVersion:'hpc-cache-v32',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
