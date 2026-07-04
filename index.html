@@ -146,7 +146,7 @@ header{padding:14px 16px 8px;display:flex;align-items:center;justify-content:spa
 .mini-chart i{flex:1;background:linear-gradient(180deg,var(--violet),rgba(176,96,255,.25));border-radius:4px 4px 0 0;display:block;min-height:4px}
 .mini-chart i.hi{background:linear-gradient(180deg,var(--amber),rgba(255,208,0,.3))}
 .btn{display:block;width:100%;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;margin-top:6px}
-.btn-primary{background:var(--text);color:#fff}
+.btn-primary{background:linear-gradient(135deg,#5856D6,#007AFF);color:#fff;box-shadow:0 2px 8px rgba(88,86,214,.3)}
 .btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--text)}
 .btn-amber{background:var(--amber);color:#332b00}
 .empty{color:var(--muted);font-size:13px;text-align:center;padding:26px 10px;line-height:1.5}
@@ -287,7 +287,7 @@ td.dcol{color:var(--muted);font-weight:600}
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--teal);color:var(--text);font-size:13px;font-weight:700;padding:11px 18px;border-radius:99px;z-index:80;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-.fab{position:fixed;bottom:86px;right:18px;width:54px;height:54px;border-radius:18px;background:var(--text);color:#fff;border:none;font-size:26px;font-weight:800;box-shadow:var(--shadow-md);z-index:49;cursor:pointer;display:none}
+.fab{position:fixed;bottom:86px;right:18px;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#5856D6,#007AFF);color:#fff;border:none;font-size:26px;font-weight:800;box-shadow:0 4px 14px rgba(88,86,214,.4);z-index:49;cursor:pointer;display:none}
 .fab.show{display:block}
 nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-top:1px solid var(--border);display:flex;padding:7px 0 max(9px, env(safe-area-inset-bottom));z-index:50}
 nav button{flex:1;background:none;border:none;color:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 0}
@@ -527,7 +527,7 @@ header{padding:16px 16px 8px;justify-content:center;position:relative}
 .train-filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:8px -2px 14px;padding:0 2px 2px}
 .train-filters::-webkit-scrollbar{display:none}
 .train-chip{border:1px solid var(--border);background:var(--card);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:750;color:var(--text);white-space:nowrap}
-.train-chip.active{background:#000;color:#fff;border-color:#000}
+.train-chip.active{background:#5856D6;color:#fff;border-color:#5856D6}
 .prog-scroll{display:grid;grid-template-columns:1fr;gap:10px;overflow:visible;padding-bottom:0;margin-top:0}
 .prog{min-width:0;border-left:none;border-radius:16px;padding:13px 14px;display:grid;grid-template-columns:48px 1fr 18px;align-items:center;gap:12px;box-shadow:var(--shadow)}
 .prog .pico{width:48px;height:48px;border-radius:12px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:850}
@@ -1301,7 +1301,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <div class="migrate-warning" style="margin-top:10px">Um backup do localStorage atual será criado antes de qualquer alteração.</div>
     </div>
     <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
-      <button class="btn btn-primary" id="cloudLoadConfirmBtn" style="display:none;background:var(--violet);border-color:var(--violet)" onclick="confirmarCarregarNuvem()">Confirmar e carregar</button>
+      <button class="btn btn-primary" id="cloudLoadConfirmBtn" style="display:none" onclick="confirmarCarregarNuvem()">Confirmar e carregar</button>
       <button class="btn btn-ghost" onclick="fecharModal('modalCarregarNuvem')">Cancelar</button>
     </div>
   </div>
@@ -1821,7 +1821,10 @@ function switchGrupoTab(tab,btn){
   document.getElementById('panelGrupos').style.display=tab==='grupos'?'':'none';
   if(tab==='feed'){renderCommunityProgress();carregarFeedSocial();}
   if(tab==='leaderboard')renderLeaderboard();
-  if(tab==='grupos')renderCommunityProgress();
+  if(tab==='grupos'){
+    renderCommunityProgress();
+    if(!authUser){const ga=document.getElementById('gruposArea');if(ga&&ga.innerHTML.includes('Carregando'))ga.innerHTML='<div class="feed-empty">Faça login para ver seus grupos.</div>';}
+  }
 }
 
 function renderLeaderboard(){
