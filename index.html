@@ -96,8 +96,8 @@ header{padding:14px 16px 8px;display:flex;align-items:center;justify-content:spa
 .chip{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:13px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;cursor:pointer;user-select:none;transition:border-color .2s}
 .chip.done{border-color:rgba(88,86,214,.45)}
 .chip.done::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(88,86,214,.07),transparent);pointer-events:none}
-.chip .cico{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:1;flex-shrink:0;filter:grayscale(1)}
-.chip.done .cico{background:rgba(88,86,214,.12);filter:none}
+.chip .cico{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--text);z-index:1;flex-shrink:0}
+.chip.done .cico{background:rgba(88,86,214,.12)}
 .chip .cbody{z-index:1;min-width:0;flex:1}
 .chip .cn{font-weight:700;font-size:13.5px}
 .chip .cd{font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -708,7 +708,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
 /* ===== HABIT STREAKS ===== */
 .habit-streak-item{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
-.hsi-ico{width:38px;height:38px;border-radius:11px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.hsi-ico{width:38px;height:38px;border-radius:11px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0}
 .hsi-body{flex:1;min-width:0}
 .hsi-name{font-weight:800;font-size:13.5px;margin-bottom:7px}
 .hsi-dots-row{display:flex;align-items:center;gap:4px}
@@ -1384,6 +1384,22 @@ const HABITOS_PADRAO=[
   {id:'sauna',nome:'Sauna',tipo:'check',ico:'🔥'},
   {id:'sup',nome:'SUP',tipo:'check',ico:'🌊'}
 ];
+/* Line-icon set for habits — premium look, no emojis in UI chrome */
+function habitIcon(h,size){
+  const sz=size||16;
+  const s=p=>'<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+p+'</svg>';
+  const n=((h&&h.nome)||'').toLowerCase(),id=(h&&h.id)||'';
+  if(id==='bjj'||n.includes('bjj')||n.includes('jiu')||n.includes('luta'))return s('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>');
+  if(id==='fisio'||n.includes('fisio')||n.includes('saude'))return s('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>');
+  if(id==='academia'||n.includes('academia')||n.includes('gym')||n.includes('muscula')||n.includes('treino'))return s('<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/>');
+  if(id==='corrida'||n.includes('corrida')||n.includes('cardio')||n.includes('run')||n.includes('caminhada'))return s('<circle cx="6" cy="19" r="2.5"/><path d="M8.5 19H17a3.5 3.5 0 0 0 0-7H7a3.5 3.5 0 0 1 0-7h8.5"/><circle cx="18.5" cy="5" r="2.5"/>');
+  if(id==='pilates'||n.includes('pilates')||n.includes('yoga')||n.includes('alonga'))return s('<circle cx="12" cy="5" r="1.6"/><path d="m9 20 3-6 3 6"/><path d="m6 8.5 6 2 6-2"/><path d="M12 10.5V14"/>');
+  if(id==='sauna'||n.includes('sauna')||n.includes('gelo'))return s('<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>');
+  if(id==='sup'||n.includes('sup')||n.includes('surf')||n.includes('nata')||n.includes('remo'))return s('<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>');
+  if(n.includes('leitura')||n.includes('ler')||n.includes('estud'))return s('<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>');
+  if(n.includes('medita')||n.includes('respira'))return s('<circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/>');
+  return s('<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/>');
+}
 const BADGES=[
   {id:'pr1',ico:'🏆',nome:'Primeiro PR',teste:d=>d.prs.length>=1},
   {id:'streak7',ico:'🔥',nome:'7 dias seguidos',teste:d=>d.streak>=7},
@@ -1887,7 +1903,7 @@ function renderHabitStreaks(){
       return '<div class="hsi-day-col"><span class="hsi-day-lbl">'+lbl+'</span><div class="hsi-dot'+(done?' done':' empty')+'"></div></div>';
     }).join('');
     return '<div class="habit-streak-item">'+
-      '<div class="hsi-ico">'+h.ico+'</div>'+
+      '<div class="hsi-ico">'+habitIcon(h,18)+'</div>'+
       '<div class="hsi-body"><div class="hsi-name">'+esc(h.nome)+'</div><div class="hsi-dots-row">'+dots+'</div></div>'+
       '<div class="hsi-stats"><div class="hsi-streak-num">'+streak+'</div><div class="hsi-streak-lbl">day streak</div>'+
       '<div class="hsi-week-pct'+(pct>=70?' good':'')+'">'+pct+'%<br><span style="font-size:9px;color:var(--muted)">this week</span></div></div>'+
@@ -2092,7 +2108,7 @@ function renderChips(){
     const stk=streakHabito(h.id);
     const div=document.createElement('div');
     div.className='chip'+(st.feito?' done':'');
-    div.innerHTML='<span class="cico">'+(st.feito?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':h.ico)+'</span><div class="cbody"><div class="cn">'+esc(h.nome)+'</div><div class="cd">'+
+    div.innerHTML='<span class="cico">'+(st.feito?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':habitIcon(h))+'</span><div class="cbody"><div class="cn">'+esc(h.nome)+'</div><div class="cd">'+
       (st.feito?(st.detalhe?esc(st.detalhe):'Feito'):'Toque p/ marcar')+'</div></div>'+
       (stk>=2?'<span class="cstreak"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>'+stk+'</span>':'');
     div.onclick=()=>toggleHabito(h);
@@ -2670,7 +2686,7 @@ function renderCfg(){
   db.habitos.forEach(h=>{
     const div=document.createElement('div');
     div.className='cfg-item';
-    div.innerHTML='<span>'+h.ico+'</span><div class="cname">'+esc(h.nome)+'</div><div class="ctype">'+(h.tipo==='text'?'com detalhe':'sim/não')+'</div><button>✕</button>';
+    div.innerHTML='<span style="display:inline-flex;color:var(--muted)">'+habitIcon(h)+'</span><div class="cname">'+esc(h.nome)+'</div><div class="ctype">'+(h.tipo==='text'?'com detalhe':'sim/não')+'</div><button>✕</button>';
     div.querySelector('button').onclick=()=>{
       if(confirm('Remover "'+h.nome+'"? O histórico é mantido.')){
         db.habitos=db.habitos.filter(x=>x.id!==h.id);
