@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v63"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v64"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -639,16 +639,14 @@ header{padding:18px 16px 10px;justify-content:center;position:relative}
 .train-chip{border:1px solid var(--border);background:var(--card);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:750;color:var(--text);white-space:nowrap}
 .train-chip.active{background:#111111;color:#fff;border-color:#111111}
 .prog-scroll{display:grid;grid-template-columns:1fr;gap:10px;overflow:visible;padding-bottom:0;margin-top:0}
-.prog{min-width:0;border-left:none;border-radius:16px;padding:13px 14px;display:grid;grid-template-columns:48px 1fr 18px;align-items:center;gap:12px;box-shadow:var(--shadow)}
-.prog .pico{width:48px;height:48px;border-radius:10px;background:#111111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:820}
-.prog .pt{font-size:18px;font-weight:780;line-height:1.12}
-.prog .ps{font-size:12.5px;color:var(--muted);margin-top:2px}
-.prog .plast{font-size:11.5px;color:var(--muted);margin-top:8px;font-weight:650}
-.prog .pmeta{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:8px;margin-top:10px;border-top:1px solid var(--border);padding-top:9px}
-.prog .pmeta span{font-size:10px;color:var(--muted);display:block}
-.prog .pmeta b{font-size:12px;color:var(--text);display:block;margin-top:2px}
-.prog .pchev{font-size:22px;color:var(--muted)}
-.prog.padd{border:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;min-height:44px;background:#111111;border-radius:99px}
+.prog{min-width:0;border-left:none;border-radius:16px;padding:14px 16px;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.prog .pico{width:48px;height:48px;border-radius:12px;background:#111111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:820;flex-shrink:0}
+.prog .pt{font-size:16px;font-weight:780;line-height:1.15}
+.prog .ps{font-size:13px;color:var(--muted);margin-top:2px}
+.prog .pright{display:flex;align-items:center;gap:6px}
+.prog .pdur{font-size:13px;color:var(--muted);white-space:nowrap}
+.prog .pchev{font-size:20px;color:var(--muted);line-height:1}
+.prog.padd{border:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;min-height:52px;background:#111111;border-radius:14px;margin-top:6px}
 .live-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:14px 0 12px}
 .live-head h2{font-size:24px;font-weight:780;line-height:1.1}
 .live-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;font-weight:850;color:var(--muted);margin-bottom:4px}
@@ -2597,20 +2595,17 @@ function renderTreinos(){
     const isHoje=ultima&&ultima.data===hojeISO();
     if(isHoje)div.style.borderColor='#111111';
     const mIco=p=>'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:3px">'+p+'</svg>';
-    div.innerHTML='<div class="pico">'+esc(sigla)+'</div><div class="pbody">'+
-      '<div class="pt">'+esc(t.nome)+(isHoje?'<span style="font-size:9px;font-weight:800;color:var(--teal);background:var(--teal-dim);border-radius:99px;padding:2px 7px;margin-left:8px;vertical-align:middle">HOJE</span>':'')+'</div>'+
-      '<div class="ps">'+focus+'</div>'+
-      '<div class="pmeta">'+
-        '<div><span>'+mIco('<rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/>')+'Grupos</span><b>'+esc(grupos)+'</b></div>'+
-        '<div><span>'+mIco('<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>')+'Exercícios</span><b>'+t.exercicios.length+'</b></div>'+
-        '<div><span>'+mIco('<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>')+'Duração</span><b>'+duracao+' min</b></div>'+
+    div.innerHTML='<div class="pico">'+esc(sigla)+'</div>'+
+      '<div class="pbody">'+
+        '<div class="pt">'+esc(t.nome)+(isHoje?'<span style="font-size:9px;font-weight:800;color:var(--teal);background:var(--teal-dim);border-radius:99px;padding:2px 7px;margin-left:8px;vertical-align:middle">HOJE</span>':'')+'</div>'+
+        '<div class="ps">'+focus+'</div>'+
       '</div>'+
-      '</div><div class="pchev">›</div>';
+      '<div class="pright"><span class="pdur">'+duracao+' min</span><span class="pchev">›</span></div>';
     div.onclick=()=>iniciarOuEditar(t);
     el.appendChild(div);
   });
   const add=document.createElement('div');
-  add.className='prog padd';add.textContent='Montar treino';
+  add.className='prog padd';add.textContent='Criar plano';
   add.onclick=abrirNovoTreino;
   el.appendChild(add);
   renderSessao();
@@ -4296,7 +4291,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v63',
+  cacheVersion:'hpc-cache-v64',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
