@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v61"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v62"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -478,6 +478,11 @@ header{padding:18px 16px 10px;justify-content:center;position:relative}
 .score-card .sc-desc{font-size:11.5px;color:var(--muted);line-height:1.4}
 .score-card .sc-chev{color:var(--border);font-size:20px;flex-shrink:0}
 .score-card.home-link{cursor:pointer}
+.score-ring{width:84px;height:84px;flex-shrink:0;margin-left:auto}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke-width:7}
+.score-ring .sr-bg{stroke:#E5E7EB}
+.score-ring .sr-prog{stroke:var(--green);stroke-linecap:round;stroke-dasharray:157.1;stroke-dashoffset:157.1;transition:stroke-dashoffset .35s ease,stroke .2s ease}
 
 /* 2-col quick grid */
 .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
@@ -502,7 +507,7 @@ header{padding:18px 16px 10px;justify-content:center;position:relative}
 .qcard-link .qlc{color:var(--muted);font-size:13px;line-height:1}
 
 /* Quick stats row */
-.qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 8px;margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:var(--shadow)}
+.qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 8px;margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);box-shadow:var(--shadow)}
 .qst{display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border);padding:4px 6px}
 .qst:last-child{border-right:none}
 .qst-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
@@ -527,14 +532,18 @@ header{padding:18px 16px 10px;justify-content:center;position:relative}
 #t-hoje .greeting h1{font-size:22px;font-weight:780;letter-spacing:-.2px}
 #t-hoje .greeting .gsub{font-size:12.5px;color:var(--muted);margin-top:2px}
 #t-hoje .datenav{display:none}
-#t-hoje .score-card{min-height:92px;border-radius:16px;padding:15px 15px;gap:14px;margin-top:10px}
+#t-hoje .score-card{min-height:118px;border-radius:16px;padding:18px 18px;gap:8px 14px;margin-top:10px;display:grid;grid-template-columns:1fr 92px;grid-template-areas:"main ring" "info ring";align-items:center}
 #t-hoje .score-card .sc-ico{width:44px;height:44px;background:var(--card2);border-radius:50%}
 #t-hoje .score-card .sc-ico svg{width:21px;height:18px}
 #t-hoje .score-card .sc-lbl{color:var(--muted);font-size:9px;letter-spacing:1.4px}
 #t-hoje .score-card .sc-num{font-size:38px;letter-spacing:-.5px}
 #t-hoje .score-card .sc-num sub{font-size:14px}
-#t-hoje .score-card .sc-status{font-size:12.5px}
-#t-hoje .score-card .sc-desc{font-size:11.5px;max-width:150px}
+#t-hoje .score-card .sc-main{grid-area:main}
+#t-hoje .score-card .sc-info{grid-area:info;max-width:none}
+#t-hoje .score-card .sc-status{font-size:12.5px;white-space:nowrap}
+#t-hoje .score-card .sc-desc{font-size:11.5px;max-width:190px}
+#t-hoje .score-card .sc-ico,#t-hoje .score-card .sc-chev{display:none}
+#t-hoje .score-ring{grid-area:ring;width:86px;height:86px;justify-self:end;margin-left:0}
 #t-hoje .quick-grid{gap:10px;margin-top:10px}
 #t-hoje .qcard{min-height:148px;border-radius:16px;padding:14px 13px 12px}
 #t-hoje .qcard-hdr{color:var(--muted);font-size:8.5px;font-weight:800;letter-spacing:1.3px;display:flex;align-items:center;gap:4px;margin-bottom:6px}
@@ -918,6 +927,18 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <div class="sc-status"><span class="sdot" id="scoreDot"></span><span id="scoreLabel">—</span></div>
       <div class="sc-desc" id="scoreDesc">—</div>
     </div>
+    <div class="score-ring" aria-hidden="true">
+      <svg viewBox="0 0 72 72">
+        <circle class="sr-bg" cx="36" cy="36" r="25"></circle>
+        <circle class="sr-prog" id="scoreRing" cx="36" cy="36" r="25"></circle>
+        <defs>
+          <linearGradient id="scoreGradGreen" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#22C55E"/><stop offset="100%" stop-color="#16A34A"/></linearGradient>
+          <linearGradient id="scoreGradBlue" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#60A5FA"/><stop offset="100%" stop-color="#4F46E5"/></linearGradient>
+          <linearGradient id="scoreGradAmber" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#FBBF24"/><stop offset="100%" stop-color="#F59E0B"/></linearGradient>
+          <linearGradient id="scoreGradRed" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#FB7185"/><stop offset="100%" stop-color="#EF4444"/></linearGradient>
+        </defs>
+      </svg>
+    </div>
     <span class="sc-chev">›</span>
   </div>
 
@@ -960,10 +981,6 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <span class="qst-val" id="qsKcal">—</span><span class="qst-lbl">Calorias</span>
     </div>
     <div class="qst">
-      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><polyline points="12 9 12 13 14.5 15"/><line x1="10" y1="2" x2="14" y2="2"/></svg></span>
-      <span class="qst-val" id="qsMin">—</span><span class="qst-lbl">Min ativos</span>
-    </div>
-    <div class="qst">
       <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
       <span class="qst-val" id="qsBpm">—</span><span class="qst-lbl">FC repouso</span>
     </div>
@@ -975,11 +992,11 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <div class="featured-workout" id="featuredWorkout" style="display:none"></div>
 
-  <div class="sync-bar" id="syncBar" onclick="abrirAuth()">
+  <div class="sync-bar" id="syncBar" onclick="syncNowFromHome()">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
     <span class="sb-lbl" id="syncBarLabel">HPC Sync</span>
-    <span class="sb-ok" id="syncBarStatus"><span class="qdot" id="syncBarDot"></span><span id="syncBarText">Local</span></span>
-    <span class="sb-time" id="syncBarAction">Entrar ›</span>
+    <span class="sb-ok" id="syncBarStatus"><span class="qdot" id="syncBarDot"></span><span id="syncBarText">Huawei + Renpho conectados</span></span>
+    <span class="sb-time" id="syncBarAction">Sincronizar ›</span>
   </div>
 
   <button class="daily-log-btn" onclick="abrirDailyLog()">
@@ -1263,7 +1280,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     </div>
     <div class="settings-row" id="syncSettingsRow" onclick="abrirAuth()">
       <span class="sr-ico">⟳</span><span class="sr-lbl">HPC Sync</span>
-      <span class="sr-val" id="profileSyncVal"><span class="qdot muted" id="profileSyncDot" style="margin-right:4px"></span><span id="profileSyncText">Modo local</span></span>
+      <span class="sr-val" id="profileSyncVal"><span class="qdot muted" id="profileSyncDot" style="margin-right:4px"></span><span id="profileSyncText">Pronto para sync</span></span>
       <span class="sr-chev">›</span>
     </div>
     <div class="settings-row" onclick="abrirAuth()">
@@ -1301,9 +1318,6 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   </button>
   <button onclick="go('treino',this)">
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg></span>Train
-  </button>
-  <button onclick="go('grupo',this)">
-    <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>Group
   </button>
   <button onclick="go('stats',this)">
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zm5.6-4.2h2.8V19h-2.8zm5.6 8h2.8V19h-2.8z"/></svg></span>Stats
@@ -1578,6 +1592,11 @@ const BADGES=[
   {id:'sup10',ico:'wave',nome:'10x SUP',teste:d=>(d.habCount.sup_||d.habCount.sup||0)>=10}
 ];
 const XP_POR={habito:20,sono:10,sessao:100,pr:50};
+const DEFAULT_CONNECTED_DEVICES=[
+  {id:'huawei-health',name:'Huawei Health',type:'wearable',provider:'mockHealthSyncProvider',connected:true,lastSyncAt:''},
+  {id:'renpho',name:'Renpho',type:'scale',provider:'mockHealthSyncProvider',connected:true,lastSyncAt:''},
+  {id:'apple-health',name:'Apple Health',type:'healthkit',provider:'nativeHealthKitProvider',connected:false,lastSyncAt:''}
+];
 
 let db=carregar();
 let diaAtual=hojeISO();
@@ -1596,7 +1615,8 @@ function carregar(){
 }
 
 /* ================= DADOS DE EXEMPLO (DEMO) ================= */
-function dbVazio(){return {habitos:JSON.parse(JSON.stringify(HABITOS_PADRAO)),dias:{},treinos:[],sessoes:[],feed:[],badges:{},xp:0,demo:false,meta:{}};}
+function defaultConnectedDevices(){return JSON.parse(JSON.stringify(DEFAULT_CONNECTED_DEVICES));}
+function dbVazio(){return {habitos:JSON.parse(JSON.stringify(HABITOS_PADRAO)),dias:{},treinos:[],sessoes:[],feed:[],badges:{},xp:0,demo:false,meta:{},connectedDevices:defaultConnectedDevices(),lastSyncAt:'',importedHealthMetrics:{},syncEvents:[]};}
 function removerDemo(){
   if(confirm('Remover os dados de exemplo? Os dados reais importados serão preservados.')){
     db=aplicarDadosReais(dbVazio());sessaoAtiva=null;salvar();
@@ -1716,6 +1736,10 @@ function gerarDemo(){
 function migrar(d){
   d.treinos=d.treinos||[];d.sessoes=d.sessoes||[];d.feed=d.feed||[];d.badges=d.badges||{};d.xp=d.xp||0;
   d.meta=d.meta||{};
+  d.connectedDevices=Array.isArray(d.connectedDevices)&&d.connectedDevices.length?d.connectedDevices:defaultConnectedDevices();
+  d.lastSyncAt=d.lastSyncAt||'';
+  d.importedHealthMetrics=d.importedHealthMetrics||{};
+  d.syncEvents=Array.isArray(d.syncEvents)?d.syncEvents:[];
   d.habitos=d.habitos||JSON.parse(JSON.stringify(HABITOS_PADRAO));
   d.habitos.forEach(h=>{if(!h.ico)h.ico='✅';});
   // strip emojis from old demo feed content (UI is emoji-free now)
@@ -1766,6 +1790,83 @@ function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function escA(s){return esc(s).replace(/"/g,'&quot;');}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._x);toast._x=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* ================= HEALTH SYNC MOCK ================= */
+// HealthKit real requires native iOS app or wrapper.
+// Browser/PWA cannot directly read Apple Health.
+// This provider is currently mocked and ready to be replaced by a native iOS sync provider.
+const mockHealthSyncProvider={
+  buildMetrics(date){
+    const day=parseISODate(date)||new Date();
+    const seed=day.getFullYear()*10000+(day.getMonth()+1)*100+day.getDate();
+    const r=rng(seed);
+    const sleepTotal=450+Math.floor(r()*42);
+    const bedtime='23:'+String(4+Math.floor(r()*12)).padStart(2,'0');
+    const wakeMinutes=(23*60+Number(bedtime.slice(3))+sleepTotal)%(24*60);
+    const wakeTime=String(Math.floor(wakeMinutes/60)).padStart(2,'0')+':'+String(wakeMinutes%60).padStart(2,'0');
+    return{
+      date,
+      source:'mock',
+      sleepTotal,
+      bedtime,
+      wakeTime,
+      activeCalories:620+Math.floor(r()*80),
+      restingHeartRate:50+Math.floor(r()*5),
+      steps:8200+Math.floor(r()*1400),
+      weight:78.4,
+      bodyFatPercentage:14.2,
+      importedAt:new Date().toISOString(),
+      sources:{sleep:'Huawei Health',activity:'Huawei Health',body:'Renpho'}
+    };
+  },
+  syncNow(date){
+    return this.buildMetrics(date||hojeISO());
+  }
+};
+const healthSyncService={
+  getConnectedDevices(){
+    if(!Array.isArray(db.connectedDevices)||!db.connectedDevices.length)db.connectedDevices=defaultConnectedDevices();
+    return db.connectedDevices;
+  },
+  getLastSyncAt(){return db.lastSyncAt||'';},
+  getDailyImportedMetrics(date){return (db.importedHealthMetrics&&db.importedHealthMetrics[date])||null;},
+  saveImportedMetrics(metrics){
+    db.importedHealthMetrics=db.importedHealthMetrics||{};
+    db.importedHealthMetrics[metrics.date]=metrics;
+    const now=metrics.importedAt||new Date().toISOString();
+    db.lastSyncAt=now;
+    this.getConnectedDevices().forEach(device=>{
+      if(device.connected)device.lastSyncAt=now;
+    });
+    db.syncEvents=db.syncEvents||[];
+    db.syncEvents.unshift({id:uid(),type:'health_import',date:metrics.date,ts:now,source:metrics.source||'mock'});
+    db.syncEvents=db.syncEvents.slice(0,25);
+    salvar();
+  },
+  receiveHealthKitPayload(payload){
+    if(!payload||!payload.date)return;
+    this.saveImportedMetrics(payload);
+  },
+  syncNow(date){
+    const payload=mockHealthSyncProvider.syncNow(date||hojeISO());
+    this.receiveHealthKitPayload(payload);
+    return payload;
+  }
+};
+function formatTimeFromIso(iso){
+  if(!iso)return '';
+  const d=new Date(iso);
+  if(Number.isNaN(d.getTime()))return '';
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function displaySleepForDate(iso){
+  const imported=healthSyncService.getDailyImportedMetrics(iso);
+  if(imported&&typeof imported.sleepTotal==='number'){
+    return{mins:imported.sleepTotal,dormiu:imported.bedtime||'',acordou:imported.wakeTime||'',imported:true};
+  }
+  const dia=getDia(iso);
+  return{mins:calcSono(dia.sono.dormiu,dia.sono.acordou),dormiu:dia.sono.dormiu||'',acordou:dia.sono.acordou||'',imported:false};
+}
 
 /* ================= DATA / SONO ================= */
 const DIAS_PT=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
@@ -1871,15 +1972,14 @@ function renderGreeting(){
   const subEl=document.getElementById('greetingSub');
   if(subEl){
     const streak=calcStreak();
-    const dia=getDia(hojeISO());
-    const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
+    const mins=displaySleepForDate(hojeISO()).mins;
     const treinouHoje=db.sessoes.some(s=>s.data===hojeISO());
-    let sub='Vamos continuar construindo.';
+    let sub='Vamos construir algo ótimo hoje.';
     if(streak>=7)sub=streak+' dias seguidos. Continue construindo.';
     else if(streak>=3)sub=streak+' dias seguidos. Ótimo ritmo!';
     else if(treinouHoje)sub='Treino concluído. Missão do dia cumprida.';
     else if(mins!==null&&mins>=480)sub='Boa noite de sono. Ótimo dia para treinar.';
-    else if(h<12)sub='Vamos construir algo incrível hoje.';
+    else if(h<12)sub='Vamos construir algo ótimo hoje.';
     else if(h>=21)sub='Descanse bem. Amanhã é outro dia.';
     subEl.textContent=sub;
   }
@@ -1890,8 +1990,9 @@ function renderQuickCards(){
   const dia=getDia(diaAtual);
   const previewHome=useHomePreview(diaAtual);
   const preview=HOME_PREVIEW;
-  const minsReal=calcSono(dia.sono.dormiu,dia.sono.acordou);
-  const mins=previewHome?preview.sleepMins:minsReal;
+  const imported=healthSyncService.getDailyImportedMetrics(diaAtual);
+  const sleepDisplay=displaySleepForDate(diaAtual);
+  const mins=imported?sleepDisplay.mins:(previewHome?preview.sleepMins:sleepDisplay.mins);
   const sc=previewHome?preview.score:scoreDoDia(diaAtual);
   const total=db.habitos.length||1;
   const feitos=db.habitos.filter(h=>dia.habitos[h.id]&&dia.habitos[h.id].feito).length;
@@ -1904,7 +2005,7 @@ function renderQuickCards(){
   const scoreDescEl=document.getElementById('scoreDesc');
   if(scoreDotEl&&scoreLabelEl&&scoreDescEl){
     let cls,lbl,desc;
-    if(sc>=80){cls='';lbl='Excelente';desc='Você está no caminho certo hoje.';}
+    if(sc>=80){cls='';lbl='No plano';desc='Você está no caminho certo hoje.';}
     else if(sc>=60){cls='';lbl='Bom';desc='Bom progresso hoje.';}
     else if(sc>=40){cls='amber';lbl='Regular';desc='Ainda dá para evoluir hoje.';}
     else{cls='rose';lbl='Iniciando';desc='Registre sono e hábitos para pontuar.';}
@@ -1948,8 +2049,9 @@ function renderQuickCards(){
       }
       qSleepBars.innerHTML=bars;
     }
-    if(qSleepTime&&previewHome)qSleepTime.textContent=preview.dormiu+' – '+preview.acordou;
-    else if(qSleepTime&&dia.sono.dormiu&&dia.sono.acordou)qSleepTime.textContent=dia.sono.dormiu+' – '+dia.sono.acordou;
+    if(qSleepTime&&imported)qSleepTime.textContent=sleepDisplay.dormiu+' – '+sleepDisplay.acordou;
+    else if(qSleepTime&&previewHome)qSleepTime.textContent=preview.dormiu+' – '+preview.acordou;
+    else if(qSleepTime&&sleepDisplay.dormiu&&sleepDisplay.acordou)qSleepTime.textContent=sleepDisplay.dormiu+' – '+sleepDisplay.acordou;
     else if(qSleepTime)qSleepTime.textContent='';
   }
 
@@ -1974,23 +2076,20 @@ function renderQuickCards(){
     }
   }
 
-  // Quick stats (kcal / active min / resting HR / steps)
+  // Quick stats (kcal / resting HR / steps)
   const sessoesHoje=(db.sessoes||[]).filter(s=>s.data===diaAtual);
   const activeMinReal=sessoesHoje.reduce((acc,s)=>{
     if(s.fim&&s.inicio)return acc+Math.max(0,Math.round((s.fim-s.inicio)/60000));
     return acc;
   },0);
   const metaPreview=(db.meta&&db.meta.demoDashboard)||{};
-  const activeMin=(previewHome||db.demo)&&metaPreview.activeMin?metaPreview.activeMin:(previewHome?preview.activeMin:activeMinReal);
-  const kcal=(previewHome||db.demo)&&metaPreview.kcal?metaPreview.kcal:(previewHome?preview.kcal:(activeMinReal>0?Math.round(activeMinReal*8):0));
-  const bpm=(previewHome||db.demo)&&metaPreview.restingHr?metaPreview.restingHr:(previewHome?preview.restingHr:null);
-  const steps=(previewHome||db.demo)&&metaPreview.steps?metaPreview.steps:(previewHome?preview.steps:null);
+  const kcal=imported?imported.activeCalories:((previewHome||db.demo)&&metaPreview.kcal?metaPreview.kcal:(previewHome?preview.kcal:(activeMinReal>0?Math.round(activeMinReal*8):0)));
+  const bpm=imported?imported.restingHeartRate:((previewHome||db.demo)&&metaPreview.restingHr?metaPreview.restingHr:(previewHome?preview.restingHr:null));
+  const steps=imported?imported.steps:((previewHome||db.demo)&&metaPreview.steps?metaPreview.steps:(previewHome?preview.steps:null));
   const kcalEl=document.getElementById('qsKcal');
-  const minEl=document.getElementById('qsMin');
   const bpmEl=document.getElementById('qsBpm');
   const stepsEl=document.getElementById('qsSteps');
   if(kcalEl)kcalEl.textContent=kcal>0?(kcal>=1000?(kcal/1000).toFixed(1)+'k':kcal):'—';
-  if(minEl)minEl.textContent=activeMin>0?activeMin:'—';
   if(bpmEl)bpmEl.textContent=bpm||'—';
   if(stepsEl)stepsEl.textContent=steps?Number(steps).toLocaleString('pt-BR'):'—';
 }
@@ -1998,6 +2097,9 @@ function renderQuickCards(){
 function renderFeaturedWorkout(){
   const el=document.getElementById('featuredWorkout');
   if(!el)return;
+  el.style.display='none';
+  el.onclick=null;
+  return;
   const treinos=(db.treinos||[]).filter(t=>t&&t.nome);
   if(!treinos.length){
     el.style.display='none';
@@ -2165,7 +2267,7 @@ function renderProfile(){
   const psVal=document.getElementById('profileSyncVal');
   if(psDot&&psTxt&&psVal){
     if(authUser){psDot.className='qdot';psTxt.textContent='Sincronizado';psVal.style.color='var(--teal)';}
-    else{psDot.className='qdot muted';psTxt.textContent='Modo local';psVal.style.color='var(--muted)';}
+    else{psDot.className='qdot muted';psTxt.textContent='Pronto para sync';psVal.style.color='var(--muted)';}
   }
   const hoje=getDia(hojeISO());
   const mins=calcSono(hoje.sono.dormiu,hoje.sono.acordou);
@@ -2290,23 +2392,7 @@ function renderHoje(){
   // PR banner suppressed — PRs shown in Group feed instead
   document.getElementById('prBannerSlot').innerHTML='';
 
-  // sync bar status
-  const sbText=document.getElementById('syncBarText');
-  const sbDot=document.getElementById('syncBarDot');
-  const sbAction=document.getElementById('syncBarAction');
-  if(sbText&&sbDot&&sbAction){
-    if(authUser){
-      sbText.textContent='Sincronizado';
-      sbDot.className='qdot';
-      document.getElementById('syncBarStatus').style.color='var(--teal)';
-      sbAction.textContent='Agora ›';
-    }else{
-      sbText.textContent='Modo local';
-      sbDot.className='qdot muted';
-      document.getElementById('syncBarStatus').style.color='var(--muted)';
-      sbAction.textContent='Entrar ›';
-    }
-  }
+  renderHomeSyncBar();
 
   renderChips();
   renderHeader();
@@ -2314,6 +2400,32 @@ function renderHoje(){
   renderQuickCards();
   renderFeaturedWorkout();
   renderDailyActivities();
+}
+
+function renderHomeSyncBar(){
+  const sbText=document.getElementById('syncBarText');
+  const sbDot=document.getElementById('syncBarDot');
+  const sbAction=document.getElementById('syncBarAction');
+  const sbStatus=document.getElementById('syncBarStatus');
+  if(!sbText||!sbDot||!sbAction||!sbStatus)return;
+  const connected=healthSyncService.getConnectedDevices().filter(d=>d.connected);
+  const names=connected.map(d=>d.name.replace(' Health','')).slice(0,2).join(' + ');
+  const last=healthSyncService.getLastSyncAt();
+  sbText.textContent=(names||'Dispositivos')+' conectados';
+  sbDot.className='qdot';
+  sbStatus.style.color='var(--green)';
+  sbAction.textContent=last?'Sync '+formatTimeFromIso(last)+' ›':'Sincronizar ›';
+}
+
+function syncNowFromHome(){
+  const sbAction=document.getElementById('syncBarAction');
+  if(sbAction)sbAction.textContent='Sincronizando...';
+  setTimeout(()=>{
+    healthSyncService.syncNow(diaAtual);
+    renderHoje();
+    renderProfile();
+    toast('HPC Sync atualizado');
+  },260);
 }
 
 function sugestoes(hid){
@@ -3039,7 +3151,8 @@ function addHabito(){
   toast('Atividade adicionada ✓');
 }
 function abrirCfg(){
-  go('stats',document.querySelectorAll('nav button')[3]);
+  const statsBtn=[...document.querySelectorAll('nav button')].find(b=>b.textContent.trim()==='Stats');
+  go('stats',statsBtn);
   const more=document.querySelector('#t-stats .stats-more');
   if(more)more.open=true;
   setTimeout(()=>document.getElementById('cfgAnchor').scrollIntoView({behavior:'smooth'}),100);
@@ -3086,7 +3199,7 @@ function ativarTab(id){
 function go(t,btn){
   ativarTab('t-'+t);
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');
+  if(btn)btn.classList.add('active');
   document.getElementById('fabNovo').classList.remove('show');
   if(t==='treino')renderTreinos();
   if(t==='grupo'){renderCommunityProgress();carregarFeedSocial();}
@@ -4153,7 +4266,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v61',
+  cacheVersion:'hpc-cache-v62',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
