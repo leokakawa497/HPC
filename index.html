@@ -439,6 +439,19 @@ nav button.active .ico{filter:none}
 .habit-summary b small{font-size:14px;font-weight:800;color:var(--muted);margin-left:1px}
 .habit-summary .hs-sub{font-size:10px;color:var(--muted);font-weight:600}
 .add-habit-btn{width:100%;min-height:48px;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow);font-size:13.5px;font-weight:800;color:var(--text);cursor:pointer;margin-top:2px}
+.cfg-list{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:10px}
+.cfg-list:empty{display:none}
+.cfg-row{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid var(--border);font-size:14px;font-weight:650}
+.cfg-row:last-child{border-bottom:none}
+.cfg-row-ico{font-size:18px;width:26px;text-align:center;flex-shrink:0}
+.cfg-row-name{flex:1;min-width:0}
+.cfg-row-del{background:none;border:none;color:var(--muted2);font-size:18px;cursor:pointer;padding:4px 6px;border-radius:8px;line-height:1;flex-shrink:0}
+.cfg-row-del:hover{color:var(--rose);background:var(--rose-dim)}
+.cfg-add-form{display:flex;gap:8px;align-items:center;margin-top:4px;padding-bottom:80px}
+.cfg-nome-input{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;padding:11px 13px;box-shadow:var(--shadow)}
+.cfg-nome-input:focus{outline:none;border-color:var(--violet)}
+.cfg-tipo-select{background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;padding:11px 10px;cursor:pointer;box-shadow:var(--shadow);flex-shrink:0}
+.cfg-add-btn{background:#111111;color:#fff;border:none;border-radius:12px;padding:11px 16px;font-size:13px;font-weight:800;cursor:pointer;flex-shrink:0;white-space:nowrap}
 #t-stats .stats-more{margin:12px 0 8px}
 #t-stats .stats-more summary{list-style:none;cursor:pointer;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow);padding:13px 15px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between}
 #t-stats .stats-more summary::-webkit-details-marker{display:none}
@@ -1539,14 +1552,23 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <div><span class="hs-lbl">Maior sequência</span><b id="hsLongStreak">—</b><span class="hs-sub">dias</span></div>
     </div>
     <div id="habitStreaksArea"></div>
-    <button class="add-habit-btn" onclick="abrirCfgPanel()">+ Adicionar hábito</button>
-    <!-- compat hidden cfg elements -->
-    <div style="display:none" id="cfgAnchor"></div>
-    <div style="display:none" id="cfgList"></div>
-    <div style="display:none">
-      <input id="cfgNome" placeholder="Nova atividade" maxlength="24">
-      <select id="cfgTipo"><option value="check">Sim/Não</option><option value="text">Com detalhe</option></select>
+
+    <!-- Gerenciar hábitos -->
+    <div class="section-cap" style="margin-top:18px">Gerenciar hábitos</div>
+    <div id="cfgList" class="cfg-list"></div>
+
+    <!-- Form para adicionar hábito -->
+    <div class="cfg-add-form">
+      <input id="cfgNome" class="cfg-nome-input" placeholder="Nome da atividade (ex: Meditar)" maxlength="24" onkeydown="if(event.key==='Enter')addHabito()">
+      <select id="cfgTipo" class="cfg-tipo-select">
+        <option value="check">Sim / Não</option>
+        <option value="text">Com detalhe</option>
+      </select>
+      <button type="button" class="cfg-add-btn" onclick="addHabito()">Adicionar</button>
     </div>
+
+    <!-- compat hidden -->
+    <div style="display:none" id="cfgAnchor"></div>
   </div>
 
   <!-- ===== TABELA MENSAL PANEL ===== -->
@@ -3629,7 +3651,7 @@ function abrirCfgPanel(){
   goStatsView('habitos');
   setTimeout(()=>{
     const inp=document.getElementById('cfgNome');
-    if(inp)inp.focus();
+    if(inp){inp.focus();inp.scrollIntoView({behavior:'smooth',block:'center'});}
   },200);
 }
 
@@ -3708,11 +3730,12 @@ function renderHistTable(){
 const ICONES=['✅','📖','🧠','💧','🍎','🚴','🏊','⛰️','🎯','🧊'];
 function renderCfg(){
   const el=document.getElementById('cfgList');
+  if(!el)return;
   el.innerHTML='';
   db.habitos.forEach(h=>{
     const div=document.createElement('div');
-    div.className='cfg-item';
-    div.innerHTML='<span style="display:inline-flex;color:var(--muted)">'+habitIcon(h)+'</span><div class="cname">'+esc(h.nome)+'</div><div class="ctype">'+(h.tipo==='text'?'com detalhe':'sim/não')+'</div><button>✕</button>';
+    div.className='cfg-row';
+    div.innerHTML='<span class="cfg-row-ico">'+habitIcon(h,18)+'</span><div class="cfg-row-name">'+esc(h.nome)+'<span style="font-size:11px;color:var(--muted);font-weight:500;margin-left:6px">'+(h.tipo==='text'?'com detalhe':'sim/não')+'</span></div><button class="cfg-row-del" title="Remover">✕</button>';
     div.querySelector('button').onclick=()=>{
       if(confirm('Remover "'+h.nome+'"? O histórico é mantido.')){
         db.habitos=db.habitos.filter(x=>x.id!==h.id);
