@@ -2366,9 +2366,10 @@ function renderQuickCards(){
   const dia=getDia(diaAtual);
   const previewHome=useHomePreview(diaAtual);
   const preview=HOME_PREVIEW;
-  const imported=healthSyncService.getDailyImportedMetrics(diaAtual);
+  const hm=getHealthMetrics(diaAtual);
+  // Sleep: Supabase health_metrics > manual input > preview
   const sleepDisplay=displaySleepForDate(diaAtual);
-  const mins=imported?sleepDisplay.mins:(previewHome?preview.sleepMins:sleepDisplay.mins);
+  const mins=hm&&hm.sleep_min!=null?hm.sleep_min:(previewHome?preview.sleepMins:sleepDisplay.mins);
   const sc=previewHome?preview.score:scoreDoDia(diaAtual);
   const total=db.habitos.length||1;
   const feitos=db.habitos.filter(h=>dia.habitos[h.id]&&dia.habitos[h.id].feito).length;
@@ -2698,11 +2699,20 @@ function renderHoje(){
   document.getElementById('btnNext').style.opacity=diaAtual===hojeISO()?'0.3':'1';
 
   const dia=getDia(diaAtual);
-  document.getElementById('inpDormiu').value=dia.sono.dormiu||'';
-  document.getElementById('inpAcordou').value=dia.sono.acordou||'';
   document.getElementById('inpNota').value=dia.nota||'';
-  const importedMetrics=healthSyncService.getDailyImportedMetrics(diaAtual);
-  const dailySleep=displaySleepForDate(diaAtual);
+
+  // Real health metrics from Supabase (loaded async after login)
+  const hm=getHealthMetrics(diaAtual);
+
+  // Sleep: prefer Supabase health_metrics, fallback to manual input
+  const sleepMin=hm&&hm.sleep_min!=null?hm.sleep_min:calcSono(dia.sono.dormiu,dia.sono.acordou);
+  const sleepBed=hm&&hm.sleep_bed?hm.sleep_bed:dia.sono.dormiu||'';
+  const sleepWake=hm&&hm.sleep_wake?hm.sleep_wake:dia.sono.acordou||'';
+  const sleepSource=hm&&hm.sleep_min!=null?'Apple Health':'Manual';
+
+  // Populate time inputs with best available data
+  document.getElementById('inpDormiu').value=sleepBed;
+  document.getElementById('inpAcordou').value=sleepWake;
 
   // score ring
   const previewHome=useHomePreview(diaAtual);
@@ -2719,8 +2729,7 @@ function renderHoje(){
   }
 
   // hero stats
-  const mins=calcSono(dia.sono.dormiu,dia.sono.acordou);
-  document.getElementById('hsSleep').textContent=mins!==null?fmtMins(mins):'—';
+  document.getElementById('hsSleep').textContent=sleepMin!==null?fmtMins(sleepMin):'—';
   document.getElementById('hsXP').textContent=db.xp.toLocaleString('pt-BR')+' XP';
   const nv=nivel(db.xp);
   document.getElementById('hsXPsub').textContent='Faltam '+(nv*500-db.xp)+' p/ nível '+(nv+1);
@@ -2730,29 +2739,37 @@ function renderHoje(){
   // sleep badge + week bars
   const badge=document.getElementById('sleepBadge');
   badge.className='sleep-badge';
-  const displayMins=dailySleep.mins;
-  document.getElementById('sleepVal').textContent=displayMins!==null?fmtMins(displayMins):'—';
+  document.getElementById('sleepVal').textContent=sleepMin!==null?fmtMins(sleepMin):'—';
   const dlSleepSource=document.getElementById('dlSleepSource');
-  if(dlSleepSource)dlSleepSource.textContent=dailySleep.imported?'Huawei':'Manual';
-  if(displayMins!==null)badge.classList.add(corSono(displayMins));
+  if(dlSleepSource)dlSleepSource.textContent=sleepSource;
+  if(sleepMin!==null)badge.classList.add(corSono(sleepMin));
   const quality=document.getElementById('dlSleepQuality');
   const qualitySub=document.getElementById('dlSleepQualitySub');
   const qualityDot=document.getElementById('dlSleepQualityDot');
   if(quality&&qualitySub&&qualityDot){
-    if(displayMins===null){
+    if(sleepMin===null){
       quality.textContent='Sem registro';
       qualitySub.textContent='Adicione seus horários';
       qualityDot.className='qdot muted';
     }else{
-      const c=corSono(displayMins);
-      const h=Math.floor(displayMins/60),m=displayMins%60;
-      quality.textContent=h+'h '+String(m).padStart(2,'0')+'m';
-      qualitySub.textContent=(dailySleep.dormiu&&dailySleep.acordou)?dailySleep.dormiu+' — '+dailySleep.acordou:(c==='green'?'8h ou mais':c==='yellow'?'7h ou mais':'abaixo de 7h');
+      const c=corSono(sleepMin);
+      const hh=Math.floor(sleepMin/60),mm=sleepMin%60;
+      quality.textContent=hh+'h '+String(mm).padStart(2,'0')+'m';
+      qualitySub.textContent=(sleepBed&&sleepWake)?sleepBed+' — '+sleepWake:(c==='green'?'8h ou mais':c==='yellow'?'7h ou mais':'abaixo de 7h');
       qualityDot.className='qdot'+(c==='red'?' rose':c==='yellow'?' amber':'');
     }
   }
+  // Weight: prefer Supabase health_metrics (Renpho), fallback to manual
   const pesoInp=document.getElementById('inpPeso');
-  if(pesoInp){const p=getDia(diaAtual).peso;pesoInp.value=p||'';}
+  if(pesoInp){
+    const hmPeso=hm&&hm.weight_kg!=null?hm.weight_kg:null;
+    const manualPeso=getDia(diaAtual).peso||null;
+    pesoInp.value=hmPeso||manualPeso||'';
+    pesoInp.readOnly=!!hmPeso;
+    pesoInp.title=hmPeso?'Renpho via Apple Health (sync automático)':'Inserir manualmente';
+    const unit=document.querySelector('.dw-unit');
+    if(unit)unit.textContent=hmPeso?'kg · Renpho':'kg';
+  }
   let bars='';
   for(let i=6;i>=0;i--){
     const dd=parseISODate(diaAtual);dd.setDate(dd.getDate()-i);
@@ -2772,6 +2789,7 @@ function renderHoje(){
   renderGreeting();
   renderQuickCards();
   renderDailyActivities();
+  renderSyncBadge2();
 }
 
 function renderHomeSyncBar(){}
@@ -3961,6 +3979,59 @@ async function sairAuth(){
   await supabaseClient.auth.signOut();
   authUser=null;renderAuth();toast('Você saiu da conta');
 }
+/* ===== HEALTH METRICS (Phase 1 — real Apple Health data via iOS Shortcut) ===== */
+let _healthMetrics={};  // keyed by ISO date string
+
+async function loadHealthMetrics(date){
+  if(!supabaseClient||!authUser)return null;
+  const{data,error}=await supabaseClient
+    .from('health_metrics')
+    .select('*')
+    .eq('user_id',authUser.id)
+    .eq('date',date)
+    .maybeSingle();
+  if(error||!data)return null;
+  _healthMetrics[date]=data;
+  return data;
+}
+
+async function loadRecentHealthMetrics(){
+  if(!supabaseClient||!authUser)return;
+  const today=hojeISO();
+  const weekAgo=new Date(parseISODate(today));weekAgo.setDate(weekAgo.getDate()-6);
+  const from=weekAgo.toISOString().slice(0,10);
+  const{data}=await supabaseClient
+    .from('health_metrics')
+    .select('*')
+    .eq('user_id',authUser.id)
+    .gte('date',from)
+    .lte('date',today)
+    .order('date',{ascending:false});
+  if(data)data.forEach(r=>{_healthMetrics[r.date]=r;});
+  return data;
+}
+
+function getHealthMetrics(date){return _healthMetrics[date]||null;}
+
+function renderSyncBadge2(){
+  const el=document.querySelector('.sync-bar-static .sbs-badge');
+  if(!el)return;
+  const today=hojeISO();
+  const m=getHealthMetrics(today);
+  if(m&&m.synced_at){
+    const d=new Date(m.synced_at);
+    const h=String(d.getHours()).padStart(2,'0');
+    const mn=String(d.getMinutes()).padStart(2,'0');
+    el.textContent='Sync '+h+':'+mn;
+    el.style.color='var(--green)';
+    el.style.borderColor='var(--green)';
+  }else{
+    el.textContent='Em breve';
+    el.style.color='';
+    el.style.borderColor='';
+  }
+}
+
 function initSupabase(){
   if(supabaseClient)return;
   const cfg=window.HPC_SUPABASE_CONFIG;
@@ -3970,7 +4041,13 @@ function initSupabase(){
   window.hpcSupabase=supabaseClient;
   supabaseClient.auth.onAuthStateChange((_event,session)=>{
     authUser=session&&session.user?session.user:null;
-    garantirProfile().finally(()=>{renderAuth();if(authUser){Promise.all([carregarHabitIdMap(),carregarProgramaIdMap()]).then(processarPendencias);}});
+    garantirProfile().finally(()=>{
+      renderAuth();
+      if(authUser){
+        Promise.all([carregarHabitIdMap(),carregarProgramaIdMap()]).then(processarPendencias);
+        loadRecentHealthMetrics().then(()=>{renderHoje();renderSyncBadge2();});
+      }
+    });
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
