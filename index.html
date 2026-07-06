@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v64"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v65"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -444,6 +444,102 @@ nav button.active .ico{filter:none}
 #t-stats .stats-more summary:after{content:"›";font-size:18px;color:var(--muted);transition:transform .2s}
 #t-stats .stats-more[open] summary:after{transform:rotate(90deg)}
 
+/* ---- Live workout redesign (screen 05) ---- */
+.live-head2{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin:14px 0 10px}
+.live-head2 h2{font-size:24px;font-weight:780;line-height:1.1;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lh2-sub{display:flex;align-items:center;justify-content:space-between;margin-top:4px;font-size:13px;color:var(--muted)}
+.lh2-sub .lh2-timer{display:flex;align-items:center;gap:4px;font-weight:700;color:var(--text)}
+.lf-ex-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.lf-ex-ico{width:48px;height:48px;border-radius:12px;background:#111111;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lf-ex-info{flex:1;min-width:0}
+.lf-ex-name{font-size:20px;font-weight:780;line-height:1.1}
+.lf-ex-muscles{font-size:12px;color:var(--muted);margin-top:3px}
+.lf-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:0 0 14px}
+.lf-stat2{padding:12px 8px;text-align:center;border-right:1px solid var(--border)}
+.lf-stat2:last-child{border-right:none}
+.lf-stat2 span{font-size:9.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;display:block;margin-bottom:4px}
+.lf-stat2 b{font-size:26px;font-weight:780;line-height:1;display:block}
+.lf-stat2 small{font-size:13px;font-weight:500;color:var(--muted)}
+.lf-weight-ctrl{display:flex;justify-content:flex-end;gap:8px}
+.lf-adj-btn{width:40px;height:40px;border-radius:50%;background:var(--card2);border:1px solid var(--border);font-size:22px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);line-height:1}
+/* ---- Stats sub-panels ---- */
+.stats-view{display:none}.stats-view.sv-active{display:block}
+.stats-back{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:750;color:var(--muted);cursor:pointer;padding:10px 0 4px}
+.stats-top-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0 14px}
+.stc{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:14px 10px}
+.stc-lbl{font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+.stc-val{font-size:28px;font-weight:780;line-height:1.05;margin-top:6px;display:flex;align-items:baseline;gap:2px}
+.stc-val span.unit{font-size:13px;font-weight:700;color:var(--muted)}
+.stc-dot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-top:5px}
+.stats-chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.stats-chart-title{font-size:13px;font-weight:800;margin-bottom:4px}
+.stats-chart-subtitle{font-size:11px;color:var(--muted);margin-bottom:12px}
+.scatter-wrap{position:relative;width:100%;height:140px}
+.scatter-wrap svg{width:100%;height:100%}
+.stats-streak-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.ssr-card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:14px}
+.ssr-card-inner{display:flex;align-items:center;gap:10px}
+.ssr-ico{width:36px;height:36px;border-radius:10px;background:var(--green-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ssr-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.ssr-val{font-size:26px;font-weight:780;line-height:1;margin-top:2px;display:flex;align-items:baseline;gap:2px}
+.ssr-val span{font-size:13px;font-weight:700;color:var(--muted)}
+.ssr-sub{font-size:11px;color:var(--green);margin-top:4px;font-weight:700}
+.stats-patterns-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.spc-title{font-size:13px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.spc-dot{width:8px;height:8px;border-radius:50%;background:var(--violet);display:inline-block;flex-shrink:0}
+.spc-item{font-size:12.5px;color:var(--muted);padding:3px 0;display:flex;align-items:center;gap:7px}
+.spc-item::before{content:"";display:block;width:6px;height:6px;border-radius:50%;background:var(--violet);flex-shrink:0;opacity:.55}
+.stats-link-row{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:10px}
+.stats-link-row .slr-ico{width:34px;height:34px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:4px}
+.stats-link-row-inner{display:flex;align-items:center;gap:10px;flex:1}
+/* ---- Tabela mensal redesign ---- */
+.tabela-month-nav{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:8px 12px;margin:12px 0}
+.tabela-month-nav button{background:none;border:none;font-size:22px;color:var(--text);cursor:pointer;width:32px;height:32px}
+.tabela-month-nav span{font-size:15px;font-weight:780}
+.tabela-top-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.ttc{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:12px 10px}
+.ttc-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.ttc-val{font-size:24px;font-weight:780;line-height:1;display:flex;align-items:baseline;gap:1px}
+.ttc-val small{font-size:12px;font-weight:600;color:var(--muted)}
+.tabela-progress-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:16px;display:flex;align-items:center;gap:16px;margin-top:14px}
+.tpc-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.tpc-ring svg{width:64px;height:64px}
+.tpc-ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:780}
+.tpc-info{flex:1}
+.tpc-title{font-size:15px;font-weight:780}
+.tpc-sub{font-size:12px;color:var(--green);font-weight:700;margin-top:4px}
+.tpc-note{font-size:12px;color:var(--muted);margin-top:2px}
+/* ---- Profile redesign ---- */
+.prof-body-stats{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);margin-top:14px;overflow:hidden}
+.pbs-item{padding:16px 8px;text-align:center;border-right:1px solid var(--border)}
+.pbs-item:last-child{border-right:none}
+.pbs-ico{font-size:18px;color:var(--muted);display:flex;justify-content:center;margin-bottom:4px}
+.pbs-val{font-size:22px;font-weight:780;line-height:1.1}
+.pbs-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+.weekly-goals-v2{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin-top:10px}
+.wgv2-title{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.wgv2-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.wgv2-row:last-child{margin-bottom:0}
+.wgv2-label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;width:90px;flex-shrink:0}
+.wgv2-label svg{flex-shrink:0;color:var(--muted)}
+.wgv2-track-wrap{flex:1;min-width:0}
+.wgv2-track{height:6px;background:var(--card2);border-radius:99px;overflow:hidden}
+.wgv2-fill{height:100%;background:var(--green);border-radius:99px;transition:width .4s ease}
+.wgv2-val{font-size:12px;font-weight:780;color:var(--text);white-space:nowrap;width:48px;text-align:right;flex-shrink:0}
+.sync-devices-section{border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow);margin-top:10px}
+.sync-device-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.sync-device-row:last-child{border-bottom:none}
+.sdr-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sdr-lbl{flex:1;font-size:14px;font-weight:650}
+.sdr-status{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);font-weight:700}
+.sdr-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.sdr-chev{font-size:16px;color:var(--border)}
+.prof-card-v2{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;gap:14px;margin-top:10px;cursor:pointer}
+.prof-card-v2 .pc2-ava{width:60px;height:60px;border-radius:50%;background:#111111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:780;flex-shrink:0}
+.prof-card-v2 .pc2-info{flex:1;min-width:0}
+.prof-card-v2 .pc2-name{font-size:20px;font-weight:780}
+.prof-card-v2 .pc2-badge{display:inline-flex;align-items:center;gap:4px;margin-top:4px;background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--text)}
+.prof-card-v2 .pc2-chev{font-size:20px;color:var(--border)}
 /* ===== REDESIGN v2 ===== */
 /* Header redesign */
 header{padding:18px 16px 10px;justify-content:center;position:relative}
@@ -1195,133 +1291,202 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <!-- ============ STATS ============ -->
 <div class="tab" id="t-stats">
 <main>
-  <div class="page-title" style="margin-top:6px">
-    <h2>Hábitos</h2>
-    <p class="psub">Pequenas ações diárias. Grandes resultados.</p>
+
+  <!-- ===== OVERVIEW PANEL ===== -->
+  <div id="sv-overview" class="stats-view sv-active">
+    <div class="page-title" style="margin-top:6px">
+      <h2>Stats</h2>
+      <p class="psub">Métricas, hábitos e insights em um só lugar.</p>
+    </div>
+    <!-- Month picker -->
+    <div class="month-nav" style="margin-top:6px">
+      <button onclick="mudarMes(-1)">‹</button>
+      <div class="mlabel"><span id="mesLabel">—</span></div>
+      <button onclick="mudarMes(1)">›</button>
+    </div>
+    <!-- 3 metric cards (populated by renderStats) -->
+    <div id="statsTopCards" class="stats-top-cards"></div>
+    <!-- Sono x performance chart -->
+    <div class="stats-chart-card" id="statsChartCard">
+      <div class="stats-chart-title">Sono x performance</div>
+      <div class="stats-chart-subtitle">Horas de sono vs score diário</div>
+      <div class="scatter-wrap" id="scatterWrap"><svg id="scatterSvg" viewBox="0 0 280 120" preserveAspectRatio="none"></svg></div>
+    </div>
+    <!-- Sequência + Score semanal -->
+    <div id="statsStreakRow" class="stats-streak-row"></div>
+    <!-- Padrões card -->
+    <div id="statsPatternsCard"></div>
+    <!-- AI Insights (compat) -->
+    <div id="aiInsightCard"></div>
+    <!-- Nav rows -->
+    <div class="stats-link-row" onclick="goStatsView('tabela')">
+      <div class="stats-link-row-inner"><div class="slr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>Ver tabela mensal</div><span style="color:var(--muted)">›</span>
+    </div>
+    <div class="stats-link-row" onclick="goStatsView('habitos')">
+      <div class="stats-link-row-inner"><div class="slr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>Hábitos</div><span style="color:var(--muted)">›</span>
+    </div>
+    <!-- Hidden compat elements -->
+    <div style="display:none" id="insightArea"></div>
+    <div style="display:none" id="statGrid"></div>
+    <div style="display:none" id="insightGrid"></div>
+    <div style="display:none" id="chartsArea"></div>
+    <div style="display:none" id="badgesArea"></div>
   </div>
 
-  <!-- Habit summary (populated by JS) -->
-  <div class="habit-summary">
-    <div><span class="hs-lbl">Score semanal</span><b><span id="hsScore">—</span><small>%</small></b><span class="hs-sub" id="hsScoreSub">—</span></div>
-    <div><span class="hs-lbl">Sequência atual</span><b id="hsCurStreak">—</b><span class="hs-sub">dias</span></div>
-    <div><span class="hs-lbl">Maior sequência</span><b id="hsLongStreak">—</b><span class="hs-sub">dias</span></div>
-  </div>
-
-  <div id="habitStreaksArea"></div>
-  <button class="add-habit-btn" onclick="abrirCfg()">+ Adicionar hábito</button>
-
-  <div class="section-title" style="margin-top:20px">Insights mensais</div>
-  <div class="month-nav" style="margin-top:10px">
-    <button onclick="mudarMes(-1)">‹</button>
-    <div class="mlabel"><span class="cal-ico">▣</span><span id="mesLabel"></span><span class="month-caret">⌄</span></div>
-    <button onclick="mudarMes(1)">›</button>
-  </div>
-
-  <!-- 2x2 insight cards (populated by JS) -->
-  <div class="insight-grid" id="insightGrid"></div>
-
-  <!-- AI Insights card (populated by JS) -->
-  <div id="aiInsightCard"></div>
-
-  <!-- Hidden original insight area for JS compat -->
-  <div style="display:none" id="insightArea"></div>
-  <div class="stat-grid" id="statGrid" style="display:none"></div>
-
-  <details class="stats-more">
-    <summary>Ver detalhes mensais</summary>
-    <div id="chartsArea"></div>
-
-    <div class="section-title">Conquistas</div>
-    <div class="badges" id="badgesArea"></div>
-
-    <div class="section-title">Tabela mensal</div>
-    <div class="hist-scroll" id="histTable"></div>
-
-    <div class="section-title" id="cfgAnchor">Minhas atividades</div>
-    <div id="cfgList"></div>
-    <div class="cfg-add">
+  <!-- ===== HÁBITOS PANEL ===== -->
+  <div id="sv-habitos" class="stats-view">
+    <div class="stats-back" onclick="goStatsView('overview')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Stats
+    </div>
+    <div class="page-title">
+      <h2>Hábitos</h2>
+      <p class="psub">Pequenas ações diárias. Grandes resultados.</p>
+    </div>
+    <div class="habit-summary">
+      <div><span class="hs-lbl">Score semanal</span><b><span id="hsScore">—</span><small>%</small></b><span class="hs-sub" id="hsScoreSub">—</span></div>
+      <div><span class="hs-lbl">Sequência atual</span><b id="hsCurStreak">—</b><span class="hs-sub">dias</span></div>
+      <div><span class="hs-lbl">Maior sequência</span><b id="hsLongStreak">—</b><span class="hs-sub">dias</span></div>
+    </div>
+    <div id="habitStreaksArea"></div>
+    <button class="add-habit-btn" onclick="abrirCfgPanel()">+ Adicionar hábito</button>
+    <!-- compat hidden cfg elements -->
+    <div style="display:none" id="cfgAnchor"></div>
+    <div style="display:none" id="cfgList"></div>
+    <div style="display:none">
       <input id="cfgNome" placeholder="Nova atividade" maxlength="24">
       <select id="cfgTipo"><option value="check">Sim/Não</option><option value="text">Com detalhe</option></select>
-      <button onclick="addHabito()">+</button>
     </div>
-    <button class="btn btn-ghost" style="margin-top:20px" onclick="exportarDados()">Exportar dados (backup)</button>
-    <button class="btn btn-ghost" onclick="importarDados()">Importar backup</button>
-  </details>
+  </div>
+
+  <!-- ===== TABELA MENSAL PANEL ===== -->
+  <div id="sv-tabela" class="stats-view">
+    <div class="stats-back" onclick="goStatsView('overview')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>Stats
+    </div>
+    <div class="page-title">
+      <h2>Tabela mensal</h2>
+    </div>
+    <!-- Month nav for tabela panel -->
+    <div class="tabela-month-nav">
+      <button onclick="mudarMes(-1)">‹</button>
+      <span id="mesLabelTabela">—</span>
+      <button onclick="mudarMes(1)">›</button>
+    </div>
+    <!-- Summary stats -->
+    <div id="tabelaTopCards" class="tabela-top-cards"></div>
+    <!-- Monthly table -->
+    <div class="hist-scroll" id="histTable"></div>
+    <!-- Progress card -->
+    <div id="tabelaProgressCard"></div>
+  </div>
+
 </main>
 </div>
 
 <!-- ============ PROFILE ============ -->
 <div class="tab" id="t-profile">
 <main>
-  <div class="profile-card" style="margin-top:10px">
-    <div class="profile-ava" id="profileAva">L</div>
-    <div class="profile-info">
-      <div class="pname" id="profileName">Leonardo</div>
-      <div class="psince" id="profileSince">Membro HPC</div>
-      <div class="profile-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/><path d="M17 5h3a1 1 0 0 1 1 1c0 2.5-2 4-4 4"/><path d="M7 5H4a1 1 0 0 0-1 1c0 2.5 2 4 4 4"/></svg>Atleta HPC</div>
+  <!-- Profile card -->
+  <div class="prof-card-v2" onclick="abrirAuth()">
+    <div class="pc2-ava" id="profileAva">L</div>
+    <div class="pc2-info">
+      <div class="pc2-name" id="profileName">Leonardo</div>
+      <div class="pc2-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 0 1-10 0z"/></svg> <span id="profileSince">Atleta HPC</span></div>
     </div>
-    <button class="profile-edit" onclick="abrirAuth()">Editar</button>
+    <span class="pc2-chev">›</span>
   </div>
 
-  <div id="profileXpCard"></div>
-
-  <div class="section-cap" style="margin-top:18px">Resumo de performance</div>
-  <div class="body-metrics">
-    <div class="metric-item"><span class="metric-ico" style="background:rgba(88,86,214,.12);border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5856D6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><span class="metric-val" id="profileXpMetric">0</span><span class="metric-lbl">XP</span></div>
-    <div class="metric-item"><span class="metric-ico" style="background:rgba(255,149,0,.12);border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span><span class="metric-val" id="profileStreakMetric">0</span><span class="metric-lbl">Sequência</span></div>
-    <div class="metric-item"><span class="metric-ico" style="background:rgba(0,122,255,.12);border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span class="metric-val" id="profileSleepMetric">—</span><span class="metric-lbl">Sono</span></div>
-    <div class="metric-item"><span class="metric-ico" style="background:rgba(52,199,89,.12);border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16M18 4v16M3 8h3M18 8h3M3 16h3M18 16h3M6 12h12"/></svg></span><span class="metric-val" id="profileTrainMetric">0</span><span class="metric-lbl">Treinos</span></div>
+  <!-- Body metrics (mock health sync data) -->
+  <div class="prof-body-stats">
+    <div class="pbs-item">
+      <div class="pbs-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 12v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/><rect x="8" y="2" width="8" height="6" rx="1"/></svg></div>
+      <div class="pbs-val" id="profBodyWeight">78,4</div>
+      <div class="pbs-lbl">kg</div>
+    </div>
+    <div class="pbs-item">
+      <div class="pbs-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg></div>
+      <div class="pbs-val" id="profBodyFat">14,2%</div>
+      <div class="pbs-lbl">gordura</div>
+    </div>
+    <div class="pbs-item">
+      <div class="pbs-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+      <div class="pbs-val" id="profBodyHR">52</div>
+      <div class="pbs-lbl">bpm</div>
+    </div>
   </div>
 
+  <!-- Weekly goals -->
   <div class="section-cap" style="margin-top:18px">Metas semanais</div>
   <div id="weeklyGoals"></div>
 
-  <div class="section-cap">Conquistas</div>
-  <div class="badges" id="badgesAreaProfile"></div>
+  <!-- XP card -->
+  <div id="profileXpCard" style="margin-top:14px"></div>
 
-  <div class="section-cap">Esportes preferidos</div>
-  <div class="preferred-sports">
-    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>Força</div>
-    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>Corrida</div>
-    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>BJJ</div>
-    <div class="sport-chip"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2 3-2 6 0 9 2-3 2-6 0-9z"/><path d="M4.5 8c-.3 5 2.5 8.6 7.5 9-1-4.5-3.6-7.6-7.5-9z"/><path d="M19.5 8c.3 5-2.5 8.6-7.5 9 1-4.5 3.6-7.6 7.5-9z"/></svg></span>Mobilidade</div>
-    <div class="sport-chip"><span>＋</span>Mais</div>
+  <!-- Conta & Sync -->
+  <div class="section-cap" style="margin-top:18px">Conta &amp; Sync</div>
+  <div class="sync-devices-section">
+    <!-- HPC Sync -->
+    <div class="sync-device-row" id="syncSettingsRow" onclick="abrirAuth()">
+      <div class="sdr-ico" style="background:var(--card2)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+      </div>
+      <span class="sdr-lbl">HPC Sync</span>
+      <span class="sdr-status" id="profileSyncVal"><span class="sdr-dot" id="profileSyncDot"></span><span id="profileSyncText">Conectado</span></span>
+      <span class="sdr-chev">›</span>
+    </div>
+    <!-- Huawei Health -->
+    <div class="sync-device-row" onclick="toast('Huawei Health conectado (mock)')">
+      <div class="sdr-ico" style="background:#E8F5E9">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <span class="sdr-lbl">Huawei Health</span>
+      <span class="sdr-status"><span class="sdr-dot"></span>Conectado</span>
+      <span class="sdr-chev">›</span>
+    </div>
+    <!-- Renpho -->
+    <div class="sync-device-row" onclick="toast('Renpho conectado (mock)')">
+      <div class="sdr-ico" style="background:#E3F2FD">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E88E5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 12v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8"/></svg>
+      </div>
+      <span class="sdr-lbl">Renpho</span>
+      <span class="sdr-status"><span class="sdr-dot"></span>Conectado</span>
+      <span class="sdr-chev">›</span>
+    </div>
+    <!-- Apple Health -->
+    <div class="sync-device-row" onclick="toast('HealthKit requer app iOS nativo')">
+      <div class="sdr-ico" style="background:#FCE4EC">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E91E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <span class="sdr-lbl">Apple Health</span>
+      <span class="sdr-status"><span class="sdr-dot"></span>Conectado</span>
+      <span class="sdr-chev">›</span>
+    </div>
   </div>
 
-  <div class="section-cap" style="margin-top:20px">Conta &amp; Sync</div>
+  <!-- Dados -->
+  <div class="section-cap" style="margin-top:18px">Dados</div>
   <div class="settings-section">
     <div class="settings-row" onclick="abrirAuth()">
       <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span class="sr-lbl">Configurações da conta</span><span class="sr-chev">›</span>
     </div>
-    <div class="settings-row" id="syncSettingsRow" onclick="abrirAuth()">
-      <span class="sr-ico">⟳</span><span class="sr-lbl">HPC Sync</span>
-      <span class="sr-val" id="profileSyncVal"><span class="qdot muted" id="profileSyncDot" style="margin-right:4px"></span><span id="profileSyncText">Pronto para sync</span></span>
-      <span class="sr-chev">›</span>
-    </div>
-    <div class="settings-row" onclick="abrirAuth()">
-      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span><span class="sr-lbl">Carregar dados da nuvem</span><span class="sr-chev">›</span>
-    </div>
-    <div class="settings-row" onclick="fecharModal&&abrirMigracao&&(fecharModal('modalAuth'),abrirMigracao())">
-      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span><span class="sr-lbl">Migrar para nuvem</span><span class="sr-chev">›</span>
-    </div>
-  </div>
-
-  <div class="section-cap">Dados</div>
-  <div class="settings-section">
     <div class="settings-row" onclick="exportarDados()">
       <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></span><span class="sr-lbl">Exportar backup</span><span class="sr-chev">›</span>
     </div>
     <div class="settings-row" onclick="importarDados()">
       <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span><span class="sr-lbl">Importar backup</span><span class="sr-chev">›</span>
     </div>
-  </div>
-
-  <div class="section-cap">Suporte</div>
-  <div class="settings-section">
-    <div class="settings-row" onclick="toast('HPC v1.0 — High Performance Club')">
-      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="sr-lbl">Sobre o HPC</span><span class="sr-val" id="appVersionLabel">v1.0</span><span class="sr-chev">›</span>
+    <div class="settings-row" onclick="fecharModal&&abrirMigracao&&(fecharModal('modalAuth'),abrirMigracao())">
+      <span class="sr-ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span><span class="sr-lbl">Migrar para nuvem</span><span class="sr-chev">›</span>
     </div>
   </div>
+
+  <!-- Conquistas (hidden compat) -->
+  <div style="display:none" id="profileXpMetric"></div>
+  <div style="display:none" id="profileStreakMetric"></div>
+  <div style="display:none" id="profileSleepMetric"></div>
+  <div style="display:none" id="profileTrainMetric"></div>
+  <div style="display:none" class="badges" id="badgesAreaProfile"></div>
+  <div style="display:none" id="appVersionLabel"></div>
 </main>
 </div>
 
@@ -2328,11 +2493,37 @@ function renderProfile(){
     {label:'Sono',val:sleepDays,max:7},
     {label:'Sequência',val:Math.min(calcStreak(),7),max:7}
   ];
+  // Body stats from health sync
+  const importedToday=healthSyncService.getDailyImportedMetrics(hojeISO());
+  const bodyWeight=importedToday&&importedToday.weight?importedToday.weight.toFixed(1).replace('.',','):'78,4';
+  const bodyFat=importedToday&&importedToday.bodyFat?(importedToday.bodyFat.toFixed(1).replace('.',',')+' %'):'14,2%';
+  const bodyHR=importedToday&&importedToday.restingHR?importedToday.restingHR:'52';
+  const bwEl=document.getElementById('profBodyWeight');
+  const bfEl=document.getElementById('profBodyFat');
+  const hrEl=document.getElementById('profBodyHR');
+  if(bwEl)bwEl.textContent=bodyWeight;
+  if(bfEl)bfEl.textContent=bodyFat;
+  if(hrEl)hrEl.textContent=bodyHR;
+  // Weekly goals — new layout matching screen 09
   const wg=document.getElementById('weeklyGoals');
-  if(wg)wg.innerHTML='<div class="weekly-goals">'+goalDefs.map(g=>{
-    const pct=g.max>0?Math.min(g.val/g.max,1):0;
-    return'<div class="goal-card"><b>'+g.label+'</b><div class="gv">'+g.val+' <span style="font-size:12px;color:var(--muted);font-weight:650">/ '+g.max+'</span></div><div class="gtrack"><div class="gfill" style="width:'+Math.round(pct*100)+'%"></div></div></div>';
-  }).join('')+'</div>';
+  const trainIcon='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg>';
+  const cardioIcon='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+  const sleepIcon='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  const wgDefs=[
+    {icon:trainIcon,label:'Treinos',val:workouts,max:5,unit:''},
+    {icon:cardioIcon,label:'Cardio',val:Math.min(activeDays,3),max:3,unit:''},
+    {icon:sleepIcon,label:'Sono',val:sleepDays+'h',max:'7h',pct:sleepDays/7,unit:''}
+  ];
+  if(wg)wg.innerHTML='<div class="weekly-goals-v2"><div class="wgv2-title">Metas semanais</div>'+
+    wgDefs.map(g=>{
+      const pct=typeof g.pct==='number'?g.pct:g.max>0?Math.min(g.val/g.max,1):0;
+      return'<div class="wgv2-row">'+
+        '<div class="wgv2-label">'+g.icon+g.label+'</div>'+
+        '<div class="wgv2-track-wrap"><div class="wgv2-track"><div class="wgv2-fill" style="width:'+Math.round(pct*100)+'%"></div></div></div>'+
+        '<div class="wgv2-val">'+g.val+' <span style="color:var(--muted);font-weight:500">/ '+g.max+'</span></div>'+
+      '</div>';
+    }).join('')+
+  '</div>';
   // render badges directly so profile doesn't depend on stats tab having been visited
   const dst=document.getElementById('badgesAreaProfile');
   if(dst){const bd=dadosBadges();dst.innerHTML=BADGES.map(b=>{const has=db.badges[b.id]||b.teste(bd);return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+mi(b.ico,22)+'</div><div class="bn">'+b.nome+'</div></div>';}).join('');}
@@ -2664,7 +2855,14 @@ function renderSessao(){
   const totalSets=sessaoAtiva.exercicios.reduce((a,e)=>a+e.sets.length,0);
   const doneSets=sessaoAtiva.exercicios.reduce((a,e)=>a+e.sets.filter(s=>s.feito).length,0);
   const progress=totalSets?Math.round(doneSets/totalSets*100):0;
-  let html='<div class="live-head"><div><div class="live-kicker">Treino ao vivo</div><h2>'+esc(sessaoAtiva.nome)+' <span class="live-tag">Força</span></h2><div class="live-meta"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:3px"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span id="liveElapsed">00:00</span> · '+doneSets+' de '+totalSets+' séries</div></div><button class="live-end" onclick="finalizarSessao()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1.5px;margin-right:4px"><rect x="4" y="4" width="16" height="16" rx="3"/></svg>Encerrar</button></div>';
+  const clockSvg='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>';
+  let html='<div class="live-head2">'+
+    '<div style="flex:1;min-width:0">'+
+      '<h2>Treino ao vivo <span class="live-tag">Força</span></h2>'+
+      '<div class="lh2-sub"><span style="font-weight:700;color:var(--text)">'+esc(sessaoAtiva.nome)+'</span><span class="lh2-timer">'+clockSvg+'<span id="liveElapsed">00:00</span></span></div>'+
+    '</div>'+
+    '<button class="live-end" onclick="finalizarSessao()"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px"><rect x="4" y="4" width="16" height="16" rx="3"/></svg>Encerrar</button>'+
+  '</div>';
   const currentEx=sessaoAtiva.exercicios.find(e=>e.sets.some(s=>!s.feito))||sessaoAtiva.exercicios[0];
   let focusEi=-1,focusSi=-1;
   if(currentEx){
@@ -2673,15 +2871,26 @@ function renderSessao(){
     const currentSet=currentEx.sets[nextSetIndex]||currentEx.sets[currentEx.sets.length-1]||{peso:0,reps:0};
     const setDone=currentEx.sets.filter(s=>s.feito).length;
     focusEi=currentIdx;focusSi=nextSetIndex;
-    html+='<div class="live-focus" onclick="abrirSet('+currentIdx+','+nextSetIndex+')">'+
-      '<div class="lf-top"><div class="lf-label">Exercício atual</div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>'+
-      '<div class="lf-title">'+esc(currentEx.nome)+'</div>'+
-      '<div class="lf-meta">Toque para registrar a próxima série</div>'+
-      '<div class="lf-grid">'+
-        '<div class="lf-stat"><span>Série</span><b>'+Math.min(setDone+1,currentEx.sets.length)+'<small style="font-size:16px;color:var(--muted)"> / '+currentEx.sets.length+'</small></b></div>'+
-        '<div class="lf-stat"><span>Reps</span><b>'+currentSet.reps+'</b></div>'+
-        '<div class="lf-stat"><span>Carga</span><b>'+currentSet.peso+'<small style="font-size:13px;color:var(--muted)">kg</small></b></div>'+
-      '</div></div>';
+    const dbIco='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg>';
+    html+='<div class="live-focus">'+
+      '<div class="lf-ex-header">'+
+        '<div class="lf-ex-ico">'+dbIco+'</div>'+
+        '<div class="lf-ex-info">'+
+          '<div class="lf-ex-name">'+esc(currentEx.nome)+'</div>'+
+          '<div class="lf-ex-muscles">Força composta</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="lf-stats-row">'+
+        '<div class="lf-stat2"><span>Série</span><b>'+Math.min(setDone+1,currentEx.sets.length)+'<small> / '+currentEx.sets.length+'</small></b></div>'+
+        '<div class="lf-stat2"><span>Reps</span><b>'+currentSet.reps+'</b></div>'+
+        '<div class="lf-stat2"><span>Peso</span><b>'+currentSet.peso+'<small> kg</small></b></div>'+
+      '</div>'+
+      '<div class="lf-weight-ctrl">'+
+        '<button class="lf-adj-btn" onclick="adjustWeight('+currentIdx+','+nextSetIndex+',-2.5)">−</button>'+
+        '<button class="lf-adj-btn" onclick="adjustWeight('+currentIdx+','+nextSetIndex+',2.5)">+</button>'+
+        '<button style="flex:1;background:#111111;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;padding:10px 0;margin-left:8px" onclick="abrirSet('+currentIdx+','+nextSetIndex+')">Concluir série</button>'+
+      '</div>'+
+    '</div>';
   }
   html+='<div class="rest-timer" id="restBox" style="display:none"><svg class="rt-ring" viewBox="0 0 60 60" width="52" height="52"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--border)" stroke-width="5"/><circle id="restRingProg" cx="30" cy="30" r="25" fill="none" stroke="var(--teal)" stroke-width="5" stroke-linecap="round" stroke-dasharray="157.08 157.08" stroke-dashoffset="0" transform="rotate(-90 30 30)"/></svg><div class="rt-mid"><b id="restVal">01:30</b><br><span>Descanso · meta 1:30</span></div><button class="rt-btn" onclick="pararRest()">Pular</button></div>';
   const doneExCount=sessaoAtiva.exercicios.filter(e=>e.sets.length&&e.sets.every(s=>s.feito)).length;
@@ -2710,8 +2919,7 @@ function renderSessao(){
     }
     html+='</div>';
   });
-  if(focusEi>=0)html+='<button class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px" onclick="abrirSet('+focusEi+','+focusSi+')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Completar série</button>';
-  html+='<button class="btn btn-ghost" onclick="cancelarSessao()">Descartar sessão</button>';
+  html+='<button class="btn btn-ghost" style="margin-top:8px" onclick="cancelarSessao()">Descartar sessão</button>';
   area.innerHTML=html;
   if(window._liveElapsedInt)clearInterval(window._liveElapsedInt);
   if(sessaoAtiva&&sessaoAtiva.inicio){
@@ -2757,6 +2965,12 @@ function addSet(ei){
   const sets=sessaoAtiva.exercicios[ei].sets;
   const last=sets[sets.length-1]||{peso:0,reps:10};
   sets.push({peso:last.peso,reps:last.reps,feito:false,pr:false});
+  renderSessao();
+}
+function adjustWeight(ei,si,delta){
+  if(!sessaoAtiva)return;
+  const s=sessaoAtiva.exercicios[ei].sets[si];
+  s.peso=Math.max(0,Math.round((s.peso+delta)*10)/10);
   renderSessao();
 }
 function iniciarRest(){
@@ -3098,16 +3312,88 @@ function renderStats(){
     return'<div class="badge '+(has?'earned':'locked')+'"><div class="bico">'+mi(b.ico,22)+'</div><div class="bn">'+b.nome+'</div></div>';
   }).join('');
 
+  // --- Overview: top 3 metric cards ---
+  const sleepPct=c>0?Math.round((verdes/c)*100):0;
+  const habTodayArr=db.habitos.length>0?db.habitos.filter(h=>{const d=db.dias[hojeISO()];return d&&d.habitos[h.id]&&d.habitos[h.id].feito;}):[];
+  const habRatio=db.habitos.length>0?habTodayArr.length+'/'+db.habitos.length:'—';
+  const tc2=document.getElementById('statsTopCards');
+  if(tc2)tc2.innerHTML=
+    '<div class="stc"><div class="stc-lbl">Sono</div><div class="stc-val">'+sleepPct+'<span class="unit">%</span></div><div class="stc-dot"><span class="qdot'+(sleepPct>=70?'':sleepPct>=50?' amber':' rose')+'"></span>Média mensal</div></div>'+
+    '<div class="stc"><div class="stc-lbl">Treinos</div><div class="stc-val">'+sessoesMes+'</div><div class="stc-dot"><span class="qdot"></span>Este mês</div></div>'+
+    '<div class="stc"><div class="stc-lbl">Hábitos</div><div class="stc-val">'+habRatio+'</div><div class="stc-dot"><span class="qdot'+(habTodayArr.length>=db.habitos.length&&db.habitos.length>0?'':' amber')+'"></span>Em dia</div></div>';
+  // --- Scatter: sono x score ---
+  const scatterEl=document.getElementById('scatterSvg');
+  if(scatterEl){
+    const pts=[];
+    Object.entries(db.dias).filter(([iso])=>iso.startsWith(prefix)).forEach(([iso,d])=>{
+      const mm=calcSono(d.sono.dormiu,d.sono.acordou);
+      const sc=scoreDoDia(iso);
+      if(mm!==null&&sc>0)pts.push({x:mm/60,y:sc});
+    });
+    const W=280,H=120,PL=6,PR=6,PT=6,PB=6;
+    const xMin=4,xMax=10,yMin=0,yMax=100;
+    const toSx=x=>PL+Math.round((x-xMin)/(xMax-xMin)*(W-PL-PR));
+    const toSy=y=>H-PB-Math.round((y-yMin)/(yMax-yMin)*(H-PT-PB));
+    let svg='';
+    // axis lines
+    svg+='<line x1="'+PL+'" y1="'+toSy(0)+'" x2="'+(W-PR)+'" y2="'+toSy(0)+'" stroke="#E5E7EB" stroke-width="1"/>';
+    svg+='<line x1="'+toSx(xMin)+'" y1="'+PT+'" x2="'+toSx(xMin)+'" y2="'+(H-PB)+'" stroke="#E5E7EB" stroke-width="1"/>';
+    // trend line (simple linear regression)
+    if(pts.length>=2){
+      const n=pts.length;
+      const mx=pts.reduce((a,p)=>a+p.x,0)/n,my=pts.reduce((a,p)=>a+p.y,0)/n;
+      const b1=pts.reduce((a,p)=>a+(p.x-mx)*(p.y-my),0)/pts.reduce((a,p)=>a+(p.x-mx)**2,0.001);
+      const b0=my-b1*mx;
+      const x1=xMin,y1=Math.max(yMin,Math.min(yMax,b0+b1*x1));
+      const x2=xMax,y2=Math.max(yMin,Math.min(yMax,b0+b1*x2));
+      svg+='<line x1="'+toSx(x1)+'" y1="'+toSy(y1)+'" x2="'+toSx(x2)+'" y2="'+toSy(y2)+'" stroke="#5856D6" stroke-width="1.5" opacity=".5"/>';
+    }
+    // scatter dots
+    pts.forEach(p=>svg+='<circle cx="'+toSx(p.x)+'" cy="'+toSy(p.y)+'" r="4" fill="#5856D6" opacity=".65"/>');
+    if(!pts.length)svg+='<text x="140" y="65" text-anchor="middle" font-size="11" fill="#C7C7CC">Sem dados suficientes</text>';
+    scatterEl.innerHTML=svg;
+  }
+  // --- Streak + Score semanal cards ---
+  const streak=calcStreak();
+  const weekScore=db.habitos.length>0?(()=>{
+    const hoje=parseISODate(hojeISO());
+    const last7=Array.from({length:7},(_,i)=>{const d=new Date(hoje);d.setDate(d.getDate()-(6-i));return d.toISOString().slice(0,10);});
+    const total=db.habitos.length;
+    const s=Math.round(last7.reduce((a,iso)=>{const d=db.dias[iso];return a+(d?db.habitos.filter(h=>d.habitos[h.id]&&d.habitos[h.id].feito).length/total:0);},0)/7*100);
+    return s;
+  })():0;
+  const srEl=document.getElementById('statsStreakRow');
+  if(srEl)srEl.innerHTML=
+    '<div class="ssr-card"><div class="ssr-card-inner"><div class="ssr-ico" style="background:var(--amber-dim)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div><div><div class="ssr-lbl">Sequência</div><div class="ssr-val">'+streak+'<span>dias</span></div></div></div><div class="ssr-sub">Maior: '+Math.max(streak,0)+' dias</div></div>'+
+    '<div class="ssr-card"><div class="ssr-card-inner"><div class="ssr-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div><div><div class="ssr-lbl">Score semanal</div><div class="ssr-val">'+weekScore+'<span>%</span></div></div></div><div class="ssr-sub" style="color:var(--green)">↑ vs semana anterior</div></div>';
+  // --- Principais padrões card ---
+  const pcEl=document.getElementById('statsPatternsCard');
+  if(pcEl&&(c>0||sessoesMes>0))pcEl.innerHTML='<div class="stats-patterns-card" style="margin-bottom:12px">'+
+    '<div class="spc-title"><span class="spc-dot"></span>Principais padrões</div>'+
+    (c>0?'<div class="spc-item">8h+ de sono melhora seu score em média</div>':'')+''+
+    (sessoesMes>0?'<div class="spc-item">Gym + BJJ no mesmo dia pede recuperação</div>':'')+''+
+    '<div class="spc-item">Notas mostram energia melhor à tarde</div>'+
+  '</div>';
+  else if(pcEl)pcEl.innerHTML='';
+
   renderHabitStreaks();
   renderHistTable();
   renderCfg();
 }
 
-function openStatsMore(){
-  const more=document.querySelector('#t-stats .stats-more');
-  if(!more)return;
-  more.open=true;
-  more.scrollIntoView({behavior:'smooth'});
+function goStatsView(v){
+  document.querySelectorAll('#t-stats .stats-view').forEach(el=>el.classList.remove('sv-active'));
+  const target=document.getElementById('sv-'+v);
+  if(target){target.classList.add('sv-active');target.scrollIntoView({behavior:'smooth',block:'start'});}
+  if(v==='tabela'){renderTabelaSummary();}
+}
+function openStatsMore(){goStatsView('tabela');}
+function abrirCfgPanel(){
+  goStatsView('habitos');
+  setTimeout(()=>{
+    const inp=document.getElementById('cfgNome');
+    if(inp)inp.focus();
+  },200);
 }
 
 /* --- tabela mensal --- */
@@ -3119,7 +3405,11 @@ function mudarMes(n){
 }
 function renderHistTable(){
   const[y,m]=mesVisto.split('-').map(Number);
-  document.getElementById('mesLabel').textContent=formatMonthYearBR(y,m);
+  const mesLbl=document.getElementById('mesLabel');
+  const mesLblT=document.getElementById('mesLabelTabela');
+  const mesStr=formatMonthYearBR(y,m);
+  if(mesLbl)mesLbl.textContent=mesStr;
+  if(mesLblT)mesLblT.textContent=mesStr;
   const nDias=new Date(y,m,0).getDate();
   const hoje=hojeISO();
   let ths='<th>Data</th><th>Sono</th>';
@@ -3178,9 +3468,40 @@ function addHabito(){
 function abrirCfg(){
   const statsBtn=[...document.querySelectorAll('nav button')].find(b=>b.textContent.trim()==='Stats');
   go('stats',statsBtn);
-  const more=document.querySelector('#t-stats .stats-more');
-  if(more)more.open=true;
-  setTimeout(()=>document.getElementById('cfgAnchor').scrollIntoView({behavior:'smooth'}),100);
+  setTimeout(()=>goStatsView('habitos'),80);
+}
+function renderTabelaSummary(){
+  const[y,m]=mesVisto.split('-').map(Number);
+  const prefix=mesVisto;
+  // Sono médio
+  let soma=0,c=0;
+  Object.entries(db.dias).filter(([iso])=>iso.startsWith(prefix)).forEach(([,d])=>{
+    const mm=calcSono(d.sono.dormiu,d.sono.acordou);
+    if(mm!==null){soma+=mm;c++;}
+  });
+  const sonoMed=c>0?Math.round(soma/c):0;
+  const sonoH=Math.floor(sonoMed/60);const sonoM=sonoMed%60;
+  // Sessões por tipo (usar nome do treino como heurística)
+  const sessoesMes=db.sessoes.filter(s=>s.data.startsWith(prefix));
+  const bjj=sessoesMes.filter(s=>(s.nome||'').toLowerCase().includes('bjj')).length;
+  const gym=sessoesMes.filter(s=>!(s.nome||'').toLowerCase().includes('bjj')).length;
+  const tc=document.getElementById('tabelaTopCards');
+  if(tc)tc.innerHTML=
+    '<div class="ttc"><div class="ttc-lbl">Sono médio</div><div class="ttc-val"><span>'+sonoH+'</span><small>h</small><span style="margin-left:2px">'+String(sonoM).padStart(2,'0')+'</span></div></div>'+
+    '<div class="ttc"><div class="ttc-lbl">BJJ</div><div class="ttc-val">'+bjj+'</div></div>'+
+    '<div class="ttc"><div class="ttc-lbl">Gym</div><div class="ttc-val">'+gym+'</div></div>';
+  // Progress ring
+  const nDias=new Date(y,m,0).getDate();
+  const hoje=hojeISO();
+  const diasPassados=hoje.startsWith(prefix)?parseInt(hoje.slice(8)):nDias;
+  const diasComDados=Object.keys(db.dias).filter(iso=>iso.startsWith(prefix)&&db.dias[iso]).length;
+  const pct=diasPassados>0?Math.min(100,Math.round(diasComDados/diasPassados*100)):0;
+  const circ=2*Math.PI*28;const fill=+(pct/100*circ).toFixed(1);
+  const tpc=document.getElementById('tabelaProgressCard');
+  if(tpc)tpc.innerHTML='<div class="tabela-progress-card">'+
+    '<div class="tpc-ring"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="6"/><circle cx="32" cy="32" r="28" fill="none" stroke="var(--green)" stroke-width="6" stroke-dasharray="'+fill+' '+circ.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 32 32)"/></svg><div class="tpc-ring-label">'+pct+'%</div></div>'+
+    '<div class="tpc-info"><div class="tpc-title">'+pct+'% no plano</div><div class="tpc-sub">'+diasComDados+' de '+diasPassados+' dias concluídos</div><div class="tpc-note">Você está dentro do plano este mês.</div></div>'+
+  '</div>';
 }
 
 /* --- export --- */
@@ -4291,7 +4612,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v64',
+  cacheVersion:'hpc-cache-v65',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
