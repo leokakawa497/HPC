@@ -616,25 +616,9 @@ header{padding:12px 16px;justify-content:space-between;position:relative;backgro
 .qcard-link{font-size:11.5px;color:var(--text);font-weight:650;margin-top:auto;padding-top:9px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)}
 .qcard-link .qlc{color:var(--muted);font-size:13px;line-height:1}
 
-/* Quick stats row */
-.qstats-row{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px 8px;margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);box-shadow:var(--shadow)}
-.qst{display:flex;flex-direction:column;align-items:center;gap:4px;border-right:1px solid var(--border);padding:4px 6px}
-.qst:last-child{border-right:none}
-.qst-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text)}
-.qst-val{font-size:15px;font-weight:800;line-height:1.1}
-.qst-lbl{font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-align:center}
-
-.featured-workout{background:var(--card);border:1px solid var(--border);border-radius:18px;margin-top:14px;display:grid;grid-template-columns:42% 1fr;min-height:154px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer}
-.fw-media{background:var(--card2);display:flex;align-items:center;justify-content:center;min-height:154px;position:relative}
-.fw-media:before{content:"";position:absolute;inset:18px;border:1px solid var(--border);border-radius:18px}
-.fw-media span{font-size:42px;filter:grayscale(1) contrast(1.2);position:relative}
-.fw-body{padding:16px 14px;display:flex;flex-direction:column;min-width:0}
-.fw-eyebrow{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.fw-title{font-size:20px;font-weight:850;line-height:1.08;margin-top:8px;color:var(--text)}
-.fw-meta{font-size:12px;color:var(--muted);line-height:1.35;margin-top:6px;display:flex;gap:12px;flex-wrap:wrap}
-.fw-meta .fwm{display:inline-flex;align-items:center;gap:4px}
-.fw-btn{margin-top:auto;background:#111111;color:#fff;border:none;border-radius:12px;min-height:36px;padding:0 14px;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:none}
-.fw-btn span{font-size:18px;line-height:1}
+/* Sync bar static placeholder */
+.sync-bar-static{display:flex;align-items:center;gap:7px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;margin-top:12px;font-size:12px;font-weight:650;color:var(--muted);box-shadow:var(--shadow)}
+.sbs-badge{margin-left:auto;font-size:10px;font-weight:700;background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:3px 9px;color:var(--muted2)}
 
 /* Home final direction */
 #t-hoje main{padding-top:0}
@@ -662,20 +646,7 @@ header{padding:12px 16px;justify-content:space-between;position:relative;backgro
 #t-hoje .hdots{margin-top:10px;gap:4px}
 #t-hoje .hdot{width:22px;height:22px;background:transparent}
 #t-hoje .hdot.done{background:#111111;border-color:#111111;color:#fff}
-#t-hoje .qs-hdr{grid-column:1/-1;font-size:8.5px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);padding:0 7px 8px}
-#t-hoje .qstats-row{border-radius:16px;padding:12px 6px 11px;margin-top:10px}
-#t-hoje .qst-ico{width:26px;height:26px;border-radius:9px}
-#t-hoje .qst-ico svg{width:15px;height:15px}
-#t-hoje .qst-val{font-size:15px}
-#t-hoje .qst-lbl{font-size:9px;line-height:1.2}
-#t-hoje .featured-workout{grid-template-columns:40% 1fr;min-height:128px;border-radius:16px;margin-top:10px}
-#t-hoje .fw-media{background-image:linear-gradient(90deg,rgba(0,0,0,.1),rgba(0,0,0,.28)),url('./assets/featured-workout.jpg');background-size:cover;background-position:center;min-height:128px}
-#t-hoje .fw-media:before,#t-hoje .fw-media span{display:none}
-#t-hoje .fw-body{padding:12px 13px}
-#t-hoje .fw-title{font-size:16px;margin-top:5px}
-#t-hoje .fw-meta{font-size:11px;margin-top:4px}
-#t-hoje .fw-btn{min-height:34px;border-radius:10px;background:#111111;box-shadow:none;font-size:12.5px;margin-top:8px}
-#t-hoje .sync-bar{border-radius:16px;margin-top:10px;padding:10px 13px}
+#t-hoje .sync-bar-static{border-radius:14px;margin-top:10px}
 .daily-log-btn{width:100%;margin-top:10px;min-height:48px;border:1px solid var(--border);border-radius:16px;background:var(--card);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 14px;font-size:13px;font-weight:800;color:var(--text);cursor:pointer}
 .daily-log-btn svg{flex-shrink:0}
 .dlb-chev{color:var(--muted);font-size:18px;line-height:1}
@@ -710,8 +681,10 @@ header{padding:12px 16px;justify-content:space-between;position:relative;backgro
 #t-log .daily-weight-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:15px;margin-top:10px}
 #t-log .dw-icon{width:52px;height:52px;border-radius:14px;background:var(--violet-dim);color:var(--violet);display:flex;align-items:center;justify-content:center}
 #t-log .dw-label{font-size:13px;font-weight:760;color:var(--text)}
-#t-log .dw-value{font-size:26px;font-weight:780;line-height:1;margin-top:2px;letter-spacing:-.3px}
-#t-log .dw-source{border:1px solid var(--border);border-radius:99px;padding:6px 10px;font-size:12px;font-weight:650;color:var(--muted);background:var(--card)}
+#t-log .dw-input{font-size:26px;font-weight:780;line-height:1;margin-top:2px;letter-spacing:-.3px;border:none;background:transparent;color:var(--text);width:100px;padding:0;-moz-appearance:textfield}
+#t-log .dw-input::-webkit-outer-spin-button,#t-log .dw-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+#t-log .dw-input:focus{outline:none;border-bottom:2px solid var(--violet)}
+#t-log .dw-unit{font-size:15px;font-weight:650;color:var(--muted);align-self:center}
 #t-log .chips{display:block;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;background:var(--card)}
 #t-log .chips[hidden]{display:none!important}
 #t-log .chip{border:0;border-radius:0;border-bottom:1px solid var(--border);box-shadow:none;padding:11px 12px}
@@ -792,12 +765,6 @@ header{padding:12px 16px;justify-content:space-between;position:relative;backgro
 .live-focus .lf-stat span{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:850}
 .live-focus .lf-stat b{display:block;font-size:28px;line-height:1.05;margin-top:6px}
 
-/* Sync bar */
-.sync-bar{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 14px;display:flex;align-items:center;gap:9px;margin-top:12px;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
-.sync-bar .sb-ico{font-size:14px;color:var(--muted)}
-.sync-bar .sb-lbl{font-weight:700}
-.sync-bar .sb-ok{display:flex;align-items:center;gap:5px;color:var(--teal);font-size:11.5px;font-weight:600}
-.sync-bar .sb-time{margin-left:auto;color:var(--muted);font-size:11px}
 
 /* Page titles (for Grupo/Stats) */
 .page-title{padding:10px 0 2px}
@@ -1011,7 +978,6 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   header{padding:12px 24px}
   /* Home tablet: 2-col quick cards */
   #t-hoje .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  #t-hoje .qstats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
   /* Stats tablet: overview + habitos side by side */
   #t-stats main{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
   #t-stats .stats-view{display:block !important}
@@ -1047,10 +1013,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   #t-hoje .score-card{grid-column:1/-1}
   #t-hoje #prBannerSlot{grid-column:1/-1}
   #t-hoje .quick-grid{grid-column:1;display:flex;flex-direction:column;gap:16px}
-  #t-hoje .qstats-row{grid-column:2}
-  #t-hoje .sync-bar{grid-column:2}
+  #t-hoje .sync-bar-static{grid-column:2}
   #t-hoje .daily-log-btn{grid-column:2}
-  #t-hoje #featuredWorkout{grid-column:1/-1}
   .score-card{padding:20px 24px}
   .sc-num{font-size:38px}
   .qcard{padding:18px 20px}
@@ -1225,30 +1189,10 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     </div>
   </div>
 
-  <!-- Quick stats row -->
-  <div class="qstats-row">
-    <span class="qs-hdr">Resumo rápido</span>
-    <div class="qst">
-      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span>
-      <span class="qst-val" id="qsKcal">—</span><span class="qst-lbl">Calorias</span>
-    </div>
-    <div class="qst">
-      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
-      <span class="qst-val" id="qsBpm">—</span><span class="qst-lbl">FC repouso</span>
-    </div>
-    <div class="qst">
-      <span class="qst-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5 1.3-8.5-2.7-11.5-2-.5.4-1 .6-1 1.2C3 12 8 13 9 14c.5.5.5 1 .5 1.5v4.5c0 .5.5 1 1 1h6c.5 0 1-.5 1-1v-4c0-.5 0-1 .5-1.5C19.5 13 20 12 22 10c0-3.5-2-5-3-5z"/></svg></span>
-      <span class="qst-val" id="qsSteps">—</span><span class="qst-lbl">Passos</span>
-    </div>
-  </div>
-
-  <div class="featured-workout" id="featuredWorkout" style="display:none"></div>
-
-  <div class="sync-bar" id="syncBar" onclick="syncNowFromHome()">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--muted);flex-shrink:0"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
-    <span class="sb-lbl" id="syncBarLabel">HPC Sync</span>
-    <span class="sb-ok" id="syncBarStatus"><span class="qdot" id="syncBarDot"></span><span id="syncBarText">Huawei + Renpho conectados</span></span>
-    <span class="sb-time" id="syncBarAction">Sincronizar ›</span>
+  <div class="sync-bar-static">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+    <span>HPC Sync</span>
+    <span class="sbs-badge">Em breve</span>
   </div>
 
   <button class="daily-log-btn" onclick="abrirDailyLog()">
@@ -1295,9 +1239,9 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <div class="dw-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="3"/><path d="M8 10h8"/><path d="M10 13h4"/></svg></div>
     <div>
       <div class="dw-label">Peso</div>
-      <div class="dw-value" id="dailyWeightVal">—</div>
+      <input type="number" id="inpPeso" class="dw-input" placeholder="—" step="0.1" min="30" max="300" onchange="salvarPeso()">
     </div>
-    <span class="dw-source" id="dailyWeightSource">Renpho</span>
+    <span class="dw-unit">kg</span>
   </div>
 
   <div class="section-title"><span style="display:inline-flex;align-items:center;gap:6px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Atividades</span><button class="more" onclick="abrirCfg()">gerenciar →</button></div>
@@ -2346,6 +2290,7 @@ function salvarSono(){
   salvar();renderHoje();marcarPendente(diaAtual);
 }
 function salvarNota(){getDia(diaAtual).nota=document.getElementById('inpNota').value;salvar();}
+function salvarPeso(){const v=parseFloat(document.getElementById('inpPeso').value);const dia=getDia(diaAtual);if(!isNaN(v)&&v>0)dia.peso=v;else delete dia.peso;salvar();}
 
 /* ================= XP / NÍVEL / STREAK ================= */
 function nivel(xp){return Math.floor(xp/500)+1;}
@@ -2525,42 +2470,7 @@ function renderQuickCards(){
   if(stepsEl)stepsEl.textContent=steps?Number(steps).toLocaleString('pt-BR'):'—';
 }
 
-function renderFeaturedWorkout(){
-  const el=document.getElementById('featuredWorkout');
-  if(!el)return;
-  el.style.display='none';
-  el.onclick=null;
-  return;
-  const treinos=(db.treinos||[]).filter(t=>t&&t.nome);
-  if(!treinos.length){
-    el.style.display='none';
-    el.onclick=null;
-    return;
-  }
-
-  const sessoes=(db.sessoes||[]).slice().sort((a,b)=>(b.data||'').localeCompare(a.data||''));
-  const ultimo=sessoes.find(s=>s.treinoId);
-  const treino=treinos.find(t=>ultimo&&t.id===ultimo.treinoId)||treinos[0];
-  const ultimoDoTreino=sessoes.find(s=>s.treinoId===treino.id);
-  const exercicios=treino.exercicios||[];
-  const qtdEx=exercicios.length;
-  const duracao=Math.max(30,Math.min(90,Math.round((qtdEx||4)*10)));
-  const ultimoTexto=ultimoDoTreino?'Último '+formatShortDateBR(ultimoDoTreino.data):'Pronto para iniciar';
-  const focus=/lower|legs|ombro|power|agacha/i.test(treino.nome)?'Força • Potência • Mobilidade':'Força • Hipertrofia • Consistência';
-  const level=qtdEx>=5?'Intermediário':'Iniciante';
-
-  el.style.display='';
-  el.innerHTML=
-    '<div class="fw-media" aria-hidden="true"></div>'+
-    '<div class="fw-body">'+
-      '<div class="fw-eyebrow">Treino recomendado</div>'+
-      '<div class="fw-title">'+esc(treino.nome)+'</div>'+
-      '<div class="fw-meta" style="margin-top:2px">'+esc(focus)+'</div>'+
-      '<div class="fw-meta"><span class="fwm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>'+duracao+' min</span><span class="fwm"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg>'+level+'</span></div>'+
-      '<button type="button" class="fw-btn">Iniciar treino <span>›</span></button>'+
-    '</div>';
-  el.onclick=()=>iniciarOuEditar(treino);
-}
+function renderFeaturedWorkout(){/* removed — Phase 4 will add a real recommended workout card */}
 
 /* ================= GRUPO SUB-TABS ================= */
 function switchGrupoTab(tab,btn){
@@ -2841,13 +2751,8 @@ function renderHoje(){
       qualityDot.className='qdot'+(c==='red'?' rose':c==='yellow'?' amber':'');
     }
   }
-  const weightVal=document.getElementById('dailyWeightVal');
-  const weightSource=document.getElementById('dailyWeightSource');
-  if(weightVal){
-    const weight=importedMetrics&&typeof importedMetrics.weight==='number'?importedMetrics.weight:78.4;
-    weightVal.innerHTML=String(weight).replace('.',',')+' <span style="font-size:14px;color:var(--muted);font-weight:650">kg</span>';
-  }
-  if(weightSource)weightSource.textContent=importedMetrics?'Renpho':'Renpho';
+  const pesoInp=document.getElementById('inpPeso');
+  if(pesoInp){const p=getDia(diaAtual).peso;pesoInp.value=p||'';}
   let bars='';
   for(let i=6;i>=0;i--){
     const dd=parseISODate(diaAtual);dd.setDate(dd.getDate()-i);
@@ -2862,41 +2767,15 @@ function renderHoje(){
   // PR banner suppressed — PRs shown in Group feed instead
   document.getElementById('prBannerSlot').innerHTML='';
 
-  renderHomeSyncBar();
-
   renderChips();
   renderHeader();
   renderGreeting();
   renderQuickCards();
-  renderFeaturedWorkout();
   renderDailyActivities();
 }
 
-function renderHomeSyncBar(){
-  const sbText=document.getElementById('syncBarText');
-  const sbDot=document.getElementById('syncBarDot');
-  const sbAction=document.getElementById('syncBarAction');
-  const sbStatus=document.getElementById('syncBarStatus');
-  if(!sbText||!sbDot||!sbAction||!sbStatus)return;
-  const connected=healthSyncService.getConnectedDevices().filter(d=>d.connected);
-  const names=connected.map(d=>d.name.replace(' Health','')).slice(0,2).join(' + ');
-  const last=healthSyncService.getLastSyncAt();
-  sbText.textContent=(names||'Dispositivos')+' conectados';
-  sbDot.className='qdot';
-  sbStatus.style.color='var(--green)';
-  sbAction.textContent=last?'Sync '+formatTimeFromIso(last)+' ›':'Sincronizar ›';
-}
-
-function syncNowFromHome(){
-  const sbAction=document.getElementById('syncBarAction');
-  if(sbAction)sbAction.textContent='Sincronizando...';
-  setTimeout(()=>{
-    healthSyncService.syncNow(diaAtual);
-    renderHoje();
-    renderProfile();
-    toast('HPC Sync atualizado');
-  },260);
-}
+function renderHomeSyncBar(){}
+function syncNowFromHome(){}
 
 function sugestoes(hid){
   const set=new Set();
@@ -2969,46 +2848,36 @@ function renderDailyActivities(){
   const el=document.getElementById('dailyActivityList');
   if(!el)return;
   const dia=getDia(diaAtual);
-  const preview=useHomePreview(diaAtual);
-  const sessoesHoje=(db.sessoes||[]).filter(s=>s.data===diaAtual);
-  const minsTreino=sessoesHoje.reduce((acc,s)=>{
-    if(s.fim&&s.inicio)return acc+Math.max(0,Math.round((s.fim-s.inicio)/60000));
-    return acc;
-  },0);
-  const byId=id=>db.habitos.find(h=>h.id===id);
-  const st=id=>dia.habitos[id]||{};
-  const rows=[
-    {id:'bjj',name:'BJJ',meta:preview?'90 min':(st('bjj').detalhe||''),done:preview||!!st('bjj').feito},
-    {id:'academia',name:'Gym',meta:preview?'75 min':(minsTreino?minsTreino+' min':(st('academia').detalhe||'')),done:preview||!!st('academia').feito||sessoesHoje.length>0},
-    {id:'corrida',name:'Cardio',meta:preview?'30 min':(st('corrida').detalhe||''),done:preview||!!st('corrida').feito},
-    {id:'pilates',name:'Pilates',meta:'',done:preview?false:!!st('pilates').feito},
-    {id:'sauna',name:'Sauna',meta:preview?'20 min':(st('sauna').detalhe||''),done:preview||!!st('sauna').feito},
-    {id:'notes',name:'Notas',meta:dia.nota?'Adicionado':'Adicionar nota...',done:!!dia.nota}
-  ];
-  el.innerHTML=rows.map(row=>{
-    const h=row.id==='notes'?null:byId(row.id);
-    const status=row.done?'feito':row.id==='notes'?'': 'skip';
-    const plus=!row.done&&row.id!=='notes'?'+':'›';
-    return '<div class="dl-activity-row" data-dl-id="'+escA(row.id)+'">'+
-      '<div class="dl-act-ico">'+(row.id==='notes'?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>':habitIcon(h,18))+'</div>'+
-      '<div class="dl-act-name">'+esc(row.name)+'</div>'+
-      '<div><div class="dl-act-status '+(row.done?'done':'')+'">'+status+'</div>'+(row.meta?'<div class="dl-act-meta">'+esc(row.meta)+'</div>':'')+'</div>'+
-      '<div class="dl-act-chev">'+plus+'</div>'+
-    '</div>';
-  }).join('');
-  el.querySelectorAll('.dl-activity-row').forEach(row=>{
-    row.onclick=()=>handleDailyActivity(row.getAttribute('data-dl-id'));
-  });
-}
+  el.innerHTML='';
 
-function handleDailyActivity(id){
-  if(id==='notes'){
-    const note=document.getElementById('inpNota');
-    if(note)note.focus();
-    return;
-  }
-  const h=db.habitos.find(x=>x.id===id);
-  if(h)toggleHabito(h);
+  // Habit rows from db.habitos (single source of truth)
+  db.habitos.forEach(h=>{
+    const st=dia.habitos[h.id]||{feito:false,detalhe:''};
+    const row=document.createElement('div');
+    row.className='dl-activity-row';
+    row.innerHTML=
+      '<div class="dl-act-ico">'+habitIcon(h,18)+'</div>'+
+      '<div class="dl-act-name">'+esc(h.nome)+'</div>'+
+      '<div>'+
+        '<div class="dl-act-status'+(st.feito?' done':'')+'">'+( st.feito?'feito':'')+'</div>'+
+        (st.feito&&st.detalhe?'<div class="dl-act-meta">'+esc(st.detalhe)+'</div>':'')+
+      '</div>'+
+      '<div class="dl-act-chev">'+(st.feito?'✓':'+')+' </div>';
+    row.onclick=()=>toggleHabito(h);
+    el.appendChild(row);
+  });
+
+  // Notes row always at bottom
+  const dia2=getDia(diaAtual);
+  const noteRow=document.createElement('div');
+  noteRow.className='dl-activity-row';
+  noteRow.innerHTML=
+    '<div class="dl-act-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg></div>'+
+    '<div class="dl-act-name">Notas</div>'+
+    '<div><div class="dl-act-status'+(dia2.nota?' done':'')+'"></div>'+(dia2.nota?'<div class="dl-act-meta">Adicionado</div>':'<div class="dl-act-meta">Adicionar nota...</div>')+'</div>'+
+    '<div class="dl-act-chev">›</div>';
+  noteRow.onclick=()=>{const n=document.getElementById('inpNota');if(n){n.focus();n.scrollIntoView({behavior:'smooth',block:'center'});}};
+  el.appendChild(noteRow);
 }
 
 /* ================= TREINOS ================= */
