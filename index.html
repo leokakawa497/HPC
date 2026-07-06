@@ -1100,6 +1100,19 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .sm-rec-ico-v2{width:36px;height:36px;border-radius:10px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sm-rec-lbl{flex:1;font-size:13.5px;font-weight:650}
 .sm-rec-chev{font-size:16px;color:var(--border)}
+/* Apple Health connect modal */
+.ah-status-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card2);border:1px solid var(--border);border-radius:14px;margin-bottom:12px}
+.ah-dot{width:10px;height:10px;border-radius:50%;background:var(--muted2);flex-shrink:0}
+.ah-dot.on{background:var(--green)}
+.ah-status-lbl{flex:1;font-size:13px;font-weight:600}
+.ah-status-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.ah-field{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12px;font-family:monospace;word-break:break-all;margin-bottom:8px;color:var(--text)}
+.ah-field-lbl{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ah-copy-btn{width:100%;padding:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;color:var(--text);margin-bottom:8px}
+.ah-copy-btn:active{opacity:.7}
+.ah-instructions{font-size:12px;color:var(--muted);line-height:1.6;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px}
+.ah-instructions b{color:var(--text)}
+.ah-revoke{color:var(--rose);background:none;border:none;font-size:12px;font-weight:700;cursor:pointer;padding:4px 0}
 /* compat legacy selectors kept for any remaining JS refs */
 .sm-gauge-row{display:none}.sm-score-num{display:none}.sm-score-lbl{display:none}.sm-score-status{display:none}.sm-sleep-row{display:none}.sm-sleep-dur{display:none}.sm-sleep-times{display:none}.sm-edit-btn{display:none}.sm-sec{display:none}.sm-stage{display:none}.sm-sname{display:none}.sm-sbar-bg{display:none}.sm-sbar{display:none}.sm-sdur{display:none}.sm-trend{display:none}.sm-trend-b{display:none}.sm-trend-lbl{display:none}.sm-rec{display:none}.sm-rec-ico{display:none}.sm-rec-b{display:none}.sm-rec-s{display:none}
 </style>
@@ -1610,12 +1623,12 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <span class="sdr-chev">›</span>
     </div>
     <!-- Apple Health -->
-    <div class="sync-device-row" onclick="toast('HealthKit requer app iOS nativo')">
+    <div class="sync-device-row" id="ahRow" onclick="abrirAppleHealthModal()">
       <div class="sdr-ico" style="background:var(--card2)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </div>
       <span class="sdr-lbl">Apple Health</span>
-      <span class="sdr-status"><span class="sdr-dot" style="background:var(--muted2)"></span><span style="color:var(--muted)">Requer iOS app</span></span>
+      <span class="sdr-status" id="ahRowStatus"><span class="sdr-dot" style="background:var(--muted2)"></span><span style="color:var(--muted)">Não conectado</span></span>
       <span class="sdr-chev">›</span>
     </div>
   </div>
@@ -1765,6 +1778,15 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
     <button class="btn btn-ghost" id="authMigrateBtn" style="display:none;color:var(--teal)" onclick="fecharModal('modalAuth');abrirMigracao()">Migrar dados para a nuvem →</button>
     <button class="btn btn-ghost" id="authLoadCloudBtn" style="display:none;color:var(--violet)" onclick="fecharModal('modalAuth');abrirModalCarregarNuvem()">Carregar dados da nuvem ↓</button>
     <button class="btn btn-ghost" onclick="fecharModal('modalAuth')">Fechar</button>
+  </div>
+</div>
+
+<!-- modal Apple Health -->
+<div class="modal-bg" id="modalAppleHealth">
+  <div class="modal">
+    <h3>Conectar Apple Health</h3>
+    <div id="ahModalBody" style="margin-top:12px"></div>
+    <button class="btn btn-ghost" onclick="fecharModal('modalAppleHealth')" style="margin-top:8px">Fechar</button>
   </div>
 </div>
 
@@ -2655,17 +2677,17 @@ function renderProfile(){
     {label:'Sono',val:sleepDays,max:7},
     {label:'Sequência',val:Math.min(calcStreak(),7),max:7}
   ];
-  // Body stats from health sync
-  const importedToday=healthSyncService.getDailyImportedMetrics(hojeISO());
-  const bodyWeight=importedToday&&importedToday.weight?importedToday.weight.toFixed(1).replace('.',','):'78,4';
-  const bodyFat=importedToday&&importedToday.bodyFat?(importedToday.bodyFat.toFixed(1).replace('.',',')+' %'):'14,2%';
-  const bodyHR=importedToday&&importedToday.restingHR?importedToday.restingHR:'52';
+  // Body stats — prefer health_daily_summaries (real data), fallback to health_metrics, then placeholder
+  const hs=getHealthSummary(hojeISO());
+  const hm2=getHealthMetrics(hojeISO());
+  const bwRaw=hs?.body_weight_kg??hm2?.weight_kg??null;
+  const hrRaw=hs?.resting_heart_rate??hm2?.resting_hr??null;
   const bwEl=document.getElementById('profBodyWeight');
   const bfEl=document.getElementById('profBodyFat');
   const hrEl=document.getElementById('profBodyHR');
-  if(bwEl)bwEl.textContent=bodyWeight;
-  if(bfEl)bfEl.textContent=bodyFat;
-  if(hrEl)hrEl.textContent=bodyHR;
+  if(bwEl)bwEl.textContent=bwRaw!=null?String(bwRaw).replace('.',','):'—';
+  if(bfEl)bfEl.textContent='—';
+  if(hrEl)hrEl.textContent=hrRaw!=null?hrRaw:'—';
   // Weekly goals — new layout matching screen 09
   const wg=document.getElementById('weeklyGoals');
   const trainIcon='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="9" width="3" height="6" rx="1"/><rect x="19" y="9" width="3" height="6" rx="1"/><rect x="5.5" y="7" width="2.5" height="10" rx="1"/><rect x="16" y="7" width="2.5" height="10" rx="1"/><line x1="8" y1="12" x2="16" y2="12"/></svg>';
@@ -3959,7 +3981,7 @@ async function criarContaComSenha(){
   const creds=authCreds();if(!creds)return;
   if(!creds.password||creds.password.length<6)return setAuthStatus('Use uma senha com pelo menos 6 caracteres.');
   setAuthStatus('Criando conta...');
-  const {data,error}=await supabaseClient.auth.signUp(creds);
+  const {data,error}=await supabaseClient.auth.signUp({...creds,options:{emailRedirectTo:location.origin+location.pathname}});
   if(error)return setAuthStatus(error.message);
   authUser=data.user||null;await garantirProfile();renderAuth();
   setAuthStatus(authUser?'Conta criada. Login ativo.':'Conta criada. Confira seu email para confirmar.');
@@ -4045,13 +4067,167 @@ function initSupabase(){
       renderAuth();
       if(authUser){
         Promise.all([carregarHabitIdMap(),carregarProgramaIdMap()]).then(processarPendencias);
-        loadRecentHealthMetrics().then(()=>{renderHoje();renderSyncBadge2();});
+        Promise.all([loadRecentHealthMetrics(),loadRecentHealthSummaries()]).then(()=>{renderHoje();renderSyncBadge2();});
+        _loadAHConnection().then(()=>_renderAHModal());
       }
     });
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
 }
+
+/* ================= APPLE HEALTH CONNECT ================= */
+
+const AH_INGEST_URL='https://xlctlkayvthgdwsnkwej.supabase.co/functions/v1/rapid-processor';
+
+async function _sha256hex(text){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function _generateRawToken(){
+  const raw=crypto.getRandomValues(new Uint8Array(32));
+  return Array.from(raw).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+let _ahConn=null; // cached connection row
+
+async function _loadAHConnection(){
+  if(!supabaseClient||!authUser)return null;
+  const{data}=await supabaseClient
+    .from('health_connections')
+    .select('*')
+    .eq('user_id',authUser.id)
+    .eq('source','health_auto_export')
+    .eq('is_active',true)
+    .maybeSingle();
+  _ahConn=data||null;
+  return _ahConn;
+}
+
+async function abrirAppleHealthModal(){
+  if(!authUser){toast('Faça login primeiro');return;}
+  document.getElementById('modalAppleHealth').classList.add('open');
+  document.getElementById('ahModalBody').innerHTML='<div style="color:var(--muted);font-size:13px">Carregando...</div>';
+  await _loadAHConnection();
+  _renderAHModal();
+}
+
+function _renderAHModal(){
+  const el=document.getElementById('ahModalBody');if(!el)return;
+  // update row status in profile
+  const rowStatus=document.getElementById('ahRowStatus');
+  if(rowStatus){
+    if(_ahConn){
+      const d=new Date(_ahConn.last_sync_at||_ahConn.created_at);
+      const ts=_ahConn.last_sync_at?`Último sync ${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`:'Aguardando primeiro sync';
+      rowStatus.innerHTML=`<span class="sdr-dot" style="background:var(--green)"></span><span style="color:var(--green)">${ts}</span>`;
+    }else{
+      rowStatus.innerHTML=`<span class="sdr-dot" style="background:var(--muted2)"></span><span style="color:var(--muted)">Não conectado</span>`;
+    }
+  }
+  if(_ahConn){
+    const d=new Date(_ahConn.last_sync_at||_ahConn.created_at);
+    const syncText=_ahConn.last_sync_at
+      ?`${d.getDate()}/${d.getMonth()+1} às ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`
+      :'Aguardando primeiro sync';
+    el.innerHTML=`
+      <div class="ah-status-row">
+        <div class="ah-dot on"></div>
+        <div><div class="ah-status-lbl">Conectado</div><div class="ah-status-sub">Último sync: ${syncText}</div></div>
+      </div>
+      <div class="ah-field-lbl">URL do Webhook</div>
+      <div class="ah-field">${AH_INGEST_URL}</div>
+      <button class="ah-copy-btn" onclick="_copyAH('${AH_INGEST_URL}','URL copiada')">Copiar URL</button>
+      <div class="ah-instructions">
+        <b>Como usar no Health Auto Export:</b><br>
+        1. Abre o app → Export → Webhook<br>
+        2. Cola a URL acima<br>
+        3. Authentication: Header → <b>Authorization</b> → <b>Bearer SEU_TOKEN</b><br>
+        4. Metrics: Steps, Body Mass, Resting Heart Rate, Active Energy, Sleep Analysis<br>
+        5. Frequency: Daily, 08:00<br>
+        6. Toca em Export Now para testar
+      </div>
+      <button class="ah-revoke" onclick="_revokeAHConnection()">Revogar conexão</button>`;
+  }else{
+    el.innerHTML=`
+      <div class="ah-status-row">
+        <div class="ah-dot"></div>
+        <div><div class="ah-status-lbl">Não conectado</div><div class="ah-status-sub">Gere um token para conectar o Health Auto Export</div></div>
+      </div>
+      <div class="ah-instructions">
+        <b>O que vai acontecer:</b><br>
+        1. Você gera um token seguro aqui<br>
+        2. Cola no app <b>Health Auto Export</b><br>
+        3. O app envia peso, sono, passos e FC direto pro HPC todo dia
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin:0" onclick="_gerarAHToken()">Gerar token</button>`;
+  }
+}
+
+async function _gerarAHToken(){
+  const el=document.getElementById('ahModalBody');if(!el)return;
+  el.innerHTML='<div style="color:var(--muted);font-size:13px">Gerando token seguro...</div>';
+  const token=await _generateRawToken();
+  const hash=await _sha256hex(token);
+  const{error}=await supabaseClient
+    .from('health_connections')
+    .upsert({user_id:authUser.id,source:'health_auto_export',ingest_token_hash:hash,is_active:true,updated_at:new Date().toISOString()},{onConflict:'user_id,source'});
+  if(error){el.innerHTML=`<div style="color:var(--rose);font-size:13px">Erro: ${error.message}</div>`;return;}
+  await _loadAHConnection();
+  el.innerHTML=`
+    <div style="background:var(--green-dim);border:1px solid rgba(16,185,129,.3);border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:13px;font-weight:700;color:var(--green)">
+      Token gerado! Copie agora — ele nao sera exibido novamente.
+    </div>
+    <div class="ah-field-lbl">URL do Webhook</div>
+    <div class="ah-field">${AH_INGEST_URL}</div>
+    <button class="ah-copy-btn" onclick="_copyAH('${AH_INGEST_URL}','URL copiada')">Copiar URL</button>
+    <div class="ah-field-lbl">Token</div>
+    <div class="ah-field" id="ahTokenDisplay">${token}</div>
+    <button class="ah-copy-btn" onclick="_copyAH('${token}','Token copiado')">Copiar token</button>
+    <div class="ah-instructions">
+      <b>Cole no Health Auto Export:</b><br>
+      Export → Webhook → Authorization: Header<br>
+      Chave: <b>Authorization</b> &nbsp; Valor: <b>Bearer [token]</b>
+    </div>
+    <button class="ah-revoke" onclick="_revokeAHConnection()">Revogar conexão</button>`;
+}
+
+async function _revokeAHConnection(){
+  if(!supabaseClient||!authUser)return;
+  await supabaseClient.from('health_connections')
+    .update({is_active:false,updated_at:new Date().toISOString()})
+    .eq('user_id',authUser.id).eq('source','health_auto_export');
+  _ahConn=null;
+  _renderAHModal();
+  toast('Conexão revogada');
+}
+
+function _copyAH(text,msg){
+  navigator.clipboard.writeText(text).then(()=>toast(msg)).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast(msg);
+  });
+}
+
+/* ===== HEALTH DAILY SUMMARIES — reads from new table ===== */
+let _healthSummaries={};
+
+async function loadRecentHealthSummaries(){
+  if(!supabaseClient||!authUser)return;
+  const today=hojeISO();
+  const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-6);
+  const from=weekAgo.toISOString().slice(0,10);
+  const{data}=await supabaseClient
+    .from('health_daily_summaries')
+    .select('*')
+    .eq('user_id',authUser.id)
+    .gte('summary_date',from)
+    .lte('summary_date',today)
+    .order('summary_date',{ascending:false});
+  if(data)data.forEach(r=>{_healthSummaries[r.summary_date]=r;});
+}
+
+function getHealthSummary(date){return _healthSummaries[date]||null;}
 
 /* ================= MIGRAÇÃO localStorage → Supabase ================= */
 function abrirMigracao(){
