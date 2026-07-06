@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v66"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v67"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -962,6 +962,91 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .grc-info{flex:1;min-width:0}
 .grc-name{font-size:13px;font-weight:750}
 .grc-fraction{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+/* ===== SIDEBAR (desktop) ===== */
+#sidebar{display:none;position:fixed;left:0;top:0;width:260px;height:100vh;background:var(--card);border-right:1px solid var(--border);flex-direction:column;z-index:200;box-shadow:1px 0 0 var(--border)}
+.sb-brand{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sb-logo-img{height:28px;width:auto;display:block;object-fit:contain;object-position:left}
+.sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.sbn{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--muted);font-size:14px;font-weight:650;text-align:left;transition:background .15s,color .15s}
+.sbn:hover{background:var(--card2);color:var(--text)}
+.sbn.active{background:var(--card2);color:var(--text);font-weight:750}
+.sbn-ico{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbn-ico svg{width:20px;height:20px;display:block;fill:currentColor}
+.sb-footer{padding:12px 10px 24px;border-top:1px solid var(--border)}
+.sb-user-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;cursor:pointer;transition:background .15s}
+.sb-user-row:hover{background:var(--card2)}
+.sb-ava-s{width:34px;height:34px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0}
+.sb-uname{font-size:13px;font-weight:750;line-height:1.2}
+.sb-urole{font-size:11px;color:var(--muted)}
+/* ===== WEEKLY PLANNER (desktop) ===== */
+.weekly-planner-desktop{display:none}
+.dt-sec-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--text)}
+.wk-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
+.wk-day{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 10px;min-height:160px;box-shadow:var(--shadow)}
+.wk-dname{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.wk-acts{display:flex;flex-direction:column;gap:6px}
+.wk-act{font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);color:var(--text)}
+.wk-act.bjj{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#4F46E5}
+.wk-act.gym{background:rgba(17,17,17,.06);border-color:rgba(17,17,17,.18)}
+.wk-act.cardio{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.25);color:#0369A1}
+.wk-act.recovery{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#15803D}
+.wk-rest{font-size:12px;color:var(--muted);font-weight:600}
+/* ===== DESKTOP MEDIA QUERY ===== */
+@media(min-width:1024px){
+  /* App shell */
+  body{padding-left:260px;padding-bottom:0}
+  #sidebar{display:flex}
+  nav{display:none !important}
+  .fab{display:none !important}
+  header{max-width:none;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:100}
+  main{max-width:none;padding:28px 40px 48px}
+  .tab{min-height:calc(100vh - 65px)}
+  .modal-bg{align-items:center;justify-content:center;padding:20px}
+  .modal{max-width:520px;border-radius:20px;max-height:88vh;overflow-y:auto}
+  /* Home desktop */
+  #t-hoje main{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start}
+  #t-hoje .greeting{grid-column:1/-1}
+  #t-hoje .score-card{grid-column:1/-1}
+  #t-hoje #prBannerSlot{grid-column:1/-1}
+  #t-hoje .quick-grid{grid-column:1;display:flex;flex-direction:column;gap:16px}
+  #t-hoje .qstats-row{grid-column:2}
+  #t-hoje .sync-bar{grid-column:2}
+  #t-hoje .daily-log-btn{grid-column:2}
+  #t-hoje #featuredWorkout{grid-column:1/-1}
+  .score-card{padding:20px 24px}
+  .sc-num{font-size:38px}
+  .qcard{padding:18px 20px}
+  /* Train desktop */
+  #t-treino main{display:grid;grid-template-columns:380px 1fr;gap:28px;align-items:start}
+  #t-treino .train-title{grid-column:1/-1}
+  #t-treino .train-filters{grid-column:1}
+  #t-treino #progScroll{grid-column:1}
+  #t-treino #sessaoArea{grid-column:1/-1}
+  #t-treino .weekly-planner-desktop{grid-column:2;grid-row:2/5;display:block}
+  /* Stats desktop: all panels visible simultaneously */
+  #t-stats main{display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start}
+  #t-stats .stats-view{display:block !important}
+  #t-stats .stats-back{display:none !important}
+  #sv-overview{grid-column:1;grid-row:1}
+  #sv-habitos{grid-column:2;grid-row:1}
+  #sv-tabela{grid-column:1/-1;grid-row:2;padding-top:8px;border-top:1px solid var(--border);margin-top:8px}
+  #t-stats .sv-more-link{display:none}
+  #statsTopCards{display:grid;grid-template-columns:repeat(3,1fr)}
+  /* Profile desktop */
+  #t-profile main{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start}
+  #t-profile .prof-card-v2{grid-column:1;grid-row:1}
+  #t-profile .prof-body-stats{grid-column:1;grid-row:2}
+  #t-profile #weeklyGoals{grid-column:2;grid-row:1/3}
+  #t-profile #profileXpCard{grid-column:1/-1}
+  #t-profile .sync-devices-section{grid-column:1/-1}
+  #t-profile .prof-data-section{grid-column:1/-1}
+  /* Tabela desktop columns */
+  .th-dt,.td-dt{display:table-cell !important}
+  #histTable table{font-size:13px}
+  #histTable td,#histTable th{padding:9px 12px;white-space:nowrap}
+  #histTable .td-notes{white-space:normal;max-width:280px;word-break:break-word}
+  .tabela-month-nav{font-size:15px}
+}
 /* Recovery & Sleep modal — screen-03 redesign */
 .sleep-modal-inner{padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
 .sm-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px}
@@ -1191,6 +1276,61 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   </div>
   <div class="prog-scroll" id="progScroll"></div>
   <div id="sessaoArea"></div>
+
+  <!-- Desktop weekly planner (hidden on mobile via CSS) -->
+  <div class="weekly-planner-desktop" id="weeklyPlannerDesktop">
+    <div class="dt-sec-title">Planejamento Semanal</div>
+    <div class="wk-grid">
+      <div class="wk-day">
+        <div class="wk-dname">Seg</div>
+        <div class="wk-acts">
+          <div class="wk-act bjj">BJJ</div>
+          <div class="wk-act gym">Gym</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Ter</div>
+        <div class="wk-acts">
+          <div class="wk-act">Pilates</div>
+          <div class="wk-act cardio">Cardio</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Qua</div>
+        <div class="wk-acts">
+          <div class="wk-act bjj">BJJ</div>
+          <div class="wk-act gym">Gym</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Qui</div>
+        <div class="wk-acts">
+          <div class="wk-act recovery">Recovery</div>
+          <div class="wk-act">Mobilidade</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Sex</div>
+        <div class="wk-acts">
+          <div class="wk-act bjj">BJJ</div>
+          <div class="wk-act gym">Gym</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Sáb</div>
+        <div class="wk-acts">
+          <div class="wk-act bjj">Rolas</div>
+          <div class="wk-act cardio">Cardio leve</div>
+        </div>
+      </div>
+      <div class="wk-day">
+        <div class="wk-dname">Dom</div>
+        <div class="wk-acts" style="padding-top:4px">
+          <span class="wk-rest">Descanso</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 </div>
 
@@ -1505,6 +1645,39 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
 <button class="fab" id="fabNovo" onclick="abrirNovoTreino()">+</button>
 
+<aside id="sidebar">
+  <div class="sb-brand">
+    <img src="./assets/hpc-wordmark.png" alt="HPC" class="sb-logo-img">
+  </div>
+  <div class="sb-nav">
+    <button id="sbn-hoje" class="sbn active" onclick="go('hoje',this)">
+      <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
+      <span>Home</span>
+    </button>
+    <button id="sbn-treino" class="sbn" onclick="go('treino',this)">
+      <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg></span>
+      <span>Train</span>
+    </button>
+    <button id="sbn-stats" class="sbn" onclick="go('stats',this)">
+      <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zm5.6-4.2h2.8V19h-2.8zm5.6 8h2.8V19h-2.8z"/></svg></span>
+      <span>Stats</span>
+    </button>
+    <button id="sbn-profile" class="sbn" onclick="go('profile',this)">
+      <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+      <span>Profile</span>
+    </button>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user-row" onclick="abrirAuth()">
+      <div class="sb-ava-s" id="sbAva">L</div>
+      <div>
+        <div class="sb-uname" id="sbName">Leonardo</div>
+        <div class="sb-urole">Atleta HPC</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
 <nav>
   <button class="active" onclick="go('hoje',this)">
     <span class="ico"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>Home
@@ -1723,6 +1896,8 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <div class="toast" id="toast"></div>
 
 <script>
+/* ================= FEATURE FLAGS ================= */
+const FEATURES={community:false};
 /* ================= ESTADO ================= */
 const DB_KEY='hpc_v3';
 const REAL_DATA_VERSION='hpc-real-2023-2026-v1';
@@ -3398,6 +3573,13 @@ function renderStats(){
 }
 
 function goStatsView(v){
+  if(window.innerWidth>=1024){
+    // desktop: all panels visible, just scroll to target
+    const target=document.getElementById('sv-'+v);
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+    if(v==='tabela')renderTabelaSummary();
+    return;
+  }
   document.querySelectorAll('#t-stats .stats-view').forEach(el=>el.classList.remove('sv-active'));
   const target=document.getElementById('sv-'+v);
   if(target){target.classList.add('sv-active');target.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -3428,27 +3610,55 @@ function renderHistTable(){
   if(mesLblT)mesLblT.textContent=mesStr;
   const nDias=new Date(y,m,0).getDate();
   const hoje=hojeISO();
-  let ths='<th>Data</th><th>Sono</th>';
+  // Desktop-only headers marked with class th-dt
+  let ths='<th>Data</th><th>Sono</th>'
+    +'<th class="th-dt" style="display:none">Dormiu</th>'
+    +'<th class="th-dt" style="display:none">Acordou</th>';
   db.habitos.forEach(h=>ths+='<th>'+esc(h.nome)+'</th>');
+  ths+='<th class="th-dt" style="display:none">Peso</th>'
+    +'<th class="th-dt" style="display:none">Gordura%</th>'
+    +'<th class="th-dt" style="display:none">FC rep.</th>'
+    +'<th class="th-dt" style="display:none">Passos</th>'
+    +'<th class="th-dt" style="display:none" style="min-width:200px">Notas</th>';
   let rows='';
   for(let d=1;d<=nDias;d++){
     const iso=y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     if(iso>hoje)break;
     const dt=parseISODate(iso);
     const dia=db.dias[iso];
+    const imp=healthSyncService.getDailyImportedMetrics(iso);
     const cls=(dt.getDay()===0||dt.getDay()===6?'weekend':'')+(iso===hoje?' istoday':'');
     let tds='<td class="dcol">'+DIAS_PT[dt.getDay()].slice(0,3)+' '+formatShortDateBR(iso)+'</td>';
     if(dia){
       const mm=calcSono(dia.sono.dormiu,dia.sono.acordou);
       tds+=mm!==null?'<td><span class="cell-sleep '+corSono(mm)+'">'+fmtMins(mm)+'</span></td>':'<td class="cell-empty">—</td>';
+      tds+='<td class="td-dt" style="display:none">'+(dia.sono.dormiu||'<span class="cell-empty">—</span>')+'</td>';
+      tds+='<td class="td-dt" style="display:none">'+(dia.sono.acordou||'<span class="cell-empty">—</span>')+'</td>';
       db.habitos.forEach(h=>{
         const st=dia.habitos[h.id];
-        if(st&&st.feito)tds+=st.detalhe?'<td><span class="cell-detail">'+esc(st.detalhe)+'</span></td>':'<td class="cell-done">Sim</td>';
+        if(st&&st.feito)tds+=st.detalhe?'<td><span class="cell-detail">'+esc(st.detalhe)+'</span></td>':'<td class="cell-done">•</td>';
         else tds+='<td class="cell-empty">·</td>';
       });
+      const peso=imp&&imp.weight?imp.weight.toFixed(1).replace('.',','):'—';
+      const gord=imp&&imp.bodyFat?imp.bodyFat.toFixed(1)+'%':'—';
+      const fc=imp&&imp.restingHR?imp.restingHR:'—';
+      const passos=imp&&imp.steps?imp.steps.toLocaleString('pt-BR'):'—';
+      const nota=dia.nota?esc(dia.nota):'<span class="cell-empty">—</span>';
+      tds+='<td class="td-dt" style="display:none">'+peso+'</td>';
+      tds+='<td class="td-dt" style="display:none">'+gord+'</td>';
+      tds+='<td class="td-dt" style="display:none">'+fc+'</td>';
+      tds+='<td class="td-dt" style="display:none">'+passos+'</td>';
+      tds+='<td class="td-dt td-notes" style="display:none">'+nota+'</td>';
     }else{
       tds+='<td class="cell-empty">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
       db.habitos.forEach(()=>tds+='<td class="cell-empty">·</td>');
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
+      tds+='<td class="td-dt cell-empty" style="display:none">—</td>';
     }
     rows+='<tr class="'+cls+'">'+tds+'</tr>';
   }
@@ -3482,8 +3692,7 @@ function addHabito(){
   toast('Atividade adicionada ✓');
 }
 function abrirCfg(){
-  const statsBtn=[...document.querySelectorAll('nav button')].find(b=>b.textContent.trim()==='Stats');
-  go('stats',statsBtn);
+  go('stats',null);
   setTimeout(()=>goStatsView('habitos'),80);
 }
 function renderTabelaSummary(){
@@ -3559,12 +3768,23 @@ function ativarTab(id){
   if(target)target.classList.add('active');
 }
 function go(t,btn){
+  if(t==='grupo'&&!FEATURES.community)return;
   ativarTab('t-'+t);
+  // sync bottom nav
   document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-  if(btn)btn.classList.add('active');
+  if(btn&&btn.closest('nav'))btn.classList.add('active');
+  // sync sidebar
+  document.querySelectorAll('.sbn').forEach(x=>x.classList.remove('active'));
+  const sbMap={hoje:'sbn-hoje',treino:'sbn-treino',stats:'sbn-stats',profile:'sbn-profile'};
+  const sbId=sbMap[t];
+  if(sbId){const el=document.getElementById(sbId);if(el)el.classList.add('active');}
+  // also activate bottom nav by index
+  const navMap={hoje:0,treino:1,stats:2,profile:3};
+  const navIdx=navMap[t];
+  if(navIdx!==undefined){const navBtns=document.querySelectorAll('nav button');if(navBtns[navIdx])navBtns[navIdx].classList.add('active');}
   document.getElementById('fabNovo').classList.remove('show');
   if(t==='treino')renderTreinos();
-  if(t==='grupo'){renderCommunityProgress();carregarFeedSocial();}
+  if(t==='grupo'&&FEATURES.community){renderCommunityProgress();carregarFeedSocial();}
   if(t==='stats')renderStats();
   if(t==='profile')renderProfile();
   window.scrollTo(0,0);
@@ -4640,7 +4860,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v66',
+  cacheVersion:'hpc-cache-v67',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
