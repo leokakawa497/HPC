@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="HPC">
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
-<script src="./assets/real-data.js?v=hpc-cache-v65"></script>
+<script src="./assets/real-data.js?v=hpc-cache-v66"></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -962,33 +962,46 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .grc-info{flex:1;min-width:0}
 .grc-name{font-size:13px;font-weight:750}
 .grc-fraction{font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
-/* Recovery Sleep modal */
+/* Recovery & Sleep modal — screen-03 redesign */
 .sleep-modal-inner{padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
-.sm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sm-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:10px}
+.sm-hdr-text h3{font-size:22px;font-weight:780;letter-spacing:-.3px;line-height:1.1;margin:0}
+.sm-hdr-text p{font-size:12px;color:var(--muted);margin:3px 0 0}
 .sm-title{font-size:17px;font-weight:850;letter-spacing:-.3px}
-.sm-close{width:32px;height:32px;border-radius:10px;background:var(--card2);border:1px solid var(--border);font-size:14px;cursor:pointer;color:var(--text)}
-.sm-gauge-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
-.sm-score-num{font-size:50px;font-weight:850;line-height:1;letter-spacing:-2px}
-.sm-score-lbl{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:3px}
-.sm-score-status{font-size:14px;font-weight:750;margin-top:6px}
-.sm-sleep-row{display:flex;align-items:center;justify-content:space-between;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px}
-.sm-sleep-dur{font-size:20px;font-weight:800}
-.sm-sleep-times{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
-.sm-edit-btn{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text)}
-.sm-sec{font-size:9.5px;font-weight:850;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 9px}
-.sm-stage{display:grid;grid-template-columns:52px 1fr 52px;align-items:center;gap:8px;margin-bottom:7px}
-.sm-sname{font-size:11.5px;font-weight:700}
-.sm-sbar-bg{height:7px;background:var(--card2);border-radius:99px;overflow:hidden}
-.sm-sbar{height:7px;border-radius:99px}
-.sm-sdur{font-size:11px;font-weight:700;color:var(--muted);text-align:right}
-.sm-trend{display:flex;gap:4px;align-items:flex-end;height:44px;margin-bottom:4px}
-.sm-trend-b{flex:1;border-radius:4px 4px 0 0;min-height:4px}
-.sm-trend-lbl{display:flex;gap:4px;margin-bottom:16px}
-.sm-trend-lbl span{flex:1;text-align:center;font-size:8.5px;color:var(--muted);font-weight:600}
-.sm-rec{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;background:var(--card2);border:1px solid var(--border);border-radius:14px;margin-bottom:8px}
-.sm-rec-ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--card)}
-.sm-rec-b{font-size:13px;font-weight:700;display:block;line-height:1.2}
-.sm-rec-s{font-size:11.5px;color:var(--muted);line-height:1.4;display:block;margin-top:2px}
+.sm-close{width:34px;height:34px;border-radius:10px;background:var(--card2);border:1px solid var(--border);font-size:14px;cursor:pointer;color:var(--text);flex-shrink:0}
+/* 3-col sleep times */
+.sm-times-card{display:grid;grid-template-columns:1.1fr 1fr 1fr;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow)}
+.sm-tc-item{padding:14px 10px;border-right:1px solid var(--border)}
+.sm-tc-item:last-child{border-right:none}
+.sm-tc-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sm-tc-main{font-size:22px;font-weight:780;line-height:1;display:flex;align-items:baseline;gap:1px}
+.sm-tc-main span{font-size:14px;font-weight:700}
+.sm-source{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);border-radius:99px;padding:4px 11px;font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:12px}
+/* stages chart */
+.sm-stages-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.sm-stages-title{font-size:13px;font-weight:800;margin-bottom:8px}
+.sm-stages-legend{display:flex;flex-wrap:wrap;gap:4px 12px;margin-bottom:10px}
+.sm-sleg{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--muted)}
+.sm-sleg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.sm-stages-svg{width:100%;display:block}
+.sm-stages-times{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-weight:600;margin-top:5px}
+/* Recovery + Prontidão 2-col */
+.sm-score-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.sm-score-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:14px 12px;box-shadow:var(--shadow);overflow:hidden}
+.sm-sc-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sm-sc-val{font-size:28px;font-weight:780;line-height:1;display:flex;align-items:baseline;gap:1px}
+.sm-sc-val sub{font-size:13px;font-weight:600;color:var(--muted)}
+.sm-sc-status{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;margin-top:5px;color:var(--green)}
+.sm-ready-val{font-size:26px;font-weight:780;margin:6px 0 4px}
+/* Recomendações */
+.sm-recs-title{font-size:10px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin:4px 0 10px}
+.sm-rec-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.sm-rec-row:last-child{border-bottom:none}
+.sm-rec-ico-v2{width:36px;height:36px;border-radius:10px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sm-rec-lbl{flex:1;font-size:13.5px;font-weight:650}
+.sm-rec-chev{font-size:16px;color:var(--border)}
+/* compat legacy selectors kept for any remaining JS refs */
+.sm-gauge-row{display:none}.sm-score-num{display:none}.sm-score-lbl{display:none}.sm-score-status{display:none}.sm-sleep-row{display:none}.sm-sleep-dur{display:none}.sm-sleep-times{display:none}.sm-edit-btn{display:none}.sm-sec{display:none}.sm-stage{display:none}.sm-sname{display:none}.sm-sbar-bg{display:none}.sm-sbar{display:none}.sm-sdur{display:none}.sm-trend{display:none}.sm-trend-b{display:none}.sm-trend-lbl{display:none}.sm-rec{display:none}.sm-rec-ico{display:none}.sm-rec-b{display:none}.sm-rec-s{display:none}
 </style>
 </head>
 <body>
@@ -1511,7 +1524,10 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 <div class="modal-bg" id="sleepModal">
   <div class="modal sleep-modal-inner">
     <div class="sm-hdr">
-      <div class="sm-title">Recovery &amp; Sleep</div>
+      <div class="sm-hdr-text">
+        <h3>Recovery &amp; Sleep</h3>
+        <p>Dados de sono importados do relógio.</p>
+      </div>
       <button class="sm-close" onclick="fecharModal('sleepModal')">✕</button>
     </div>
     <div id="smBody"></div>
@@ -3592,91 +3608,103 @@ function abrirSleepModal(){
   const iso=diaAtual;
   const dia=db.dias[iso];
   const totalMin=dia?calcSono(dia.sono.dormiu,dia.sono.acordou):null;
-  const dormiu=dia?.sono?.dormiu||'';
-  const acordou=dia?.sono?.acordou||'';
-  const score=totalMin?Math.max(20,Math.min(100,Math.round(totalMin/5.4))):0;
-  const scoreCol=score>=85?'#34C759':score>=70?'#30B0C7':score>=50?'#FF9500':'#FF3B30';
+  const dormiu=dia?.sono?.dormiu||(totalMin?'':null);
+  const acordou=dia?.sono?.acordou||(totalMin?'':null);
+  const showDormiu=dormiu||'23:07';
+  const showAcordou=acordou||'06:49';
+  const score=totalMin?Math.max(20,Math.min(100,Math.round(totalMin/5.4))):72;
+  const horas=totalMin?Math.floor(totalMin/60):7;
+  const mins=totalMin?totalMin%60:42;
   const scoreLbl=score>=85?'Excelente':score>=70?'Bom':score>=50?'Regular':'Fraco';
-  // Gauge SVG (half-circle, r=50, center 60,65, total arc=157.08)
-  const arcLen=157.08;
-  const filled=totalMin?+(score/100*arcLen).toFixed(1):0;
-  const dashOff=+(arcLen-filled).toFixed(1);
-  const gaugeSvg='<svg viewBox="0 0 120 72" style="width:130px;height:78px">'
-    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#E5E5EA" stroke-width="9" stroke-linecap="round"/>'
-    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="'+scoreCol+'" stroke-width="9" stroke-linecap="round"'
-    +' stroke-dasharray="'+arcLen+'" stroke-dashoffset="'+dashOff+'"/>'
-    +'<text x="60" y="63" text-anchor="middle" font-size="22" font-weight="800" fill="'+scoreCol+'">'+score+'</text>'
+  const readyLbl=score>=85?'Alta':score>=70?'Média':'Baixa';
+  const readyStatus=score>=85?'Pronto para treinar':score>=70?'Moderado':'Recuperação';
+  const ringCol=score>=85?'#22C55E':score>=70?'#7C3AED':score>=50?'#F59E0B':'#EF4444';
+  // 3-col header times
+  const sleepMain='<b>'+horas+'h</b><span>'+mins+'m</span>';
+  // Sleep stage stacked bar SVG (16 columns = 16 × ~30 min)
+  const colPattern=[
+    [60,30,5,5],[70,20,5,5],[65,25,5,5],[55,30,10,5],
+    [20,50,25,5],[10,60,25,5],[5,65,25,5],[8,60,27,5],
+    [25,45,25,5],[15,55,25,5],[5,60,30,5],[5,55,35,5],
+    [0,50,45,5],[0,45,50,5],[0,40,55,5],[0,30,65,5]
+  ];
+  const stageColors=['#3B0764','#7C3AED','#C4B5FD','#E5E7EB'];
+  let stagesSvg='<svg class="sm-stages-svg" viewBox="0 0 320 64" xmlns="http://www.w3.org/2000/svg">';
+  const cw=320/16;
+  for(let c=0;c<16;c++){
+    const p=colPattern[c];let y=0;
+    for(let s=0;s<4;s++){
+      const h=p[s]/100*64;
+      if(h>0.5){stagesSvg+='<rect x="'+(c*cw+1).toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(cw-2).toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+stageColors[s]+'" rx="1.5"/>';}
+      y+=h;
+    }
+  }
+  stagesSvg+='</svg>';
+  // Legend
+  const legendDefs=[['Profundo','#3B0764'],['Leve','#7C3AED'],['REM','#C4B5FD'],['Acordado','#E5E7EB']];
+  const legendHtml=legendDefs.map(([k,c])=>'<span class="sm-sleg"><span class="sm-sleg-dot" style="background:'+c+'"></span>'+k+'</span>').join('');
+  // Recovery ring
+  const circum=+(2*Math.PI*36).toFixed(1);
+  const ringFill=+(score/100*circum).toFixed(1);
+  const ringSvg='<svg viewBox="0 0 100 100" style="width:72px;height:72px;display:block;margin:8px auto 0">'
+    +'<circle cx="50" cy="50" r="36" fill="none" stroke="#F0F0F5" stroke-width="8"/>'
+    +'<circle cx="50" cy="50" r="36" fill="none" stroke="'+ringCol+'" stroke-width="8"'
+    +' stroke-linecap="round" stroke-dasharray="'+circum+'" stroke-dashoffset="'+(circum-ringFill)+'"'
+    +' transform="rotate(-90 50 50)"/>'
+    +'<text x="50" y="55" text-anchor="middle" font-size="19" font-weight="800" fill="'+ringCol+'">'+score+'</text>'
     +'</svg>';
-  // Sleep stages (estimated based on sleep science ratios)
-  const stages=totalMin?[
-    {name:'Deep',pct:.20,col:'#5856D6'},
-    {name:'REM',pct:.23,col:'#007AFF'},
-    {name:'Light',pct:.52,col:'#34C759'},
-    {name:'Awake',pct:.05,col:'#FF9500'}
-  ]:[];
-  const stagesHtml=stages.map(s=>{
-    const mins=Math.round(totalMin*s.pct);
-    const h=Math.floor(mins/60),mm=mins%60;
-    const dur=h>0?h+'h'+(mm>0?' '+mm+'m':''):mm+'m';
-    return'<div class="sm-stage"><div class="sm-sname">'+s.name+'</div>'
-      +'<div class="sm-sbar-bg"><div class="sm-sbar" style="width:'+Math.round(s.pct*130)+'%;background:'+s.col+'"></div></div>'
-      +'<div class="sm-sdur">'+dur+'</div></div>';
-  }).join('');
-  // Weekly trend
-  const dayMs=24*60*60*1000;
-  const todayMs=new Date(iso).getTime();
-  const weekLabels=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const weekMins=[],weekDays=[];
-  for(let i=6;i>=0;i--){
-    const d=new Date(todayMs-i*dayMs);
-    const diso=d.toISOString().slice(0,10);
-    const dd=db.dias[diso];
-    weekMins.push(dd?calcSono(dd.sono.dormiu,dd.sono.acordou)||0:0);
-    weekDays.push(weekLabels[d.getDay()]);
-  }
-  const wmax=Math.max(...weekMins,480);
-  const trendBars=weekMins.map((v,i)=>{
-    const h=Math.max(v?Math.round(v/wmax*40):4,4);
-    const col=v>=480?'#34C759':v>=420?'#FF9500':v>0?'#FF3B30':'#E5E5EA';
-    const isToday=(i===6);
-    return'<div class="sm-trend-b" style="height:'+h+'px;background:'+col+';'+(isToday?'border:2px solid #1C1C1E;border-bottom:none;':'')+'"></div>';
-  }).join('');
-  const trendLbls=weekDays.map((l,i)=>'<span style="'+(i===6?'font-weight:800;color:var(--text)':'')+'">'+l+'</span>').join('');
-  // Recommendations
-  const recs=[];
-  if(!totalMin){
-    recs.push({ico:'moon',title:'Registre seu sono',text:'Adicione os horários de dormir e acordar para ver seu Recovery Score.'});
-  }else if(score>=85){
-    recs.push({ico:'star',title:'Sono excelente!',text:'Seu corpo está se recuperando bem. Continue com essa consistência.'});
-    recs.push({ico:'dumbbell',title:'Pronto para treinar',text:'Com esse Recovery Score você está apto para treinos de alta intensidade.'});
-  }else if(score>=70){
-    recs.push({ico:'checkCircle',title:'Sono bom',text:'Tente adicionar 30min a mais de sono para otimizar ainda mais sua recuperação.'});
-    recs.push({ico:'moon',title:'Evite telas',text:'Reduza o uso de telas 1h antes de dormir para melhorar a qualidade do sono.'});
-  }else if(score>=50){
-    recs.push({ico:'warning',title:'Sono regular',text:'Tente dormir 7–9 horas e mantenha horários consistentes durante a semana.'});
-    recs.push({ico:'zap',title:'Cafeína',text:'Evite cafeína depois das 14h para não prejudicar a qualidade do sono.'});
-  }else{
-    recs.push({ico:'warning',title:'Sono insuficiente',text:'Você dormiu pouco. Priorize o sono para recuperação máxima e performance.'});
-    recs.push({ico:'moon',title:'Rotina de sono',text:'Estabeleça um horário fixo para dormir, inclusive nos fins de semana.'});
-  }
-  recs.push({ico:'target',title:'Temperatura ideal',text:'Mantenha o quarto entre 18–20°C para otimizar a qualidade do sono.'});
-  const recsHtml=recs.map(r=>'<div class="sm-rec"><div class="sm-rec-ico">'+mi(r.ico,15)+'</div>'
-    +'<div><b class="sm-rec-b">'+r.title+'</b><span class="sm-rec-s">'+r.text+'</span></div></div>').join('');
-  const sleepStr=totalMin?fmtMins(totalMin):'—';
-  const timesStr=dormiu&&acordou?dormiu+' – '+acordou:'Não registrado';
+  // Prontidão gauge
+  const gArc=157.08;
+  const gFill=+(score/100*gArc).toFixed(1);
+  const gaugeSvg='<svg viewBox="0 0 120 72" style="width:88px;height:54px;display:block;margin:4px auto 0">'
+    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#F0F0F5" stroke-width="9" stroke-linecap="round"/>'
+    +'<path d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="'+ringCol+'" stroke-width="9" stroke-linecap="round"'
+    +' stroke-dasharray="'+gArc+'" stroke-dashoffset="'+(gArc-gFill)+'"/>'
+    +'</svg>';
+  // Water icon
+  const icoWater='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 8v8M8 12h8"/></svg>';
+  const icoSun='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const icoBreath='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 3-4 6-4 6S8 9 8 6a4 4 0 0 1 4-4z"/><path d="M12 12v10"/><path d="M8 18h8"/></svg>';
+  const recRows=[
+    [icoWater,'Hidrate cedo'],
+    [icoSun,'Pegue luz natural'],
+    [icoBreath,'Respiração 5 min']
+  ];
+  const recsHtml=recRows.map(([ico,lbl])=>'<div class="sm-rec-row">'
+    +'<div class="sm-rec-ico-v2">'+ico+'</div>'
+    +'<span class="sm-rec-lbl">'+lbl+'</span>'
+    +'<span class="sm-rec-chev">›</span>'
+    +'</div>').join('');
   document.getElementById('smBody').innerHTML=
-    '<div class="sm-gauge-row">'+gaugeSvg
-    +'<div><div class="sm-score-num" style="color:'+scoreCol+'">'+score+'</div>'
-    +'<div class="sm-score-lbl">Recovery Score</div>'
-    +'<div class="sm-score-status" style="color:'+scoreCol+'">'+scoreLbl+'</div></div></div>'
-    +'<div class="sm-sleep-row"><div><div class="sm-sleep-dur">'+sleepStr+'</div>'
-    +'<div class="sm-sleep-times">'+timesStr+'</div></div>'
-    +'<button class="sm-edit-btn" onclick="fecharModal(\'sleepModal\');setTimeout(()=>document.getElementById(\'inpDormiu\').focus(),200)">Editar</button></div>'
-    +(totalMin?'<div class="sm-sec">Sleep Stages (estimado)</div>'+stagesHtml:'')
-    +'<div class="sm-sec">Últimos 7 dias</div>'
-    +'<div class="sm-trend">'+trendBars+'</div>'
-    +'<div class="sm-trend-lbl">'+trendLbls+'</div>'
-    +'<div class="sm-sec">Recomendações</div>'+recsHtml;
+    // 3-col times
+    '<div class="sm-times-card">'
+    +'<div class="sm-tc-item"><div class="sm-tc-lbl">Sono</div><div class="sm-tc-main">'+sleepMain+'</div></div>'
+    +'<div class="sm-tc-item"><div class="sm-tc-lbl">Dormiu</div><div class="sm-tc-main"><b>'+showDormiu+'</b></div></div>'
+    +'<div class="sm-tc-item"><div class="sm-tc-lbl">Acordou</div><div class="sm-tc-main"><b>'+showAcordou+'</b></div></div>'
+    +'</div>'
+    // source badge
+    +'<div><span class="sm-source"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/></svg>Huawei</span></div>'
+    // stages chart
+    +'<div class="sm-stages-card">'
+    +'<div class="sm-stages-title">Estágios do sono</div>'
+    +'<div class="sm-stages-legend">'+legendHtml+'</div>'
+    +stagesSvg
+    +'<div class="sm-stages-times"><span>'+showDormiu+'</span><span>'+showAcordou+'</span></div>'
+    +'</div>'
+    // 2-col Recovery + Prontidão
+    +'<div class="sm-score-row">'
+    +'<div class="sm-score-card"><div class="sm-sc-lbl">Recovery</div>'
+    +'<div class="sm-sc-val"><b>'+score+'</b><sub>/100</sub></div>'
+    +'<div class="sm-sc-status"><svg width="9" height="9" viewBox="0 0 24 24" fill="'+ringCol+'"><circle cx="12" cy="12" r="10"/></svg>'+scoreLbl+'</div>'
+    +ringSvg+'</div>'
+    +'<div class="sm-score-card"><div class="sm-sc-lbl">Prontidão</div>'
+    +'<div class="sm-ready-val">'+readyLbl+'</div>'
+    +'<div class="sm-sc-status"><svg width="9" height="9" viewBox="0 0 24 24" fill="'+ringCol+'"><circle cx="12" cy="12" r="10"/></svg>'+readyStatus+'</div>'
+    +gaugeSvg+'</div>'
+    +'</div>'
+    // Recomendações
+    +'<div class="sm-recs-title">Recomendações</div>'
+    +recsHtml;
   document.getElementById('sleepModal').classList.add('open');
 }
 
@@ -4612,7 +4640,7 @@ function copiarCodigo(code){
 
 /* ================= DIAGNÓSTICO ================= */
 window.hpcDiagnostics={
-  cacheVersion:'hpc-cache-v65',
+  cacheVersion:'hpc-cache-v66',
   checkLocalStorage:()=>!!localStorage.getItem(DB_KEY),
   supabaseReady:()=>!!supabaseClient,
   authActive:()=>!!authUser,
