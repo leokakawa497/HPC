@@ -5,12 +5,12 @@
   worker deletes older HPC caches so users do not stay stuck on old files.
   This does not touch localStorage, where the user's app data is stored.
 */
-const CACHE_VERSION = 'hpc-cache-v68';
+const CACHE_VERSION = 'hpc-cache-v69';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './assets/real-data.js?v=hpc-cache-v68',
+  './assets/real-data.js?v=hpc-cache-v69',
   './assets/supabase-config.js',
   './assets/supabase.js',
   './assets/hpc-logo.png',

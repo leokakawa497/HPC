@@ -992,6 +992,30 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .wk-act.cardio{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.25);color:#0369A1}
 .wk-act.recovery{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#15803D}
 .wk-rest{font-size:12px;color:var(--muted);font-weight:600}
+/* ===== TABLET MEDIA QUERY (768-1023px) ===== */
+@media(min-width:768px) and (max-width:1023px){
+  main{max-width:720px;margin:0 auto;padding:20px 24px 80px}
+  header{padding:12px 24px}
+  /* Home tablet: 2-col quick cards */
+  #t-hoje .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  #t-hoje .qstats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  /* Stats tablet: overview + habitos side by side */
+  #t-stats main{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+  #t-stats .stats-view{display:block !important}
+  #t-stats .stats-back{display:none !important}
+  #sv-overview{grid-column:1}
+  #sv-habitos{grid-column:2}
+  #sv-tabela{grid-column:1/-1}
+  #statsTopCards{display:grid;grid-template-columns:repeat(3,1fr)}
+  /* Train tablet */
+  #t-treino .prog-scroll{display:grid;grid-template-columns:1fr 1fr;overflow-x:unset;gap:12px}
+  .prog-scroll::-webkit-scrollbar{display:block}
+  /* Profile tablet */
+  #t-profile main{display:grid;grid-template-columns:260px 1fr;gap:20px;align-items:start}
+  #t-profile .prof-card-v2{grid-column:1}
+  #t-profile .prof-body-stats{grid-column:1}
+  #t-profile #weeklyGoals{grid-column:2;grid-row:1/3}
+}
 /* ===== DESKTOP MEDIA QUERY ===== */
 @media(min-width:1024px){
   /* App shell */
@@ -1000,7 +1024,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   nav{display:none !important}
   .fab{display:none !important}
   header{max-width:none;padding:16px 40px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:100}
-  main{max-width:none;padding:28px 40px 48px}
+  main{max-width:1180px;margin:0 auto;padding:28px 40px 48px}
   .tab{min-height:calc(100vh - 65px)}
   .modal-bg{align-items:center;justify-content:center;padding:20px}
   .modal{max-width:520px;border-radius:20px;max-height:88vh;overflow-y:auto}
@@ -1047,6 +1071,19 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   #histTable td,#histTable th{padding:9px 12px;white-space:nowrap}
   #histTable .td-notes{white-space:normal;max-width:280px;word-break:break-word}
   .tabela-month-nav{font-size:15px}
+  /* Daily log desktop: 2-col form */
+  #t-log main{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;align-items:start;padding-top:12px}
+  #t-log .dl-head{grid-column:1/-1;margin-bottom:4px}
+  #t-log .datenav{grid-column:1/-1}
+  #t-log .section-title:first-of-type{grid-column:1;margin-top:16px}
+  #t-log .sleep-card{grid-column:1}
+  #t-log .daily-weight-card{grid-column:1}
+  #t-log .section-title:nth-of-type(2){grid-column:2;margin-top:16px}
+  #t-log .chips{grid-column:2}
+  #t-log .dl-activity-list{grid-column:2}
+  #t-log .section-title:last-of-type{grid-column:1/-1}
+  #t-log .note-card{grid-column:1/-1}
+  #t-log .dl-save{grid-column:1/-1}
 }
 /* Recovery & Sleep modal — screen-03 redesign */
 .sleep-modal-inner{padding:20px 18px calc(28px + env(safe-area-inset-bottom))}
@@ -1653,11 +1690,11 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   <div class="sb-nav">
     <button id="sbn-hoje" class="sbn active" onclick="go('hoje',this)">
       <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></span>
-      <span>Home</span>
+      <span>Início</span>
     </button>
     <button id="sbn-treino" class="sbn" onclick="go('treino',this)">
       <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg></span>
-      <span>Train</span>
+      <span>Treinos</span>
     </button>
     <button id="sbn-stats" class="sbn" onclick="go('stats',this)">
       <span class="sbn-ico"><svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zm5.6-4.2h2.8V19h-2.8zm5.6 8h2.8V19h-2.8z"/></svg></span>
@@ -2583,7 +2620,7 @@ function renderHabitStreaks(){
     return '<div class="habit-streak-item">'+
       '<div class="hsi-ico">'+habitIcon(h,18)+'</div>'+
       '<div class="hsi-body"><div class="hsi-name">'+esc(h.nome)+'</div><div class="hsi-dots-row">'+dots+'</div></div>'+
-      '<div class="hsi-stats"><div class="hsi-streak-num">'+streak+'</div><div class="hsi-streak-lbl">day streak</div>'+
+      '<div class="hsi-stats"><div class="hsi-streak-num">'+streak+'</div><div class="hsi-streak-lbl">dias</div>'+
       '<div class="hsi-week-pct'+(pct>=70?' good':'')+'">'+pct+'%<br><span style="font-size:9px;color:var(--muted)">na semana</span></div></div>'+
       '<span class="hsi-chev">›</span></div>';
   }).join('');
@@ -2606,7 +2643,7 @@ function renderHabitSummary(last7){
     }
   });
   scoreEl.textContent=weeklyScore;
-  document.getElementById('hsScoreSub').textContent=activeDays+' of 7 days';
+  document.getElementById('hsScoreSub').textContent=activeDays+' de 7 dias';
   document.getElementById('hsCurStreak').textContent=calcStreak();
   document.getElementById('hsLongStreak').textContent=Math.max(longest,calcStreak());
 }
@@ -3441,7 +3478,7 @@ function renderStats(){
   // --- star for PRs ---
   const prCount=prsMes.length;
   const starPath='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
-  const prStar='<div style="width:58px;height:58px;border-radius:50%;background:var(--teal-dim);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="width:30px;height:30px;display:block"><path d="'+starPath+'" fill="none" stroke="'+(prCount>0?'#0EA5E9':'#C7C7CC')+'" stroke-width="1.8" stroke-linejoin="round"/></svg></div>';
+  const prStar='<div style="width:58px;height:58px;border-radius:50%;background:var(--amber-dim);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="width:30px;height:30px;display:block"><path d="'+starPath+'" fill="none" stroke="'+(prCount>0?'var(--amber)':'#C7C7CC')+'" stroke-width="1.8" stroke-linejoin="round"/></svg></div>';
   const ig=document.getElementById('insightGrid');
   if(ig){
     ig.innerHTML=
@@ -3452,7 +3489,7 @@ function renderStats(){
   }
   const aic=document.getElementById('aiInsightCard');
   if(aic&&frase){
-    aic.innerHTML='<div class="ai-card"><div class="ai-card-hdr"><span><b style="color:var(--teal)">✦</b>Insights para você</span><span class="ai-badge">Personalizado</span></div>'+
+    aic.innerHTML='<div class="ai-card"><div class="ai-card-hdr"><span><b style="color:var(--violet)">✦</b>Insights para você</span><span class="ai-badge">Personalizado</span></div>'+
       (c>0?'<div class="ai-row"><div class="ai-ico green">↗</div><div class="ai-text"><b>Você está construindo consistência.</b><span>Sono médio de '+fmtMins(Math.round(soma/c))+' e '+sessoesMes+' sessões este mês.</span></div></div>':'')+
       (prsMes.length>0?'<div class="ai-row"><div class="ai-ico blue">★</div><div class="ai-text"><b>'+prsMes.length+' PR'+(prsMes.length>1?'s':'')+' batidos!</b><span>Você está ficando mais forte. Continue evoluindo as cargas.</span></div></div>':'')+
       (diasAtivos>0?'<div class="ai-row"><div class="ai-ico amber">ϟ</div><div class="ai-text"><b>'+diasAtivos+' dias ativos este mês.</b><span>Mantenha a frequência para maximizar seu progresso.</span></div></div>':'')+
@@ -3510,9 +3547,9 @@ function renderStats(){
   const habRatio=db.habitos.length>0?habTodayArr.length+'/'+db.habitos.length:'—';
   const tc2=document.getElementById('statsTopCards');
   if(tc2)tc2.innerHTML=
-    '<div class="stc"><div class="stc-lbl">Sono</div><div class="stc-val">'+sleepPct+'<span class="unit">%</span></div><div class="stc-dot"><span class="qdot'+(sleepPct>=70?'':sleepPct>=50?' amber':' rose')+'"></span>Média mensal</div></div>'+
-    '<div class="stc"><div class="stc-lbl">Treinos</div><div class="stc-val">'+sessoesMes+'</div><div class="stc-dot"><span class="qdot"></span>Este mês</div></div>'+
-    '<div class="stc"><div class="stc-lbl">Hábitos</div><div class="stc-val">'+habRatio+'</div><div class="stc-dot"><span class="qdot'+(habTodayArr.length>=db.habitos.length&&db.habitos.length>0?'':' amber')+'"></span>Em dia</div></div>';
+    '<div class="stc"><div class="stc-lbl">Sono</div><div class="stc-val">'+(c>0?sleepPct+'<span class="unit">%</span>':'<span style="font-size:18px;color:var(--muted)">—</span>')+'</div><div class="stc-dot"><span class="qdot'+(c>0?(sleepPct>=70?'':sleepPct>=50?' amber':' rose'):' muted')+'"></span>'+(c>0?'Média mensal':'Sem registros')+'</div></div>'+
+    '<div class="stc"><div class="stc-lbl">Treinos</div><div class="stc-val">'+sessoesMes+'</div><div class="stc-dot"><span class="qdot'+(sessoesMes>0?'':' muted')+'"></span>'+(sessoesMes>0?'Este mês':'Nenhum ainda')+'</div></div>'+
+    '<div class="stc"><div class="stc-lbl">Hábitos</div><div class="stc-val">'+habRatio+'</div><div class="stc-dot"><span class="qdot'+(db.habitos.length===0?' muted':habTodayArr.length>=db.habitos.length?'':' amber')+'"></span>'+(db.habitos.length===0?'Configure hábitos':'Em dia')+'</div></div>';
   // --- Scatter: sono x score ---
   const scatterEl=document.getElementById('scatterSvg');
   if(scatterEl){
@@ -3542,8 +3579,9 @@ function renderStats(){
     }
     // scatter dots
     pts.forEach(p=>svg+='<circle cx="'+toSx(p.x)+'" cy="'+toSy(p.y)+'" r="4" fill="#8B5CF6" opacity=".65"/>');
-    if(!pts.length)svg+='<text x="140" y="65" text-anchor="middle" font-size="11" fill="#C7C7CC">Sem dados suficientes</text>';
     scatterEl.innerHTML=svg;
+    const chartCard=document.getElementById('statsChartCard');
+    if(chartCard)chartCard.style.display=pts.length?'':'none';
   }
   // --- Streak + Score semanal cards ---
   const streak=calcStreak();
