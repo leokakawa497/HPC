@@ -2338,6 +2338,10 @@ function formatTimeFromIso(iso){
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 function displaySleepForDate(iso){
+  const hs=getHealthSummary(iso);
+  if(hs&&hs.sleep_minutes!=null){
+    return{mins:hs.sleep_minutes,dormiu:hs.sleep_start||'',acordou:hs.sleep_end||'',imported:true};
+  }
   const imported=healthSyncService.getDailyImportedMetrics(iso);
   if(imported&&typeof imported.sleepTotal==='number'){
     return{mins:imported.sleepTotal,dormiu:imported.bedtime||'',acordou:imported.wakeTime||'',imported:true};
@@ -2427,6 +2431,7 @@ function scoreDoDia(iso){
   return Math.min(100,s);
 }
 function useHomePreview(iso){
+  if(getHealthSummary(iso))return false;
   const dia=db.dias&&db.dias[iso];
   if(!dia)return true;
   const hasSleep=!!(dia.sono&&dia.sono.dormiu&&dia.sono.acordou);
@@ -2518,8 +2523,9 @@ function renderQuickCards(){
         else{
           const dd=parseISODate(diaAtual);dd.setDate(dd.getDate()-i);
           const iso=dd.toISOString().slice(0,10);
-          const dObj=db.dias[iso];
-          m2=dObj?calcSono(dObj.sono.dormiu,dObj.sono.acordou):null;
+          const hs2=getHealthSummary(iso);
+          if(hs2&&hs2.sleep_minutes!=null)m2=hs2.sleep_minutes;
+          else{const dObj=db.dias[iso];m2=dObj?calcSono(dObj.sono.dormiu,dObj.sono.acordou):null;}
         }
         if(m2===null){bars+='<i class="e" style="height:18%"></i><i class="e" style="height:14%"></i>';}
         else{
@@ -2563,9 +2569,11 @@ function renderQuickCards(){
     return acc;
   },0);
   const metaPreview=(db.meta&&db.meta.demoDashboard)||{};
-  const kcal=imported?imported.activeCalories:((previewHome||db.demo)&&metaPreview.kcal?metaPreview.kcal:(previewHome?preview.kcal:(activeMinReal>0?Math.round(activeMinReal*8):0)));
-  const bpm=imported?imported.restingHeartRate:((previewHome||db.demo)&&metaPreview.restingHr?metaPreview.restingHr:(previewHome?preview.restingHr:null));
-  const steps=imported?imported.steps:((previewHome||db.demo)&&metaPreview.steps?metaPreview.steps:(previewHome?preview.steps:null));
+  const hsToday=getHealthSummary(diaAtual);
+  const imported2=healthSyncService.getDailyImportedMetrics(diaAtual);
+  const bpm=hsToday?.resting_heart_rate??imported2?.restingHeartRate??((previewHome||db.demo)&&metaPreview.restingHr?metaPreview.restingHr:(previewHome?preview.restingHr:null));
+  const steps=hsToday?.steps??imported2?.steps??((previewHome||db.demo)&&metaPreview.steps?metaPreview.steps:(previewHome?preview.steps:null));
+  const kcal=imported2?.activeCalories??((previewHome||db.demo)&&metaPreview.kcal?metaPreview.kcal:(previewHome?preview.kcal:(activeMinReal>0?Math.round(activeMinReal*8):0)));
   const kcalEl=document.getElementById('qsKcal');
   const bpmEl=document.getElementById('qsBpm');
   const stepsEl=document.getElementById('qsSteps');
@@ -2806,12 +2814,13 @@ function renderHoje(){
 
   // Real health metrics from Supabase (loaded async after login)
   const hm=getHealthMetrics(diaAtual);
+  const hsDl=getHealthSummary(diaAtual);
 
-  // Sleep: prefer Supabase health_metrics, fallback to manual input
-  const sleepMin=hm&&hm.sleep_min!=null?hm.sleep_min:calcSono(dia.sono.dormiu,dia.sono.acordou);
-  const sleepBed=hm&&hm.sleep_bed?hm.sleep_bed:dia.sono.dormiu||'';
-  const sleepWake=hm&&hm.sleep_wake?hm.sleep_wake:dia.sono.acordou||'';
-  const sleepSource=hm&&hm.sleep_min!=null?'Apple Health':'Manual';
+  // Sleep: health_daily_summaries > health_metrics > manual input
+  const sleepMin=hsDl?.sleep_minutes??( hm&&hm.sleep_min!=null?hm.sleep_min:calcSono(dia.sono.dormiu,dia.sono.acordou));
+  const sleepBed=hsDl?.sleep_start||(hm&&hm.sleep_bed?hm.sleep_bed:dia.sono.dormiu||'');
+  const sleepWake=hsDl?.sleep_end||(hm&&hm.sleep_wake?hm.sleep_wake:dia.sono.acordou||'');
+  const sleepSource=hsDl?.sleep_minutes!=null?'Apple Health':(hm&&hm.sleep_min!=null?'Apple Health':'Manual');
 
   // Populate time inputs with best available data
   document.getElementById('inpDormiu').value=sleepBed;
@@ -4497,8 +4506,8 @@ let _healthSummaries={};
 async function loadRecentHealthSummaries(){
   if(!supabaseClient||!authUser)return;
   const today=hojeISO();
-  const weekAgo=new Date();weekAgo.setDate(weekAgo.getDate()-6);
-  const from=weekAgo.toISOString().slice(0,10);
+  const from90=new Date();from90.setDate(from90.getDate()-89);
+  const from=from90.toISOString().slice(0,10);
   const{data}=await supabaseClient
     .from('health_daily_summaries')
     .select('*')
