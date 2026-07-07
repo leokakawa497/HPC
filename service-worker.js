@@ -5,7 +5,7 @@
   worker deletes older HPC caches so users do not stay stuck on old files.
   This does not touch localStorage, where the user's app data is stored.
 */
-const CACHE_VERSION = 'hpc-cache-v88';
+const CACHE_VERSION = 'hpc-cache-v89';
 const APP_SHELL = [
   './',
   './index.html',
@@ -96,12 +96,22 @@ const UI_POLISH_BOOTSTRAP = `
   }
 
   function prioritizeAppleHealthImport(){
+    var modal=document.getElementById('modalAppleHealth');
     var body=document.getElementById('ahModalBody');
-    if(!body||body.dataset.manualImportFirst==='1'||!body.textContent||body.textContent.indexOf('Carregando')>=0) return;
-    if(body.textContent.indexOf('Health Auto Export')<0) return;
-    body.dataset.manualImportFirst='1';
-    var original=body.innerHTML;
-    body.innerHTML='<div class="ah-status-row"><div class="ah-dot on" style="background:var(--teal)"></div><div><div class="ah-status-lbl">Importação manual Apple Health</div><div class="ah-status-sub">Fluxo gratuito atual: exportar ZIP/XML do app Saúde e importar aqui.</div></div></div><div class="ah-instructions"><b>Recomendado agora:</b><br>1. App Saúde → perfil → Exportar dados de saúde<br>2. Envie o ZIP/XML para o HPC<br>3. Revise o preview antes de salvar no Supabase</div><button class="btn btn-primary" style="width:100%;margin:12px 0 8px" onclick="fecharModal(\'modalAppleHealth\');abrirHealthImport()">Importar arquivo Apple Health</button><details style="margin-top:8px;color:var(--muted);font-size:12.5px"><summary style="cursor:pointer;font-weight:700;color:var(--muted)">Automação por webhook futuramente</summary><div style="margin-top:8px">'+original+'</div></details>';
+    if(!modal||modal.dataset.manualImportFirst==='1') return;
+    modal.dataset.manualImportFirst='1';
+    var importBtn=modal.querySelector('button[onclick*="abrirHealthImport"]');
+    if(importBtn){
+      importBtn.textContent='Importar arquivo Apple Health';
+      importBtn.classList.add('btn-primary');
+      importBtn.style.marginTop='12px';
+    }
+    if(body){
+      var note=document.createElement('div');
+      note.className='ah-instructions';
+      note.innerHTML='<b>Recomendado agora:</b><br>Exporte o ZIP/XML no app Saúde e importe aqui. O fluxo de webhook fica para depois.';
+      body.insertBefore(note,body.firstChild);
+    }
   }
 
   function patchRenderers(){
