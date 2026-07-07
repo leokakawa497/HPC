@@ -13,6 +13,7 @@ const STAGES = new Set([
   'HKCategoryValueSleepAnalysisAsleepDeep',
   'HKCategoryValueSleepAnalysisAsleepREM',
 ]);
+const AWAKE = 'HKCategoryValueSleepAnalysisAwake';
 
 // ── Find end of opening tag, respecting quoted attribute values ───────────────
 // Apple Health 'device' attribute contains literal '>' chars (unescaped HKDevice)
@@ -133,15 +134,23 @@ self.onmessage = function(e) {
 
       // ── Sleep ──────────────────────────────────────────────────────────────
       if (t === 'HKCategoryTypeIdentifierSleepAnalysis') {
-        if (!ASLEEP.has(a.value)) continue;
+        const isAwake = a.value === AWAKE;
+        if (!ASLEEP.has(a.value) && !isAwake) continue;
         const s = toUTC(a.startDate);
         const en = toUTC(a.endDate);
         if (!s || !en || en <= s) continue;
         const nd = nightDate(a.startDate);
-        if (!sleepNights[nd]) sleepNights[nd] = { all: [], stages: [] };
+        if (!sleepNights[nd]) sleepNights[nd] = { all: [], stages: [], deep: [], core: [], rem: [], awake: [] };
+        const night = sleepNights[nd];
         const interval = { s, e: en };
-        sleepNights[nd].all.push(interval);
-        if (STAGES.has(a.value)) sleepNights[nd].stages.push(interval);
+        if (isAwake) { night.awake.push(interval); continue; }
+        night.all.push(interval);
+        if (STAGES.has(a.value)) {
+          night.stages.push(interval);
+          if (a.value.endsWith('Deep')) night.deep.push(interval);
+          else if (a.value.endsWith('REM')) night.rem.push(interval);
+          else night.core.push(interval);
+        }
         continue;
       }
 
@@ -186,10 +195,39 @@ self.onmessage = function(e) {
 
       const allS = relevant.map(r => r.s);
       const allE = relevant.map(r => r.e);
+      const nightStart = Math.min(...allS);
+
+      const minsOf = arr => Math.round(
+        mergeIntervals(arr).reduce((sum, r) => sum + (r.e - r.s), 0) / 60000
+      );
+
+      // Stage timeline for the hypnogram:
+      // [offset_min_from_sleep_start, duration_min, stage]
+      const segs = [];
+      const pushSegs = (arr, code) => arr.forEach(r => {
+        const off = Math.round((r.s - nightStart) / 60000);
+        const dur = Math.round((r.e - r.s) / 60000);
+        if (dur > 0 && off >= -600) segs.push([Math.max(0, off), dur, code]);
+      });
+      pushSegs(data.deep, 'd');
+      pushSegs(data.core, 'c');
+      pushSegs(data.rem, 'r');
+      pushSegs(data.awake, 'w');
+      if (!segs.length) merged.forEach(r => segs.push([
+        Math.round((r.s - nightStart) / 60000),
+        Math.round((r.e - r.s) / 60000), 'c',
+      ]));
+      segs.sort((x, y2) => x[0] - y2[0]);
+
       sleepSummaries[date] = {
         sleep_minutes: totalMin,
-        sleep_start: fmtHHMM(Math.min(...allS)),
+        sleep_start: fmtHHMM(nightStart),
         sleep_end:   fmtHHMM(Math.max(...allE)),
+        sleep_deep_minutes:  data.deep.length  ? minsOf(data.deep)  : null,
+        sleep_core_minutes:  data.core.length  ? minsOf(data.core)  : null,
+        sleep_rem_minutes:   data.rem.length   ? minsOf(data.rem)   : null,
+        sleep_awake_minutes: data.awake.length ? minsOf(data.awake) : null,
+        sleep_segments: segs,
       };
     }
 
@@ -208,12 +246,17 @@ self.onmessage = function(e) {
       const sl = sleepSummaries[date] || {};
       summaries.push({
         date,
-        sleep_minutes:      sl.sleep_minutes      || null,
-        sleep_start:        sl.sleep_start        || null,
-        sleep_end:          sl.sleep_end          || null,
-        body_weight_kg:     weight[date]          || null,
-        steps:              steps[date]           || null,
-        resting_heart_rate: hr[date]              || null,
+        sleep_minutes:       sl.sleep_minutes       || null,
+        sleep_start:         sl.sleep_start         || null,
+        sleep_end:           sl.sleep_end           || null,
+        sleep_deep_minutes:  sl.sleep_deep_minutes  ?? null,
+        sleep_core_minutes:  sl.sleep_core_minutes  ?? null,
+        sleep_rem_minutes:   sl.sleep_rem_minutes   ?? null,
+        sleep_awake_minutes: sl.sleep_awake_minutes ?? null,
+        sleep_segments:      sl.sleep_segments      || null,
+        body_weight_kg:      weight[date]           || null,
+        steps:               steps[date]            || null,
+        resting_heart_rate:  hr[date]               || null,
       });
     }
 

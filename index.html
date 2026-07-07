@@ -93,6 +93,35 @@ header{padding:14px 16px 8px;display:flex;align-items:center;justify-content:spa
 .sleep-week i.e{background:var(--card2)}
 .sleep-hint{font-size:10px;color:var(--muted);margin-top:10px;text-align:center}
 
+/* sleep detail (full review) */
+.sd-head{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;gap:8px;margin-bottom:4px}
+.sd-head-c{text-align:center}
+.sd-nav{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:var(--card);font-size:20px;color:var(--text);cursor:pointer}
+.sd-nav:disabled{opacity:.3}
+.sd-sub{font-size:12px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+.sd-hero{display:flex;align-items:center;gap:16px;padding:14px 2px 12px}
+.sd-score{width:74px;height:74px;flex-shrink:0;position:relative}
+.sd-score svg{display:block}
+.sd-score-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sd-score-val b{font-size:22px;font-weight:800;line-height:1}
+.sd-score-val span{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+.sd-hero-main b{font-size:26px;font-weight:800;letter-spacing:-.3px}
+.sd-hero-main .sd-lbl{font-size:12.5px;font-weight:700;margin-top:2px}
+.sd-hero-main .sd-cmp{font-size:11px;color:var(--muted);margin-top:3px}
+.sd-hypno{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 12px 8px;margin-bottom:12px}
+.sd-hypno .sd-ct{font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.sd-hypno-times{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-variant-numeric:tabular-nums}
+.sd-stage{display:grid;grid-template-columns:10px 1fr auto;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--border)}
+.sd-stage:first-of-type{border-top:none}
+.sd-stage .sd-dot{width:10px;height:10px;border-radius:3px}
+.sd-stage .sd-sn{font-size:13px;font-weight:700}
+.sd-stage .sd-sr{font-size:10.5px;color:var(--muted);margin-top:1px}
+.sd-stage .sd-sv{font-size:13.5px;font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+.sd-stage .sd-sp{font-size:10.5px;color:var(--muted);text-align:right;margin-top:1px}
+.sd-stage-bar{grid-column:2/4;height:5px;border-radius:3px;background:var(--card2);overflow:hidden;margin-top:2px}
+.sd-stage-bar i{display:block;height:100%;border-radius:3px}
+.sd-empty{text-align:center;color:var(--muted);font-size:13px;padding:30px 10px}
+
 /* habit chips */
 .chips{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .chip{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:13px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;cursor:pointer;user-select:none;transition:border-color .2s}
@@ -1208,13 +1237,13 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 
   <!-- 2-col quick grid -->
   <div class="quick-grid">
-    <div class="qcard" onclick="abrirDailyLog('sleep')">
+    <div class="qcard" onclick="abrirSleepDetail(diaAtual)">
       <div class="qcard-hdr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Sono da noite</div>
       <div class="qcard-big" id="qSleepBig">—</div>
       <div class="qcard-st"><span class="qdot muted" id="qSleepDot"></span><span id="qSleepLabel">—</span></div>
       <div class="qcard-bars" id="qSleepBars"></div>
       <div class="qcard-time" id="qSleepTime"></div>
-      <div class="qcard-link">Ver recovery<span class="qlc">›</span></div>
+      <div class="qcard-link">Análise do sono<span class="qlc">›</span></div>
     </div>
     <div class="qcard" onclick="abrirDailyLog('habits')">
       <div class="qcard-hdr"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Hábitos</div>
@@ -1859,6 +1888,22 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       </div>
       <button class="btn btn-primary" style="width:100%;margin:0" onclick="fecharModal('modalHealthImport');himReset()">Fechar</button>
     </div>
+  </div>
+</div>
+
+<!-- modal sleep detail (full review) -->
+<div class="modal-bg" id="modalSleepDetail">
+  <div class="modal">
+    <div class="sd-head">
+      <button class="sd-nav" id="sdPrev" onclick="sdNav(-1)">‹</button>
+      <div class="sd-head-c">
+        <h3 id="sdDate" style="margin:0">Sono</h3>
+        <div class="sd-sub" id="sdTimes"></div>
+      </div>
+      <button class="sd-nav" id="sdNext" onclick="sdNav(1)">›</button>
+    </div>
+    <div id="sdBody"></div>
+    <button class="btn btn-ghost" onclick="fecharModal('modalSleepDetail')" style="margin-top:12px">Fechar</button>
   </div>
 </div>
 
@@ -4221,7 +4266,7 @@ async function himHandleFile(file) {
     himProgress(18, 'Iniciando parser...');
 
     // Send to Web Worker
-    const worker = new Worker('./assets/health-parser.js?v=hpc-cache-v83');
+    const worker = new Worker('./assets/health-parser.js?v=hpc-cache-v86');
     worker.postMessage({ buffer: xmlBuffer }, [xmlBuffer]);
 
     worker.onmessage = function(e) {
@@ -4337,17 +4382,22 @@ async function himConfirm() {
   const rows = _himSummaries
     .filter(s => s.date <= today)
     .map(s => ({
-      user_id:            authUser.id,
-      summary_date:       s.date,
-      source:             'apple_health_export',
-      sleep_minutes:      s.sleep_minutes,
-      sleep_start:        s.sleep_start,
-      sleep_end:          s.sleep_end,
-      body_weight_kg:     s.body_weight_kg,
-      steps:              s.steps,
-      resting_heart_rate: s.resting_heart_rate,
-      last_synced_at:     new Date().toISOString(),
-      updated_at:         new Date().toISOString(),
+      user_id:             authUser.id,
+      summary_date:        s.date,
+      source:              'apple_health_export',
+      sleep_minutes:       s.sleep_minutes,
+      sleep_start:         s.sleep_start,
+      sleep_end:           s.sleep_end,
+      sleep_deep_minutes:  s.sleep_deep_minutes ?? null,
+      sleep_core_minutes:  s.sleep_core_minutes ?? null,
+      sleep_rem_minutes:   s.sleep_rem_minutes ?? null,
+      sleep_awake_minutes: s.sleep_awake_minutes ?? null,
+      sleep_segments:      s.sleep_segments ?? null,
+      body_weight_kg:      s.body_weight_kg,
+      steps:               s.steps,
+      resting_heart_rate:  s.resting_heart_rate,
+      last_synced_at:      new Date().toISOString(),
+      updated_at:          new Date().toISOString(),
     }));
 
   let saved = 0;
@@ -4547,6 +4597,141 @@ function getSleepMins(iso){
   if(hs&&hs.sleep_minutes!=null)return hs.sleep_minutes;
   const dia=db.dias&&db.dias[iso];
   return dia?calcSono(dia.sono.dormiu,dia.sono.acordou):null;
+}
+
+/* ===== SLEEP DETAIL — full review (Huawei-style) ===== */
+let _sdDate=null;
+const SD_COLORS={d:'#5B21B6',c:'#8B5CF6',r:'#C4B5FD',w:'#D1D1D6'};
+const SD_NAMES={d:'Sono profundo',c:'Sono leve',r:'REM',w:'Acordado'};
+const SD_REF={d:'Ideal: 20–40%',c:'Ideal: 30–60%',r:'Ideal: 10–30%'};
+
+function sleepScore(hs){
+  const total=hs.sleep_minutes||0;
+  if(!total)return 0;
+  const durPts=Math.min(total/480,1)*50;
+  const deep=hs.sleep_deep_minutes,rem=hs.sleep_rem_minutes;
+  const deepPts=deep!=null?Math.min((deep/total)/0.20,1)*25:Math.min(total/480,1)*25;
+  const remPts=rem!=null?Math.min((rem/total)/0.15,1)*25:Math.min(total/480,1)*25;
+  return Math.round(durPts+deepPts+remPts);
+}
+function sdScoreLabel(sc){return sc>=85?'Excelente':sc>=70?'Bom':sc>=50?'Regular':'Insuficiente';}
+
+function sdDatesWithSleep(){
+  return Object.keys(_healthSummaries).filter(d=>_healthSummaries[d].sleep_minutes!=null).sort();
+}
+
+function abrirSleepDetail(dateISO){
+  let d=dateISO;
+  let hs=getHealthSummary(d);
+  if(!hs||hs.sleep_minutes==null){
+    // fall back to most recent night with data
+    const dates=sdDatesWithSleep();
+    if(!dates.length){abrirDailyLog('sleep');return;}
+    d=dates[dates.length-1];
+  }
+  _sdDate=d;
+  renderSleepDetail();
+  document.getElementById('modalSleepDetail').classList.add('open');
+}
+
+function sdNav(dir){
+  const dates=sdDatesWithSleep();
+  const ni=dates.indexOf(_sdDate)+dir;
+  if(ni<0||ni>=dates.length)return;
+  _sdDate=dates[ni];
+  renderSleepDetail();
+}
+
+function sdHypnoSvg(segs){
+  if(!Array.isArray(segs)||!segs.length)return '';
+  const span=Math.max(...segs.map(s=>s[0]+s[1]),1);
+  const W=320,H=104,BH=15;
+  const Y={w:4,r:30,c:56,d:82};
+  const x=v=>(v/span)*W;
+  let rects='';
+  // faint level guides
+  Object.values(Y).forEach(y=>{rects+='<line x1="0" y1="'+(y+BH/2)+'" x2="'+W+'" y2="'+(y+BH/2)+'" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,4"/>';});
+  segs.forEach(s=>{
+    const code=s[2],y=Y[code];
+    if(y===undefined)return;
+    const rx=x(s[0]),rw=Math.max(x(s[1]),1.5);
+    rects+='<rect x="'+rx.toFixed(1)+'" y="'+y+'" width="'+rw.toFixed(1)+'" height="'+BH+'" rx="2.5" fill="'+SD_COLORS[code]+'"/>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block">'+rects+'</svg>';
+}
+
+function renderSleepDetail(){
+  const hs=getHealthSummary(_sdDate);
+  if(!hs)return;
+  const dates=sdDatesWithSleep();
+  const idx=dates.indexOf(_sdDate);
+  const prevB=document.getElementById('sdPrev'),nextB=document.getElementById('sdNext');
+  if(prevB)prevB.disabled=idx<=0;
+  if(nextB)nextB.disabled=idx>=dates.length-1;
+
+  const dt=parseISODate(_sdDate);
+  document.getElementById('sdDate').textContent=DIAS_PT[dt.getDay()].charAt(0).toUpperCase()+DIAS_PT[dt.getDay()].slice(1,3)+' · '+formatShortDateBR(_sdDate);
+  document.getElementById('sdTimes').textContent=(hs.sleep_start&&hs.sleep_end)?hs.sleep_start+' — '+hs.sleep_end:'';
+
+  const total=hs.sleep_minutes||0;
+  const sc=sleepScore(hs);
+
+  // 30-day average for comparison
+  const last30=dates.slice(-30).map(d=>_healthSummaries[d].sleep_minutes).filter(v=>v!=null);
+  const avg30=last30.length?Math.round(last30.reduce((a,b)=>a+b,0)/last30.length):null;
+
+  // score ring
+  const circ=(2*Math.PI*30).toFixed(1);
+  const fill=(sc/100*circ).toFixed(1);
+  const hero=
+    '<div class="sd-hero">'+
+      '<div class="sd-score"><svg viewBox="0 0 74 74" width="74" height="74">'+
+        '<circle cx="37" cy="37" r="30" fill="none" stroke="var(--card2)" stroke-width="6"/>'+
+        '<circle cx="37" cy="37" r="30" fill="none" stroke="#8B5CF6" stroke-width="6" stroke-dasharray="'+fill+' '+circ+'" stroke-linecap="round" transform="rotate(-90 37 37)"/>'+
+      '</svg><div class="sd-score-val"><b>'+sc+'</b><span>Score</span></div></div>'+
+      '<div class="sd-hero-main"><b>'+fmtMins(total)+'</b>'+
+        '<div class="sd-lbl">'+sdScoreLabel(sc)+'</div>'+
+        (avg30!=null?'<div class="sd-cmp">Média 30 noites: '+fmtMins(avg30)+'</div>':'')+
+      '</div>'+
+    '</div>';
+
+  // hypnogram
+  const hypnoSvg=sdHypnoSvg(hs.sleep_segments);
+  const hypno=hypnoSvg?
+    '<div class="sd-hypno"><div class="sd-ct">Fases da noite</div>'+hypnoSvg+
+    '<div class="sd-hypno-times"><span>'+(hs.sleep_start||'')+'</span><span>'+(hs.sleep_end||'')+'</span></div></div>':'';
+
+  // stage rows
+  const stages=[
+    ['d',hs.sleep_deep_minutes],
+    ['c',hs.sleep_core_minutes],
+    ['r',hs.sleep_rem_minutes],
+  ].filter(s=>s[1]!=null);
+  let rows='';
+  stages.forEach(([code,mins])=>{
+    const pct=total?Math.round(mins/total*100):0;
+    rows+='<div class="sd-stage">'+
+      '<span class="sd-dot" style="background:'+SD_COLORS[code]+'"></span>'+
+      '<div><div class="sd-sn">'+SD_NAMES[code]+'</div><div class="sd-sr">'+(SD_REF[code]||'')+'</div></div>'+
+      '<div><div class="sd-sv">'+fmtMins(mins)+'</div><div class="sd-sp">'+pct+'%</div></div>'+
+      '<div class="sd-stage-bar"><i style="width:'+pct+'%;background:'+SD_COLORS[code]+'"></i></div>'+
+    '</div>';
+  });
+  // awake row: minutes + number of interruptions
+  const segs=Array.isArray(hs.sleep_segments)?hs.sleep_segments:[];
+  const wakes=segs.filter(s=>s[2]==='w').length;
+  if(hs.sleep_awake_minutes!=null||wakes>0){
+    rows+='<div class="sd-stage">'+
+      '<span class="sd-dot" style="background:'+SD_COLORS.w+'"></span>'+
+      '<div><div class="sd-sn">'+SD_NAMES.w+'</div><div class="sd-sr">'+(wakes?wakes+' despertar'+(wakes>1?'es':''):'')+'</div></div>'+
+      '<div><div class="sd-sv">'+(hs.sleep_awake_minutes!=null?fmtMins(hs.sleep_awake_minutes):'—')+'</div><div class="sd-sp"></div></div>'+
+    '</div>';
+  }
+
+  const noStages=!stages.length&&!hypnoSvg?
+    '<div class="sd-empty">Sem detalhe de fases para esta noite.<br>Reimporte o arquivo do Apple Health para ver profundo, leve e REM.</div>':'';
+
+  document.getElementById('sdBody').innerHTML=hero+hypno+rows+noStages;
 }
 
 /* ================= MIGRAÇÃO localStorage → Supabase ================= */
