@@ -4642,22 +4642,50 @@ function sdNav(dir){
   renderSleepDetail();
 }
 
-function sdHypnoSvg(segs){
-  if(!Array.isArray(segs)||!segs.length)return '';
-  const span=Math.max(...segs.map(s=>s[0]+s[1]),1);
-  const W=320,H=104,BH=15;
+function sdHypnoSvg(segsRaw){
+  if(!Array.isArray(segsRaw)||!segsRaw.length)return '';
+  // 1. Merge overlapping segments of the same stage (HUAWEI double-reports)
+  const byCode={};
+  segsRaw.forEach(s=>{
+    if(!SD_COLORS[s[2]])return;
+    (byCode[s[2]]=byCode[s[2]]||[]).push({s:s[0],e:s[0]+s[1]});
+  });
+  const segs=[];
+  Object.entries(byCode).forEach(([code,arr])=>{
+    arr.sort((a,b)=>a.s-b.s);
+    const merged=[];
+    arr.forEach(r=>{
+      const last=merged[merged.length-1];
+      if(last&&r.s<=last.e)last.e=Math.max(last.e,r.e);
+      else merged.push({s:r.s,e:r.e});
+    });
+    merged.forEach(r=>segs.push({s:r.s,e:r.e,c:code}));
+  });
+  segs.sort((a,b)=>a.s-b.s);
+  // 2. Close small gaps so the night reads as one continuous line
+  for(let i=1;i<segs.length;i++){
+    const gap=segs[i].s-segs[i-1].e;
+    if(gap>0&&gap<=5)segs[i-1].e=segs[i].s;
+  }
+  const span=Math.max(...segs.map(s=>s.e),1);
+  const W=320,H=104,BH=16;
   const Y={w:4,r:30,c:56,d:82};
   const x=v=>(v/span)*W;
-  let rects='';
-  // faint level guides
-  Object.values(Y).forEach(y=>{rects+='<line x1="0" y1="'+(y+BH/2)+'" x2="'+W+'" y2="'+(y+BH/2)+'" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,4"/>';});
+  let out='';
+  // 3. Transition connectors between consecutive stages (classic hypnogram steps)
+  for(let i=1;i<segs.length;i++){
+    const a=segs[i-1],b=segs[i];
+    if(b.s-a.e<=1&&a.c!==b.c){
+      const cx=x(b.s).toFixed(1);
+      out+='<line x1="'+cx+'" y1="'+(Y[a.c]+BH/2)+'" x2="'+cx+'" y2="'+(Y[b.c]+BH/2)+'" stroke="#DDD6FE" stroke-width="1.5"/>';
+    }
+  }
+  // 4. Stage bars — square joints for continuity
   segs.forEach(s=>{
-    const code=s[2],y=Y[code];
-    if(y===undefined)return;
-    const rx=x(s[0]),rw=Math.max(x(s[1]),1.5);
-    rects+='<rect x="'+rx.toFixed(1)+'" y="'+y+'" width="'+rw.toFixed(1)+'" height="'+BH+'" rx="2.5" fill="'+SD_COLORS[code]+'"/>';
+    const rx=x(s.s),rw=Math.max(x(s.e-s.s),2);
+    out+='<rect x="'+rx.toFixed(1)+'" y="'+Y[s.c]+'" width="'+rw.toFixed(1)+'" height="'+BH+'" rx="1.5" fill="'+SD_COLORS[s.c]+'"/>';
   });
-  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block">'+rects+'</svg>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block">'+out+'</svg>';
 }
 
 function renderSleepDetail(){
