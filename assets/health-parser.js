@@ -52,7 +52,13 @@ function localDate(str) {
 function toUTC(str) {
   if (!str) return null;
   try {
-    return new Date(str.replace(' ', 'T').replace(/([+-]\d{2})(\d{2})$/, '$1:$2')).getTime();
+    // "2026-06-30 21:30:00 -0300" → "2026-06-30T21:30:00-03:00"
+    const iso = str.replace(
+      /^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) ([+-]\d{2})(\d{2})$/,
+      '$1T$2$3:$4'
+    );
+    const t = new Date(iso).getTime();
+    return isNaN(t) ? null : t;
   } catch(e) { return null; }
 }
 function pad(n) { return String(n).padStart(2, '0'); }
