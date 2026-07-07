@@ -2536,7 +2536,7 @@ function renderQuickCards(){
       }
       qSleepBars.innerHTML=bars;
     }
-    if(qSleepTime&&imported)qSleepTime.textContent=sleepDisplay.dormiu+' – '+sleepDisplay.acordou;
+    if(qSleepTime&&sleepDisplay.imported)qSleepTime.textContent=sleepDisplay.dormiu+' – '+sleepDisplay.acordou;
     else if(qSleepTime&&previewHome)qSleepTime.textContent=preview.dormiu+' – '+preview.acordou;
     else if(qSleepTime&&sleepDisplay.dormiu&&sleepDisplay.acordou)qSleepTime.textContent=sleepDisplay.dormiu+' – '+sleepDisplay.acordou;
     else if(qSleepTime)qSleepTime.textContent='';
@@ -4371,10 +4371,14 @@ async function himConfirm() {
     saved += batch.length;
   }
 
-  // Reload health summaries into memory
-  await loadRecentHealthSummaries();
-  renderHoje();
-  if (document.getElementById('t-profile')?.classList.contains('active')) renderProfile();
+  // Reload health summaries into memory — render errors must never freeze the modal
+  try {
+    await loadRecentHealthSummaries();
+    renderHoje();
+    if (document.getElementById('t-profile')?.classList.contains('active')) renderProfile();
+  } catch(e) {
+    console.error('post-import render error', e);
+  }
 
   himShowStep(4);
   document.getElementById('himDoneTitle').textContent = 'Importação concluída';
