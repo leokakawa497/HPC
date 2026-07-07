@@ -4220,7 +4220,7 @@ async function himHandleFile(file) {
     himProgress(18, 'Iniciando parser...');
 
     // Send to Web Worker
-    const worker = new Worker('./assets/health-parser.js');
+    const worker = new Worker('./assets/health-parser.js?v=hpc-cache-v83');
     worker.postMessage({ buffer: xmlBuffer }, [xmlBuffer]);
 
     worker.onmessage = function(e) {
