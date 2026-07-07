@@ -3448,7 +3448,7 @@ function renderStats(){
 
   // sono
   let soma=0,c=0,verdes=0;
-  diasMes.forEach(([,d])=>{const mm=calcSono(d.sono.dormiu,d.sono.acordou);if(mm!==null){soma+=mm;c++;if(mm>=480)verdes++;}});
+  diasMes.forEach(([iso])=>{const mm=getSleepMins(iso);if(mm!==null){soma+=mm;c++;if(mm>=480)verdes++;}});
   // hábitos
   const habCount={};let diasAtivos=0;
   diasMes.forEach(([,d])=>{
@@ -3461,7 +3461,7 @@ function renderStats(){
   // per-day sleep array for sparkline
   const nDiasMes=new Date(y,m,0).getDate();
   const dailySleepArr=[];
-  for(let dayN=1;dayN<=nDiasMes;dayN++){const iso=prefix+'-'+String(dayN).padStart(2,'0');const dy=db.dias[iso];dailySleepArr.push(dy?calcSono(dy.sono.dormiu,dy.sono.acordou):null);}
+  for(let dayN=1;dayN<=nDiasMes;dayN++){const iso=prefix+'-'+String(dayN).padStart(2,'0');dailySleepArr.push(getSleepMins(iso));}
   // weekly session counts for bar chart
   const weekSess=[0,0,0,0,0];
   db.sessoes.filter(s=>s.data.startsWith(prefix)).forEach(s=>{const dayN=parseInt(s.data.slice(8));weekSess[Math.floor((dayN-1)/7)]++;});
@@ -3533,8 +3533,8 @@ function renderStats(){
   // charts: sono por semana + frequência
   let charts='';
   const semanas=[[],[],[],[],[],[]];
-  diasMes.forEach(([iso,d])=>{
-    const mm=calcSono(d.sono.dormiu,d.sono.acordou);
+  diasMes.forEach(([iso])=>{
+    const mm=getSleepMins(iso);
     if(mm!==null){const dd=parseInt(iso.slice(8));semanas[Math.floor((dd-1)/7)].push(mm);}
   });
   const medias=semanas.map(w=>w.length?Math.round(w.reduce((a,b)=>a+b)/w.length):0).filter((_,i)=>i<5);
@@ -3687,23 +3687,29 @@ function renderHistTable(){
     const dt=parseISODate(iso);
     const dia=db.dias[iso];
     const imp=healthSyncService.getDailyImportedMetrics(iso);
+    const hs=getHealthSummary(iso);
     const cls=(dt.getDay()===0||dt.getDay()===6?'weekend':'')+(iso===hoje?' istoday':'');
     let tds='<td class="dcol">'+DIAS_PT[dt.getDay()].slice(0,3)+' '+formatShortDateBR(iso)+'</td>';
-    if(dia){
-      const mm=calcSono(dia.sono.dormiu,dia.sono.acordou);
+    if(dia||hs){
+      const mm=getSleepMins(iso);
       tds+=mm!==null?'<td><span class="cell-sleep '+corSono(mm)+'">'+fmtMins(mm)+'</span></td>':'<td class="cell-empty">—</td>';
-      tds+='<td class="td-dt" style="display:none">'+(dia.sono.dormiu||'<span class="cell-empty">—</span>')+'</td>';
-      tds+='<td class="td-dt" style="display:none">'+(dia.sono.acordou||'<span class="cell-empty">—</span>')+'</td>';
+      const bedTime=hs?.sleep_start||(dia?.sono?.dormiu||'');
+      const wakeTime=hs?.sleep_end||(dia?.sono?.acordou||'');
+      tds+='<td class="td-dt" style="display:none">'+(bedTime||'<span class="cell-empty">—</span>')+'</td>';
+      tds+='<td class="td-dt" style="display:none">'+(wakeTime||'<span class="cell-empty">—</span>')+'</td>';
       db.habitos.forEach(h=>{
-        const st=dia.habitos[h.id];
+        const st=dia?.habitos?.[h.id];
         if(st&&st.feito)tds+=st.detalhe?'<td><span class="cell-detail">'+esc(st.detalhe)+'</span></td>':'<td class="cell-done">•</td>';
         else tds+='<td class="cell-empty">·</td>';
       });
-      const peso=imp&&imp.weight?imp.weight.toFixed(1).replace('.',','):'—';
+      const pesoV=hs?.body_weight_kg??imp?.weight;
+      const peso=pesoV!=null?pesoV.toFixed(1).replace('.',','):'—';
       const gord=imp&&imp.bodyFat?imp.bodyFat.toFixed(1)+'%':'—';
-      const fc=imp&&imp.restingHR?imp.restingHR:'—';
-      const passos=imp&&imp.steps?imp.steps.toLocaleString('pt-BR'):'—';
-      const nota=dia.nota?esc(dia.nota):'<span class="cell-empty">—</span>';
+      const fcV=hs?.resting_heart_rate??imp?.restingHR;
+      const fc=fcV!=null?fcV:'—';
+      const passosV=hs?.steps??imp?.steps;
+      const passos=passosV!=null?passosV.toLocaleString('pt-BR'):'—';
+      const nota=dia?.nota?esc(dia.nota):'<span class="cell-empty">—</span>';
       tds+='<td class="td-dt" style="display:none">'+peso+'</td>';
       tds+='<td class="td-dt" style="display:none">'+gord+'</td>';
       tds+='<td class="td-dt" style="display:none">'+fc+'</td>';
@@ -4519,6 +4525,13 @@ async function loadRecentHealthSummaries(){
 }
 
 function getHealthSummary(date){return _healthSummaries[date]||null;}
+// Sleep minutes for a date: health_daily_summaries > manual input
+function getSleepMins(iso){
+  const hs=getHealthSummary(iso);
+  if(hs&&hs.sleep_minutes!=null)return hs.sleep_minutes;
+  const dia=db.dias&&db.dias[iso];
+  return dia?calcSono(dia.sono.dormiu,dia.sono.acordou):null;
+}
 
 /* ================= MIGRAÇÃO localStorage → Supabase ================= */
 function abrirMigracao(){
