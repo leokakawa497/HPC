@@ -95,12 +95,14 @@ self.onmessage = function(e) {
     while (pos < len) {
       const rs = text.indexOf('<Record ', pos);
       if (rs === -1) break;
-      const re = text.indexOf('/>', rs);
+      // Use first '>' to end the opening tag — handles both self-closing <Record ... />
+      // and records with child elements <Record ...>\n  <MetadataEntry .../>\n</Record>
+      const re = text.indexOf('>', rs);
       if (re === -1) break;
 
-      const a = parseAttrs(text.slice(rs, re + 2));
+      const a = parseAttrs(text.slice(rs, re + 1));
       total++;
-      pos = re + 2;
+      pos = re + 1;
 
       if (total % 20000 === 0) {
         post(Math.round(15 + (pos / len) * 65), `Processando... ${total.toLocaleString()} registros`);
