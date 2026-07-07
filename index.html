@@ -1845,6 +1845,7 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
       <div style="font-size:11px;color:var(--muted);margin:8px 0 12px">
         Os dados serão salvos com source = <b>apple_health_export</b>. Dados manuais não serão afetados.
       </div>
+      <div id="himError" style="display:none;background:var(--rose-dim);color:var(--rose);border-radius:12px;padding:10px 12px;font-size:12.5px;font-weight:600;margin-bottom:10px"></div>
       <button class="btn btn-primary" style="width:100%;margin:0 0 8px" onclick="himConfirm()">Confirmar importação</button>
       <button class="btn btn-ghost" onclick="himReset()">Cancelar</button>
     </div>
@@ -4263,6 +4264,8 @@ function himProgress(pct, status) {
 
 function himShowPreview(stats, summaries) {
   himShowStep(3);
+  const errEl = document.getElementById('himError');
+  if (errEl) errEl.style.display = 'none';
 
   // Date range
   const rangeEl = document.getElementById('himRange');
@@ -4355,7 +4358,16 @@ async function himConfirm() {
     const { error } = await supabaseClient
       .from('health_daily_summaries')
       .upsert(batch, { onConflict: 'user_id,summary_date,source' });
-    if (error) { toast('Erro ao salvar: ' + error.message); himShowStep(3); return; }
+    if (error) {
+      himShowStep(3);
+      const errEl = document.getElementById('himError');
+      if (errEl) {
+        errEl.style.display = 'block';
+        errEl.textContent = 'Erro ao salvar no Supabase: ' + error.message;
+      }
+      toast('Erro ao salvar: ' + error.message);
+      return;
+    }
     saved += batch.length;
   }
 
