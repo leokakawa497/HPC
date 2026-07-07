@@ -14,6 +14,7 @@
 <script defer src="./assets/supabase-config.js"></script>
 <script defer src="./assets/supabase.js"></script>
 <script src="./assets/real-data.js?v=hpc-cache-v67"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
 <title>HPC — High Performance Club</title>
 <style>
 :root{
@@ -1113,6 +1114,28 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
 .ah-instructions{font-size:12px;color:var(--muted);line-height:1.6;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:12px}
 .ah-instructions b{color:var(--text)}
 .ah-revoke{color:var(--rose);background:none;border:none;font-size:12px;font-weight:700;cursor:pointer;padding:4px 0}
+/* Health import modal */
+.him-step{display:none}.him-step.active{display:block}
+.him-upload-box{border:2px dashed var(--border);border-radius:16px;padding:28px 16px;text-align:center;cursor:pointer;transition:border-color .2s}
+.him-upload-box:hover{border-color:var(--violet)}
+.him-upload-icon{font-size:32px;margin-bottom:8px}
+.him-upload-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.him-upload-sub{font-size:12px;color:var(--muted);line-height:1.5}
+.him-instructions{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+.him-instructions b{color:var(--text)}
+.him-progress-wrap{margin:16px 0}
+.him-progress-bar-bg{background:var(--card2);border-radius:99px;height:8px;overflow:hidden}
+.him-progress-bar{background:var(--violet);height:8px;border-radius:99px;transition:width .3s;width:0%}
+.him-progress-status{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+.him-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.him-stat{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.him-stat-val{font-size:22px;font-weight:800}
+.him-stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.him-range{font-size:12px;color:var(--muted);text-align:center;margin-bottom:12px}
+.him-sample{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.him-sample-date{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.him-sample-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
+.him-sample-row span:last-child{font-weight:700}
 /* compat legacy selectors kept for any remaining JS refs */
 .sm-gauge-row{display:none}.sm-score-num{display:none}.sm-score-lbl{display:none}.sm-score-status{display:none}.sm-sleep-row{display:none}.sm-sleep-dur{display:none}.sm-sleep-times{display:none}.sm-edit-btn{display:none}.sm-sec{display:none}.sm-stage{display:none}.sm-sname{display:none}.sm-sbar-bg{display:none}.sm-sbar{display:none}.sm-sdur{display:none}.sm-trend{display:none}.sm-trend-b{display:none}.sm-trend-lbl{display:none}.sm-rec{display:none}.sm-rec-ico{display:none}.sm-rec-b{display:none}.sm-rec-s{display:none}
 </style>
@@ -1781,12 +1804,70 @@ nav button{font-size:10px;font-weight:600;letter-spacing:.2px}
   </div>
 </div>
 
+<!-- modal import Apple Health XML -->
+<div class="modal-bg" id="modalHealthImport">
+  <div class="modal">
+    <h3>Importar Apple Health</h3>
+
+    <!-- Step 1: upload -->
+    <div class="him-step active" id="himStep1">
+      <div class="him-instructions">
+        <b>Como exportar do iPhone:</b><br>
+        1. Abre o app <b>Saúde</b><br>
+        2. Toca na foto de perfil (canto superior direito)<br>
+        3. Rola até o fim → <b>Exportar dados de saúde</b><br>
+        4. Confirma → aguarda gerar o ZIP<br>
+        5. Compartilha o ZIP aqui
+      </div>
+      <div class="him-upload-box" id="himDropZone" onclick="document.getElementById('himFileInput').click()" style="margin-top:12px">
+        <div class="him-upload-icon">🫀</div>
+        <div class="him-upload-title">Selecionar arquivo</div>
+        <div class="him-upload-sub">ZIP ou XML do Apple Health</div>
+      </div>
+      <input type="file" id="himFileInput" accept=".zip,.xml" style="display:none" onchange="himHandleFile(this.files[0])">
+      <button class="btn btn-ghost" onclick="fecharModal('modalHealthImport')" style="margin-top:8px">Fechar</button>
+    </div>
+
+    <!-- Step 2: processing -->
+    <div class="him-step" id="himStep2">
+      <div class="him-progress-wrap">
+        <div class="him-progress-bar-bg"><div class="him-progress-bar" id="himBar"></div></div>
+        <div class="him-progress-status" id="himStatus">Preparando...</div>
+      </div>
+    </div>
+
+    <!-- Step 3: preview -->
+    <div class="him-step" id="himStep3">
+      <div class="him-range" id="himRange"></div>
+      <div class="him-stats-grid" id="himStatsGrid"></div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin:8px 0 6px">Amostra — últimas noites</div>
+      <div id="himSamples"></div>
+      <div style="font-size:11px;color:var(--muted);margin:8px 0 12px">
+        Os dados serão salvos com source = <b>apple_health_export</b>. Dados manuais não serão afetados.
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin:0 0 8px" onclick="himConfirm()">Confirmar importação</button>
+      <button class="btn btn-ghost" onclick="himReset()">Cancelar</button>
+    </div>
+
+    <!-- Step 4: done -->
+    <div class="him-step" id="himStep4">
+      <div style="text-align:center;padding:16px 0">
+        <div style="font-size:40px;margin-bottom:8px">✓</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:4px" id="himDoneTitle">Importação concluída</div>
+        <div style="font-size:13px;color:var(--muted)" id="himDoneSub"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin:0" onclick="fecharModal('modalHealthImport');himReset()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- modal Apple Health -->
 <div class="modal-bg" id="modalAppleHealth">
   <div class="modal">
     <h3>Conectar Apple Health</h3>
     <div id="ahModalBody" style="margin-top:12px"></div>
-    <button class="btn btn-ghost" onclick="fecharModal('modalAppleHealth')" style="margin-top:8px">Fechar</button>
+    <button class="btn btn-ghost" style="width:100%;margin:8px 0 4px;border:1px solid var(--border)" onclick="fecharModal('modalAppleHealth');abrirHealthImport()">Importar arquivo do Apple Health</button>
+    <button class="btn btn-ghost" onclick="fecharModal('modalAppleHealth')" style="margin-top:4px">Fechar</button>
   </div>
 </div>
 
@@ -4074,6 +4155,207 @@ function initSupabase(){
   });
   refreshAuth();
   document.documentElement.dataset.supabase='ready';
+}
+
+/* ================= HEALTH XML IMPORT ================= */
+
+let _himSummaries = []; // parsed summaries waiting for confirmation
+
+function abrirHealthImport() {
+  if (!authUser) { toast('Faça login primeiro'); return; }
+  himReset();
+  document.getElementById('modalHealthImport').classList.add('open');
+}
+
+function himReset() {
+  _himSummaries = [];
+  document.getElementById('himFileInput').value = '';
+  himShowStep(1);
+  const bar = document.getElementById('himBar');
+  if (bar) bar.style.width = '0%';
+}
+
+function himShowStep(n) {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('himStep' + i);
+    if (el) el.className = 'him-step' + (i === n ? ' active' : '');
+  });
+}
+
+async function himHandleFile(file) {
+  if (!file) return;
+  himShowStep(2);
+  himProgress(5, 'Abrindo arquivo...');
+
+  try {
+    let xmlBuffer;
+
+    if (file.name.endsWith('.zip')) {
+      himProgress(10, 'Extraindo ZIP...');
+      const zip = await JSZip.loadAsync(file);
+      const xmlFile = zip.file(/export\.xml$/i)[0];
+      if (!xmlFile) throw new Error('Arquivo export.xml não encontrado no ZIP');
+      himProgress(15, 'Lendo XML...');
+      xmlBuffer = await xmlFile.async('arraybuffer');
+    } else {
+      himProgress(10, 'Lendo XML...');
+      xmlBuffer = await file.arrayBuffer();
+    }
+
+    himProgress(18, 'Iniciando parser...');
+
+    // Send to Web Worker
+    const worker = new Worker('./assets/health-parser.js');
+    worker.postMessage({ buffer: xmlBuffer }, [xmlBuffer]);
+
+    worker.onmessage = function(e) {
+      const msg = e.data;
+      if (msg.error) {
+        worker.terminate();
+        himShowStep(1);
+        toast('Erro ao processar: ' + msg.error);
+        return;
+      }
+      if (msg.progress !== undefined && !msg.done) {
+        himProgress(msg.progress, msg.status);
+        return;
+      }
+      if (msg.done) {
+        worker.terminate();
+        _himSummaries = msg.summaries;
+        himShowPreview(msg.stats, msg.summaries);
+      }
+    };
+
+    worker.onerror = function(err) {
+      worker.terminate();
+      himShowStep(1);
+      toast('Erro no parser: ' + err.message);
+    };
+
+  } catch(err) {
+    himShowStep(1);
+    toast('Erro: ' + err.message);
+  }
+}
+
+function himProgress(pct, status) {
+  const bar = document.getElementById('himBar');
+  const txt = document.getElementById('himStatus');
+  if (bar) bar.style.width = pct + '%';
+  if (txt) txt.textContent = status || '';
+}
+
+function himShowPreview(stats, summaries) {
+  himShowStep(3);
+
+  // Date range
+  const rangeEl = document.getElementById('himRange');
+  if (rangeEl && stats.dateFrom) {
+    const fmtDate = d => {
+      const [y,m,dd] = d.split('-');
+      return `${dd}/${m}/${y}`;
+    };
+    rangeEl.textContent = `${fmtDate(stats.dateFrom)} → ${fmtDate(stats.dateTo)} · ${summaries.length} dias`;
+  }
+
+  // Stats grid
+  const grid = document.getElementById('himStatsGrid');
+  if (grid) {
+    const items = [
+      { val: stats.sleepNights, lbl: 'noites de sono' },
+      { val: stats.weightDays,  lbl: 'registros de peso' },
+      { val: stats.stepsDays,   lbl: 'dias com passos' },
+      { val: stats.hrDays,      lbl: 'dias com FC' },
+    ];
+    grid.innerHTML = items.map(i =>
+      `<div class="him-stat"><div class="him-stat-val">${i.val}</div><div class="him-stat-lbl">${i.lbl}</div></div>`
+    ).join('');
+  }
+
+  // Sample: last 5 days with sleep
+  const samplesEl = document.getElementById('himSamples');
+  if (samplesEl) {
+    const withSleep = summaries.filter(s => s.sleep_minutes).slice(-5).reverse();
+    samplesEl.innerHTML = withSleep.map(s => {
+      const h = Math.floor(s.sleep_minutes / 60);
+      const m = s.sleep_minutes % 60;
+      const rows = [
+        s.sleep_minutes ? `<div class="him-sample-row"><span>Sono</span><span>${h}h ${m}m ${s.sleep_start ? `(${s.sleep_start} → ${s.sleep_end})` : ''}</span></div>` : '',
+        s.body_weight_kg ? `<div class="him-sample-row"><span>Peso</span><span>${s.body_weight_kg.toFixed(1)} kg</span></div>` : '',
+        s.steps ? `<div class="him-sample-row"><span>Passos</span><span>${s.steps.toLocaleString('pt-BR')}</span></div>` : '',
+        s.resting_heart_rate ? `<div class="him-sample-row"><span>FC repouso</span><span>${s.resting_heart_rate} bpm</span></div>` : '',
+      ].filter(Boolean).join('');
+      const [y,mo,d] = s.date.split('-');
+      return `<div class="him-sample"><div class="him-sample-date">${d}/${mo}/${y}</div>${rows}</div>`;
+    }).join('') || '<div style="font-size:13px;color:var(--muted)">Nenhuma noite de sono encontrada.</div>';
+  }
+}
+
+async function himConfirm() {
+  if (!_himSummaries.length) return;
+  if (!supabaseClient || !authUser) { toast('Faça login primeiro'); return; }
+
+  himShowStep(2);
+  himProgress(0, 'Salvando no Supabase...');
+
+  const BATCH = 100;
+  const today = hojeISO();
+  const cutoff30 = new Date(); cutoff30.setDate(cutoff30.getDate() - 30);
+  const cutoffStr = cutoff30.toISOString().slice(0, 10);
+
+  // Check existing rows (last 30 days) to detect conflicts with manual data
+  const { data: existing } = await supabaseClient
+    .from('health_daily_summaries')
+    .select('summary_date, source')
+    .eq('user_id', authUser.id)
+    .gte('summary_date', cutoffStr);
+
+  const manualDates = new Set(
+    (existing || []).filter(r => r.source === 'manual').map(r => r.summary_date)
+  );
+
+  // Build rows — skip manual conflicts, always upsert apple_health_export
+  const rows = _himSummaries
+    .filter(s => s.date <= today)
+    .map(s => ({
+      user_id:            authUser.id,
+      summary_date:       s.date,
+      source:             'apple_health_export',
+      sleep_minutes:      s.sleep_minutes,
+      sleep_start:        s.sleep_start,
+      sleep_end:          s.sleep_end,
+      body_weight_kg:     s.body_weight_kg,
+      steps:              s.steps,
+      resting_heart_rate: s.resting_heart_rate,
+      last_synced_at:     new Date().toISOString(),
+      updated_at:         new Date().toISOString(),
+    }));
+
+  let saved = 0;
+  for (let i = 0; i < rows.length; i += BATCH) {
+    const batch = rows.slice(i, i + BATCH);
+    const pct = Math.round((i / rows.length) * 100);
+    himProgress(pct, `Salvando ${i + 1}–${Math.min(i + BATCH, rows.length)} de ${rows.length}...`);
+    const { error } = await supabaseClient
+      .from('health_daily_summaries')
+      .upsert(batch, { onConflict: 'user_id,summary_date,source' });
+    if (error) { toast('Erro ao salvar: ' + error.message); himShowStep(3); return; }
+    saved += batch.length;
+  }
+
+  // Reload health summaries into memory
+  await loadRecentHealthSummaries();
+  renderHoje();
+  if (document.getElementById('t-profile')?.classList.contains('active')) renderProfile();
+
+  himShowStep(4);
+  document.getElementById('himDoneTitle').textContent = 'Importação concluída';
+  document.getElementById('himDoneSub').textContent =
+    `${saved} dias importados.` +
+    (manualDates.size ? ` ${manualDates.size} dias com dados manuais foram preservados.` : '');
+
+  _himSummaries = [];
 }
 
 /* ================= APPLE HEALTH CONNECT ================= */
