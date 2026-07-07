@@ -14,6 +14,22 @@ const STAGES = new Set([
   'HKCategoryValueSleepAnalysisAsleepREM',
 ]);
 
+// ── Find end of opening tag, respecting quoted attribute values ───────────────
+// Apple Health 'device' attribute contains literal '>' chars (unescaped HKDevice)
+// so we must skip '>' characters that appear inside "..." attribute values.
+function findTagEnd(text, start) {
+  let i = start;
+  let inQuote = false;
+  const len = text.length;
+  while (i < len) {
+    const c = text[i];
+    if (c === '"') { inQuote = !inQuote; }
+    else if (!inQuote && c === '>') { return i; }
+    i++;
+  }
+  return -1;
+}
+
 // ── Attribute parser ──────────────────────────────────────────────────────────
 function parseAttrs(tag) {
   const attrs = {};
@@ -95,9 +111,8 @@ self.onmessage = function(e) {
     while (pos < len) {
       const rs = text.indexOf('<Record ', pos);
       if (rs === -1) break;
-      // Use first '>' to end the opening tag — handles both self-closing <Record ... />
-      // and records with child elements <Record ...>\n  <MetadataEntry .../>\n</Record>
-      const re = text.indexOf('>', rs);
+      // Find end of opening tag, skipping '>' inside quoted attribute values
+      const re = findTagEnd(text, rs);
       if (re === -1) break;
 
       const a = parseAttrs(text.slice(rs, re + 1));
